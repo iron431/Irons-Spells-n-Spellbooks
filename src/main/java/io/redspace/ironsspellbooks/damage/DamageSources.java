@@ -21,6 +21,7 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingKnockBackEvent;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 //https://github.com/cleannrooster/Spellblade-1.19.2/search?q=MobEffect
 //https://github.com/LittleEzra/Augment-1.19.2/blob/334dc95462a3e6b25e6f73d3d909d012d63be109/src/main/java/com/littleezra/augment/item/enchantment/RecoilCurseEnchantment.java
@@ -75,24 +76,27 @@ public class DamageSources {
         }
     }
 
-    //I can't tell if this is genius or incredibly stupid
-    private static final HashMap<LivingEntity, Integer> knockbackImmunes = new HashMap<>();
+    private static final HashMap<UUID, Integer> knockbackImmunes = new HashMap<>();
 
     public static void ignoreNextKnockback(LivingEntity livingEntity) {
-        if (!livingEntity.level.isClientSide) {
-            knockbackImmunes.put(livingEntity, livingEntity.tickCount);
+        if (livingEntity.getServer() != null) {
+            var tickCount = livingEntity.getServer().getTickCount();
+            //help manage memory
+            knockbackImmunes.entrySet().stream().filter(entry -> tickCount - entry.getValue() >= 10).forEach(entry -> knockbackImmunes.remove(entry.getKey()));
+            //enter entity
+            knockbackImmunes.put(livingEntity.getUUID(), tickCount);
         }
     }
 
     @SubscribeEvent
     public static void cancelKnockback(LivingKnockBackEvent event) {
         //IronsSpellbooks.LOGGER.debug("DamageSources.cancelKnockback {}", event.getEntity().getName().getString());
-        if (knockbackImmunes.containsKey(event.getEntity())) {
-            var entity = event.getEntity();
-            if (entity.tickCount - knockbackImmunes.get(entity) <= 1) {
+        var entity = event.getEntity();
+        if (entity.getServer() != null && knockbackImmunes.containsKey(event.getEntity().getUUID())) {
+            if (entity.getServer().getTickCount() - knockbackImmunes.get(entity.getUUID()) <= 1) {
                 event.setCanceled(true);
             }
-            knockbackImmunes.remove(entity);
+            knockbackImmunes.remove(entity.getUUID());
         }
     }
 
