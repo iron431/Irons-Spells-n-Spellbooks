@@ -51,14 +51,6 @@ public class PortalFrameBlockEntity extends BlockEntity {
         return blockState.getValue(PortalFrameBlock.HALF).equals(DoubleBlockHalf.LOWER);
     }
 
-    @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider pRegistries) {
-        super.saveAdditional(tag, pRegistries);
-        var uuid = getUUID();
-        if (uuid != null && isPrimary(this.getBlockState())) {
-            tag.putUUID("uuid", uuid);
-        }
-    }
 
     private void ifNeighborPresent(Consumer<PortalFrameBlockEntity> consumer) {
         if (level != null) {
@@ -142,6 +134,17 @@ public class PortalFrameBlockEntity extends BlockEntity {
         }
     }
 
+    @Override
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider pRegistries) {
+        super.saveAdditional(tag, pRegistries);
+        if (isPrimary(this.getBlockState())) {
+            var uuid = getUUID();
+            if (uuid != null) {
+                tag.putUUID("uuid", uuid);
+            }
+        }
+    }
+
     public UUID getUUID() {
         return this.portalId.uuid(this);
     }
@@ -207,7 +210,8 @@ public class PortalFrameBlockEntity extends BlockEntity {
 
     record PortalId(Optional<UUID> _uuid) {
         UUID uuid(PortalFrameBlockEntity portalFrameBlockEntity) {
-            return _uuid.orElse(portalFrameBlockEntity.level.getBlockEntity(portalFrameBlockEntity.getBlockPos().below()) instanceof PortalFrameBlockEntity be ? be.getUUID() : null);
+            return _uuid.orElse(
+                    portalFrameBlockEntity.level.isLoaded(portalFrameBlockEntity.getBlockPos().below()) && portalFrameBlockEntity.level.getBlockEntity(portalFrameBlockEntity.getBlockPos().below()) instanceof PortalFrameBlockEntity be ? be.getUUID() : null);
         }
     }
 }
