@@ -97,7 +97,10 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
             var dirtyProjectiles = INSTANCE.dirtyProjectiles.getOrDefault(serverLevel.dimension(), List.of());
             for (int i = dirtyProjectiles.size() - 1; i >= 0; i--) {
                 var projectile = dirtyProjectiles.get(i);
-                if (projectile.isAddedToLevel()) {
+                if (projectile.isRemoved()) {
+                    dirtyProjectiles.remove(i);
+                    continue;
+                } else if (projectile.isAddedToLevel()) {
                     Vec3 start = projectile.position();
                     int searchRange = 48;
                     Vec3 end = Utils.raycastForBlock(serverLevel, start, projectile.getDeltaMovement().normalize().scale(searchRange).add(start), ClipContext.Fluid.NONE).getLocation();
@@ -107,7 +110,8 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
                             if (Math.abs(entity.getX() - projectile.getX()) > searchRange || Math.abs(entity.getY() - projectile.getY()) > searchRange || Math.abs(entity.getZ() - projectile.getZ()) > searchRange) {
                                 continue;
                             }
-                            if (Utils.checkEntityIntersecting(entity, start, end, 3.5f + Math.min(entity.getBbWidth() * .5f, 2)).getType() == HitResult.Type.ENTITY) {
+                            float homeRadius = 3.5f + Math.min(entity.getBbWidth() * .5f, 2);
+                            if (entity.getBoundingBox().inflate(homeRadius).contains(start) || Utils.checkEntityIntersecting(entity, start, end, homeRadius).getType() == HitResult.Type.ENTITY) {
                                 updateTrackedProjectiles(entityToTrackedProjectiles.getValue(), projectile);
                                 toSync.computeIfAbsent(entity, (key) -> new ArrayList<>()).add(projectile);
                                 break;
@@ -157,7 +161,7 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
                         Vec3 motion = projectile.getDeltaMovement();
                         float speed = (float) motion.length();
                         Vec3 home = livingEntity.getBoundingBox().getCenter().subtract(projectile.position()).normalize().scale(speed * .45f);
-                        if (home.dot(motion) < 0) {
+                        if (projectile.isRemoved() || home.dot(motion) < 0) {
                             //We have passed the entity
                             projectilesToRemove.add(projectile);
                             continue;
