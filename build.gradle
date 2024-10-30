@@ -82,8 +82,8 @@ dependencies {
     implementation "software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
 
     // CAELUS *****************************************************************************************************
-    compileOnly "com.illusivesoulworks.caelus:caelus-neoforge:${caelus_version}:api"
-    localRuntime "com.illusivesoulworks.caelus:caelus-neoforge:${caelus_version}"
+//    compileOnly "com.illusivesoulworks.caelus:caelus-neoforge:${caelus_version}:api"
+//    localRuntime "com.illusivesoulworks.caelus:caelus-neoforge:${caelus_version}"
 
     // PLAYER ANIMATOR ********************************************************************************************
     //compileOnly "dev.kosmx.player-anim:player-animation-lib-forge:${player_animator_version}"
@@ -123,10 +123,10 @@ dependencies {
 //    // APOTHEOSIS
     compileOnly "curse.maven:apotheosis-${apotheosis_version}"
     compileOnly "curse.maven:apothic-attributes-898963:5597608"
-//    localRuntime "curse.maven:apothic-attributes-898963:5597608"
 
+    localRuntime "curse.maven:placebo-${placebo_version}"
+    localRuntime "curse.maven:apothic-attributes-898963:5597608"
 //    localRuntime "curse.maven:apotheosis-${apotheosis_version}"
-//    localRuntime "curse.maven:placebo-${placebo_version}"
 //    localRuntime "curse.maven:apothic-curios-950712:5108911"
 
     //QOL

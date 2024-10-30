@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.registries;
 
-import com.illusivesoulworks.caelus.api.CaelusApi;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.effect.*;
@@ -22,7 +21,7 @@ public class MobEffectRegistry {
     }
 
     //public static final DeferredHolder<MobEffect, MobEffect> BLOOD_SLASHED = MOB_EFFECT_DEFERRED_REGISTER.register("blood_slashed", () -> new BloodSlashed(MobEffectCategory.HARMFUL, 0xff4800));
-    public static final DeferredHolder<MobEffect, MobEffect> ANGEL_WINGS = MOB_EFFECT_DEFERRED_REGISTER.register("angel_wings", () -> new AngelWingsEffect(MobEffectCategory.BENEFICIAL, 0xbea925).addAttributeModifier(CaelusApi.getInstance().getFallFlyingAttribute(), IronsSpellbooks.id("mobeffect_angel_wings"), 1, AttributeModifier.Operation.ADD_VALUE));
+    public static final DeferredHolder<MobEffect, MobEffect> ANGEL_WINGS = MOB_EFFECT_DEFERRED_REGISTER.register("angel_wings", () -> new AngelWingsEffect(MobEffectCategory.BENEFICIAL, 0xbea925)/*.addAttributeModifier(CaelusApi.getInstance().getFallFlyingAttribute(), IronsSpellbooks.id("mobeffect_angel_wings"), 1, AttributeModifier.Operation.ADD_VALUE)*/);
     public static final DeferredHolder<MobEffect, MobEffect> EVASION = MOB_EFFECT_DEFERRED_REGISTER.register("evasion", () -> new EvasionEffect(MobEffectCategory.BENEFICIAL, 0x9f0be3));
     public static final DeferredHolder<MobEffect, MobEffect> HEARTSTOP = MOB_EFFECT_DEFERRED_REGISTER.register("heartstop", () -> new HeartstopEffect(MobEffectCategory.BENEFICIAL, 4393481));
     //public static final DeferredHolder<MobEffect, MobEffect> SUMMON_TIMER = MOB_EFFECT_DEFERRED_REGISTER.register("summon_timer", () -> new SummonTimer(MobEffectCategory.NEUTRAL, 0xbea925));

@@ -9,6 +9,7 @@
     "Compat$apothic_attributes$AttributeHandler",
     "CreeperMixin",
     "EntityMixin",
+    "IItemExtensionMixin",
     "ItemMixin",
     "ItemStackMixin",
     "LecternBlockEntityMixin",
