@@ -81,10 +81,6 @@ dependencies {
     // GECKOLIB ***************************************************************************************************
     implementation "software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
 
-    // CAELUS *****************************************************************************************************
-//    compileOnly "com.illusivesoulworks.caelus:caelus-neoforge:${caelus_version}:api"
-//    localRuntime "com.illusivesoulworks.caelus:caelus-neoforge:${caelus_version}"
-
     // PLAYER ANIMATOR ********************************************************************************************
     //compileOnly "dev.kosmx.player-anim:player-animation-lib-forge:${player_animator_version}"
     implementation "dev.kosmx.player-anim:player-animation-lib-forge:${player_animator_version}"
@@ -118,7 +114,7 @@ dependencies {
 //
 //    // PATCHOULI **************************************************************************************************
     compileOnly "vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE"
-//    localRuntime "vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE"
+    localRuntime "vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE"
 //
 //    // APOTHEOSIS
     compileOnly "curse.maven:apotheosis-${apotheosis_version}"
@@ -180,7 +176,6 @@ tasks.withType(ProcessResources).configureEach {
             neo_version            : neo_version,
             neo_version_range      : neo_version_range,
             loader_version_range   : loader_version_range,
-            caelus_version         : caelus_version,
             geckolib_version       : geckolib_version,
             player_animator_version: player_animator_version,
             mod_id                 : mod_id,
