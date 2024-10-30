@@ -1,0 +1,17 @@
+name: 💡 Enhancement
+description: Suggest new functionality or improvements of the codebase/api
+labels: [enhancement]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of what you want to improve
+    validations:
+      required: true
+  - type: checkboxes
+    attributes:
+      label: Not a feature request
+      options:
+        - label: I understand this is not a content/feature request for the mod (as those are on discord), but for the codebase
+          required: true
