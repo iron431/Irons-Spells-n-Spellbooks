@@ -5,10 +5,12 @@ import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.events.SpellTeleportEvent;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
+import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.block.BloodCauldronBlock;
@@ -29,6 +31,7 @@ import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.network.EquipmentChangedPacket;
 import io.redspace.ironsspellbooks.network.SyncManaPacket;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
+import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
@@ -46,11 +49,13 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.StringUtil;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.hoglin.Hoglin;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
@@ -95,6 +100,65 @@ public class ServerPlayerEvents {
 //            }
 //        }
 //    }
+
+
+    @SubscribeEvent
+    public static void onUseItem(PlayerInteractEvent.RightClickItem event) {
+        var player = event.getEntity();
+        if (player.level.isClientSide) {
+            MinecraftInstanceHelper.ifPlayerPresent(localPlayer -> {
+                if (ClientMagicData.isCasting() && player.getUUID().equals(localPlayer.getUUID())) {
+                    event.setCanceled(true);
+                }
+            });
+        } else {
+            var magicData = MagicData.getPlayerMagicData(player);
+            if (magicData.isCasting() && event.getItemStack() != magicData.getPlayerCastingItem()) {
+                event.setCanceled(true);
+            }
+        }
+        if (event.isCanceled()) {
+            return;
+        }
+
+        var level = player.level;
+        var hand = event.getHand();
+        ItemStack itemStack = player.getItemInHand(hand);
+        if (itemStack.has(ComponentRegistry.CASTING_IMPLEMENT)) {
+            SpellSelectionManager spellSelectionManager = new SpellSelectionManager(player);
+            SpellSelectionManager.SelectionOption selectionOption = spellSelectionManager.getSelection();
+            if (selectionOption == null || selectionOption.spellData.equals(SpellData.EMPTY)) {
+                //IronsSpellbooks.LOGGER.debug("CastingItem.Use.1 {} {}", level.isClientSide, hand);
+                return;
+            }
+            SpellData spellData = selectionOption.spellData;
+            int spellLevel = spellData.getSpell().getLevelFor(spellData.getLevel(), player);
+            if (level.isClientSide()) {
+                if (ClientMagicData.isCasting()) {
+                    //IronsSpellbooks.LOGGER.debug("CastingItem.Use.2 {} {}", level.isClientSide, hand);
+                    event.setCancellationResult(InteractionResult.CONSUME);
+                } else if (ClientMagicData.getPlayerMana() < spellData.getSpell().getManaCost(spellLevel)
+                        || ClientMagicData.getCooldowns().isOnCooldown(spellData.getSpell())
+                        || !ClientMagicData.getSyncedSpellData(player).isSpellLearned(spellData.getSpell())) {
+                    //IronsSpellbooks.LOGGER.debug("CastingItem.Use.3 {} {}", level.isClientSide, hand);
+                    return;
+                } else {
+                    //IronsSpellbooks.LOGGER.debug("CastingItem.Use.4 {} {}", level.isClientSide, hand);
+                    event.setCancellationResult(InteractionResult.CONSUME);
+                }
+            }
+
+            var castingSlot = hand.ordinal() == 0 ? SpellSelectionManager.MAINHAND : SpellSelectionManager.OFFHAND;
+
+            if (spellData.getSpell().attemptInitiateCast(itemStack, spellLevel, level, player, selectionOption.getCastSource(), true, castingSlot)) {
+                event.setCancellationResult(InteractionResult.CONSUME);
+            } else {
+                //IronsSpellbooks.LOGGER.debug("CastingItem.Use.6 {} {}", level.isClientSide, hand);
+                event.setCancellationResult(InteractionResult.FAIL);
+            }
+            event.setCanceled(true);
+        }
+    }
 
     @SubscribeEvent
     public static void onPlayerDropItem(ItemTossEvent event) {
@@ -464,23 +528,6 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void useItemEvent(PlayerInteractEvent.RightClickItem event) {
-        var entity = event.getEntity();
-        if (entity.level.isClientSide) {
-            MinecraftInstanceHelper.ifPlayerPresent(localPlayer -> {
-                if (ClientMagicData.isCasting() && entity.getUUID().equals(localPlayer.getUUID())) {
-                    event.setCanceled(true);
-                }
-            });
-        } else {
-            var magicData = MagicData.getPlayerMagicData(entity);
-            if (magicData.isCasting() && event.getItemStack() != magicData.getPlayerCastingItem()) {
-                event.setCanceled(true);
-            }
-        }
-    }
-
-    @SubscribeEvent
     public static void handleResistanceAttributesOnSpawn(FinalizeSpawnEvent event) {
         var mob = event.getEntity();
         //Attributes should never be null because all living entities have these attributes
@@ -561,6 +608,19 @@ public class ServerPlayerEvents {
         if (player.hasEffect(MobEffectRegistry.SLOWED)) {
             int i = 1 + player.getEffect(MobEffectRegistry.SLOWED).getAmplifier();
             event.setNewSpeed(event.getNewSpeed() * Utils.intPow(.8f, i));
+        }
+    }
+
+    @SubscribeEvent
+    public static void changeBreedOutcome(BabyEntitySpawnEvent event) {
+        if (ServerConfigs.HOGLIN_OFFSPRING_PROTECTION.get()) {
+            if (event.getChild() instanceof Hoglin baby && event.getParentA() instanceof Hoglin parent1 && event.getParentB() instanceof Hoglin parent2) {
+                double i = (parent1.isImmuneToZombification() ? 0.5 : 0) + (parent2.isImmuneToZombification() ? 0.5 : 0);
+                //produces: 0% if neither, 50% if 1, 100% if both
+                if (Utils.random.nextFloat() < i) {
+                    baby.setImmuneToZombification(true);
+                }
+            }
         }
     }
 }

@@ -85,7 +85,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
         ItemStack modifierItemStack = inputSlots.getItem(1);
         if (!baseItemStack.isEmpty() && !modifierItemStack.isEmpty()) {
             //Scroll Merging
-            if (baseItemStack.getItem() instanceof Scroll && modifierItemStack.getItem() instanceof InkItem inkItem/*Scroll*/) {
+            if (ServerConfigs.SCROLL_MERGING.get() && baseItemStack.getItem() instanceof Scroll && modifierItemStack.getItem() instanceof InkItem inkItem/*Scroll*/) {
                 var spell1 = ISpellContainer.get(baseItemStack).getSpellAtIndex(0);
                 if (spell1.getLevel() < spell1.getSpell().getMaxLevel()) {
                     var baseRarity = spell1.getRarity();

@@ -3,22 +3,27 @@
   "package": "io.redspace.ironsspellbooks.mixin",
   "refmap": "irons_spellbooks.refmap.json",
   "compatibilityLevel": "JAVA_17",
+  "plugin": "io.redspace.ironsspellbooks.mixin.MixinPlugin",
   "mixins": [
     "BeardifierMixin",
+    "Compat$apothic_attributes$AttributeHandler",
     "CreeperMixin",
     "EntityMixin",
+    "IItemExtensionMixin",
     "ItemMixin",
     "ItemStackMixin",
+    "LecternBlockEntityMixin",
     "LivingEntityMixin",
     "MobEffectMixin",
     "PlayerMixin",
     "TridentItemMixin"
   ],
   "client": [
+    "ClientBookAccessMixin",
     "ClientEntityMixin",
     "EntityRendererMixin",
     "GuiMixin",
-    "LocalPlayerMixin",
+    "LecternRendererMixin",
     "MinecraftMixin",
     "ParticleMixin",
     "SpinAttackEffectLayerMixin"

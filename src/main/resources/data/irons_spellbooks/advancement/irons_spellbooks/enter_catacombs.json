@@ -2,7 +2,7 @@
   "display": {
     "hidden": true,
     "icon": {
-      "item": "minecraft:skeleton_skull"
+      "id": "minecraft:skeleton_skull"
     },
     "title": {
       "translate": "advancements.irons_spellbooks.enter_catacombs.title"
@@ -24,7 +24,7 @@
             "entity": "this",
             "predicate": {
               "location": {
-                "structure": "irons_spellbooks:catacombs"
+                "structures": "irons_spellbooks:catacombs"
               }
             }
           }

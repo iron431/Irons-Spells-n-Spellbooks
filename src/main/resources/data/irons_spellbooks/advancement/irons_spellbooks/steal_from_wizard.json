@@ -1,0 +1,23 @@
+{
+  "display": {
+    "hidden": true,
+    "icon": {
+      "id": "minecraft:chest"
+    },
+    "title": {
+      "translate": "advancements.irons_spellbooks.steal_from_wizard.title"
+    },
+    "description": {
+      "translate": "advancements.irons_spellbooks.steal_from_wizard.description"
+    },
+    "announce_to_chat": true,
+    "show_toast": true,
+    "frame": "task"
+  },
+  "parent": "irons_spellbooks:irons_spellbooks/root",
+  "criteria": {
+    "anger_wizard": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

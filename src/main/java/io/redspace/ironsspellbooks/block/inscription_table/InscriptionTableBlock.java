@@ -5,7 +5,9 @@ import io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.*;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
@@ -21,6 +23,8 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.ChestType;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -29,7 +33,9 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
 
-public class InscriptionTableBlock extends HorizontalDirectionalBlock /*implements EntityBlock*/ {
+import static net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED;
+
+public class InscriptionTableBlock extends HorizontalDirectionalBlock implements SimpleWaterloggedBlock {
     //Only use left/right
     public static final EnumProperty<ChestType> PART = BlockStateProperties.CHEST_TYPE;
 
@@ -53,14 +59,20 @@ public class InscriptionTableBlock extends HorizontalDirectionalBlock /*implemen
 
     public InscriptionTableBlock() {
         super(BlockBehaviour.Properties.of().strength(2.5F).sound(SoundType.WOOD).noOcclusion());
+        this.registerDefaultState(defaultBlockState().setValue(WATERLOGGED, false));
     }
 
     public BlockState updateShape(BlockState myState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos myPos, BlockPos pFacingPos) {
         ChestType half = myState.getValue(PART);
         BlockPos requiredNeighborPos = myPos.relative(getNeighbourDirection(half, myState.getValue(FACING)));
+        boolean waterlogged = myState.getValue(WATERLOGGED);
+        if (waterlogged) {
+            pLevel.scheduleTick(myPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
+            pLevel.scheduleTick(requiredNeighborPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
+        }
         BlockState neighborState = pLevel.getBlockState(requiredNeighborPos);
         if (!neighborState.is(this)) {
-            var air = Blocks.AIR.defaultBlockState();
+            var air = (waterlogged ? Blocks.WATER : Blocks.AIR).defaultBlockState();
             //manually set to prevent block from dropping
             pLevel.setBlock(myPos, air, 35);
             pLevel.levelEvent(null, 2001, myPos, Block.getId(air));
@@ -93,7 +105,7 @@ public class InscriptionTableBlock extends HorizontalDirectionalBlock /*implemen
         BlockPos blockpos1 = blockpos.relative(direction.getCounterClockWise());
         Level level = pContext.getLevel();
         if (level.getBlockState(blockpos1).canBeReplaced(pContext) && level.getWorldBorder().isWithinBounds(blockpos1)) {
-            return this.defaultBlockState().setValue(FACING, direction.getOpposite());
+            return this.defaultBlockState().setValue(FACING, direction.getOpposite()).setValue(WATERLOGGED, level.getFluidState(blockpos).getType() == Fluids.WATER);
         }
 
         return null;
@@ -103,7 +115,7 @@ public class InscriptionTableBlock extends HorizontalDirectionalBlock /*implemen
         super.setPlacedBy(pLevel, pPos, pState, pPlacer, pStack);
         if (!pLevel.isClientSide) {
             BlockPos blockpos = pPos.relative(pState.getValue(FACING).getClockWise());
-            pLevel.setBlock(blockpos, pState.setValue(PART, ChestType.LEFT), 3);
+            pLevel.setBlock(blockpos, pState.setValue(PART, ChestType.LEFT).setValue(WATERLOGGED, pLevel.getFluidState(blockpos).getType() == Fluids.WATER), 3);
             pLevel.setBlock(pPos, pState.setValue(PART, ChestType.RIGHT), 3);
             pLevel.blockUpdated(pPos, Blocks.AIR);
             pState.updateNeighbourShapes(pLevel, pPos, 3);
@@ -113,7 +125,7 @@ public class InscriptionTableBlock extends HorizontalDirectionalBlock /*implemen
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, PART);
+        builder.add(FACING, PART, WATERLOGGED);
     }
 
     @Override
@@ -122,6 +134,11 @@ public class InscriptionTableBlock extends HorizontalDirectionalBlock /*implemen
             return RenderShape.MODEL;
         else
             return RenderShape.INVISIBLE;
+    }
+
+    @Override
+    protected FluidState getFluidState(BlockState pState) {
+        return pState.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(pState);
     }
 
     public PushReaction getPistonPushReaction(BlockState pState) {

@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.spells.ender;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
+import io.redspace.ironsspellbooks.api.events.CounterSpellEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
@@ -24,6 +25,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.NeoForge;
 
 @AutoSpellConfig
 public class CounterspellSpell extends AbstractSpell {
@@ -74,38 +76,42 @@ public class CounterspellSpell extends AbstractSpell {
             }
 
             //if (entityHitResult.getEntity() instanceof AntiMagicSusceptible antiMagicSusceptible && !(antiMagicSusceptible instanceof MagicSummon summon && summon.getSummoner() == entity)) {
-            if (hitEntity instanceof AntiMagicSusceptible antiMagicSusceptible) {
-                if (antiMagicSusceptible instanceof IMagicSummon summon) {
-                    if (summon.getSummoner() == entity) {
-                        if (summon instanceof Mob mob && mob.getTarget() == null) {
+            if (!(NeoForge.EVENT_BUS.post(new CounterSpellEvent(entity, hitEntity)).isCanceled())) {
+                if (hitEntity instanceof AntiMagicSusceptible antiMagicSusceptible) {
+                    if (antiMagicSusceptible instanceof IMagicSummon summon) {
+                        if (summon.getSummoner() == entity) {
+                            if (summon instanceof Mob mob && mob.getTarget() == null) {
+                                antiMagicSusceptible.onAntiMagic(playerMagicData);
+                            }
+                        } else {
                             antiMagicSusceptible.onAntiMagic(playerMagicData);
                         }
+
+
                     } else {
                         antiMagicSusceptible.onAntiMagic(playerMagicData);
                     }
-                } else {
-                    antiMagicSusceptible.onAntiMagic(playerMagicData);
+                } else if (hitEntity instanceof ServerPlayer serverPlayer) {
+                    Utils.serverSideCancelCast(serverPlayer, true);
+                    MagicData.getPlayerMagicData(serverPlayer).getPlayerRecasts().removeAll(RecastResult.COUNTERSPELL);
+                } else if (hitEntity instanceof IMagicEntity abstractSpellCastingMob) {
+                    abstractSpellCastingMob.cancelCast();
                 }
-            } else if (hitEntity instanceof ServerPlayer serverPlayer) {
-                Utils.serverSideCancelCast(serverPlayer, true);
-                MagicData.getPlayerMagicData(serverPlayer).getPlayerRecasts().removeAll(RecastResult.COUNTERSPELL);
-            } else if (hitEntity instanceof IMagicEntity abstractSpellCastingMob) {
-                abstractSpellCastingMob.cancelCast();
-            }
-            if (hitEntity instanceof LivingEntity livingEntity) {
-                //toList to avoid concurrent modification
-                for (Holder<MobEffect> mobEffect : livingEntity.getActiveEffectsMap().keySet().stream().toList()) {
-                    if (mobEffect.value() instanceof MagicMobEffect) {
-                        livingEntity.removeEffect(mobEffect);
+                if (hitEntity instanceof LivingEntity livingEntity) {
+                    //toList to avoid concurrent modification
+                    for (Holder<MobEffect> mobEffect : livingEntity.getActiveEffectsMap().keySet().stream().toList()) {
+                        if (mobEffect.value() instanceof MagicMobEffect) {
+                            livingEntity.removeEffect(mobEffect);
+                        }
                     }
                 }
-            }
-        } else {
-            for (float i = 1; i < 40; i += .5f) {
-                Vec3 pos = entity.getEyePosition().add(forward.scale(i));
-                MagicManager.spawnParticles(world, ParticleTypes.ENCHANT, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0, false);
-                if (!world.getBlockState(BlockPos.containing(pos)).isAir()) {
-                    break;
+            } else {
+                for (float i = 1; i < 40; i += .5f) {
+                    Vec3 pos = entity.getEyePosition().add(forward.scale(i));
+                    MagicManager.spawnParticles(world, ParticleTypes.ENCHANT, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0, false);
+                    if (!world.getBlockState(BlockPos.containing(pos)).isAir()) {
+                        break;
+                    }
                 }
             }
         }

@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "irons_spellbooks:scroll_forge"
+      "id": "irons_spellbooks:scroll_forge"
     },
     "title": {
       "translate": "advancements.irons_spellbooks.make_scroll_forge.title"

@@ -63,7 +63,7 @@ public class FurledMapItem extends Item {
                         var blockpos = pair.getFirst();
                         ItemStack mapStack = MapItem.create(serverlevel, blockpos.getX(), blockpos.getZ(), (byte) 2, true, true);
                         MapItem.renderBiomePreviewMap(serverlevel, mapStack);
-                        MapItemSavedData.addTargetDecoration(mapStack, blockpos, "x", MapDecorationTypes.RED_X);
+                        MapItemSavedData.addTargetDecoration(mapStack, blockpos, "red_x", MapDecorationTypes.RED_X);
                         furledMapData.descriptionOverride.ifPresent(component -> mapStack.set(DataComponents.CUSTOM_NAME, component));
 
                         replaceItem(player, mapStack, hand);

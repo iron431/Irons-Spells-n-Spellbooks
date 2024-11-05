@@ -15,14 +15,12 @@ import io.redspace.ironsspellbooks.player.AdditionalWanderingTrades;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.network.Filterable;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
@@ -55,8 +53,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.item.component.WrittenBookContent;
 import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
@@ -468,23 +464,9 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         private BibleTrade() {
             super((trader, random) -> {
                 if (!trader.level.isClientSide) {
-                    ItemStack cost = new ItemStack(Items.WRITTEN_BOOK);
-                    List<Filterable<Component>> pages = List.of(
-                            Filterable.passThrough(Component.translatable("item.irons_spellbooks.archevoker_log.header").append("2:\n\n").append(Component.translatable("item.irons_spellbooks.archevoker_log.page_1"))),
-                            Filterable.passThrough(Component.translatable("item.irons_spellbooks.archevoker_log.header").append("14:\n\n").append(Component.translatable("item.irons_spellbooks.archevoker_log.page_2"))),
-                            Filterable.passThrough(Component.translatable("item.irons_spellbooks.archevoker_log.header").append("31:\n\n").append(Component.translatable("item.irons_spellbooks.archevoker_log.page_3"))),
-                            Filterable.passThrough(Component.translatable("item.irons_spellbooks.archevoker_log.header").append("73:\n\n").append(Component.translatable("item.irons_spellbooks.archevoker_log.page_4")))
-                    );
-                    var writtenBookContents = new WrittenBookContent(Filterable.passThrough(""), "Archevoker", 0, pages, true);
-                    var customData = new CompoundTag();
-                    customData.putByte("translatedLogbook", (byte) 1);
+                    ItemStack cost = new ItemStack(ItemRegistry.TRANSLATED_ARCHEVOKER_LOGBOOK.get());
                     ItemStack forSale = new ItemStack(ItemRegistry.VILLAGER_SPELL_BOOK.get());
-                    return new MerchantOffer(new ItemCost(cost.getItem(), cost.getCount()).withComponents(builder->{
-                        builder.expect(DataComponents.WRITTEN_BOOK_CONTENT, writtenBookContents);
-                        builder.expect(DataComponents.CUSTOM_NAME, Component.translatable("item.irons_spellbooks.translated_archevoker_log"));
-                        builder.expect(DataComponents.CUSTOM_DATA, CustomData.of(customData));
-                        return builder;
-                    }), forSale, 1, 5, 0.5f);
+                    return new MerchantOffer(new ItemCost(cost.getItem(), cost.getCount()), forSale, 1, 5, 0.5f);
                 }
                 return null;
             });

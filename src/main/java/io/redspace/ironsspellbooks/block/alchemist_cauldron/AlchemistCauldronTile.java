@@ -322,8 +322,9 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
     @Override
     public void setChanged() {
         super.setChanged();
-        if (level != null)
+        if (level != null) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
+        }
     }
 
     @Override
@@ -478,16 +479,19 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
      ***********************************************************/
     @Override
     public int[] getSlotsForFace(Direction pSide) {
+        //any side has access to all four input items
         return new int[]{0, 1, 2, 3};
     }
 
     @Override
     public boolean canPlaceItemThroughFace(int pIndex, ItemStack pItemStack, @Nullable Direction pDirection) {
-        return inputItems.stream().anyMatch(ItemStack::isEmpty) && isValidInput(pItemStack);
+        //any side can insert a valid item into any empty slot
+        return inputItems.get(pIndex).isEmpty() && isValidInput(pItemStack);
     }
 
     @Override
     public boolean canTakeItemThroughFace(int pIndex, ItemStack pStack, Direction pDirection) {
+        //cannot automatically withdraw items
         return false;
     }
 
@@ -509,17 +513,11 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
 
     @Override
     public ItemStack getItem(int pSlot) {
-        /*
-        This should only be getting used by the hopper, but the hopper messing with the reference we return.
-        Therefore, we want to effectively make our stuff private because of the wacky rules the cauldron is subject to
-        This shouldn't mess with other stuff, but I'm unfortunately not familiar with the 150+ uses of the interface to say certainly. (and then there's other mods)
-         */
-        return /*pSlot >= 0 && pSlot <= inputItems.size() ? inputItems.get(pSlot) : */ItemStack.EMPTY;
+        return pSlot >= 0 && pSlot <= inputItems.size() ? inputItems.get(pSlot) : ItemStack.EMPTY;
     }
 
     @Override
     public ItemStack removeItem(int pSlot, int pAmount) {
-        //stack size is always one inside the cauldron, so we should be able to ignore amount
         return pSlot >= 0 && pSlot <= inputItems.size() ? inputItems.remove(pSlot) : ItemStack.EMPTY;
     }
 

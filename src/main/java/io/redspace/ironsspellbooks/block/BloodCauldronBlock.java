@@ -73,7 +73,8 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
     }
 
     public static CauldronInteraction.InteractionMap getInteractionMap() {
-        Map<Item, CauldronInteraction> map = new HashMap<>();
+        var map = CauldronInteraction.EMPTY.map();
+
         // Take Blood
         map.put(Items.GLASS_BOTTLE, (blockState, level, blockPos, player, hand, itemStack) -> {
             if (!level.isClientSide) {

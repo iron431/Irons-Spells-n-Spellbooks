@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "irons_spellbooks:common_ink"
+      "id": "irons_spellbooks:common_ink"
     },
     "title": {
       "translate": "advancements.irons_spellbooks.ink_root.title"

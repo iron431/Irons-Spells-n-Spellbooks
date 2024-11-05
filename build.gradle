@@ -81,10 +81,6 @@ dependencies {
     // GECKOLIB ***************************************************************************************************
     implementation "software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
 
-    // CAELUS *****************************************************************************************************
-    compileOnly "com.illusivesoulworks.caelus:caelus-neoforge:${caelus_version}:api"
-    localRuntime "com.illusivesoulworks.caelus:caelus-neoforge:${caelus_version}"
-
     // PLAYER ANIMATOR ********************************************************************************************
     //compileOnly "dev.kosmx.player-anim:player-animation-lib-forge:${player_animator_version}"
     implementation "dev.kosmx.player-anim:player-animation-lib-forge:${player_animator_version}"
@@ -117,13 +113,16 @@ dependencies {
 //    localRuntime "curse.maven:cloth-config-348521:4633416"
 //
 //    // PATCHOULI **************************************************************************************************
-//    compileOnly "vazkii.patchouli:Patchouli:${patchouli_version}:api"
-//    localRuntime "vazkii.patchouli:Patchouli:${patchouli_version}"
+    compileOnly "vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE"
+    localRuntime "vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE"
 //
 //    // APOTHEOSIS
     compileOnly "curse.maven:apotheosis-${apotheosis_version}"
+    compileOnly "curse.maven:apothic-attributes-898963:5597608"
+
+    localRuntime "curse.maven:placebo-${placebo_version}"
+    localRuntime "curse.maven:apothic-attributes-898963:5597608"
 //    localRuntime "curse.maven:apotheosis-${apotheosis_version}"
-//    localRuntime "curse.maven:placebo-${placebo_version}"
 //    localRuntime "curse.maven:apothic-curios-950712:5108911"
 
     //QOL
@@ -177,7 +176,6 @@ tasks.withType(ProcessResources).configureEach {
             neo_version            : neo_version,
             neo_version_range      : neo_version_range,
             loader_version_range   : loader_version_range,
-            caelus_version         : caelus_version,
             geckolib_version       : geckolib_version,
             player_animator_version: player_animator_version,
             mod_id                 : mod_id,

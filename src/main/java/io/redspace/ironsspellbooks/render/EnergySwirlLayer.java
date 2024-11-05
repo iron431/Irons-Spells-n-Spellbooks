@@ -45,10 +45,8 @@ public class EnergySwirlLayer {
             if (EnergySwirlLayer.shouldRender(pLivingEntity, shouldRenderFlag)) {
                 float f = (float) pLivingEntity.tickCount + pPartialTicks;
                 HumanoidModel<Player> entitymodel = this.model();
-                entitymodel.prepareMobModel(pLivingEntity, pLimbSwing, pLimbSwingAmount, pPartialTicks);
-                this.getParentModel().copyPropertiesTo(entitymodel);
                 VertexConsumer vertexconsumer = pBuffer.getBuffer(EnergySwirlLayer.getRenderType(TEXTURE, f));
-                entitymodel.setupAnim(pLivingEntity, pLimbSwing, pLimbSwingAmount, pAgeInTicks, pNetHeadYaw, pHeadPitch);
+                this.getParentModel().copyPropertiesTo(entitymodel);
                 entitymodel.renderToBuffer(pMatrixStack, vertexconsumer, pPackedLight, OverlayTexture.NO_OVERLAY, COLOR);
             }
         }
@@ -80,7 +78,6 @@ public class EnergySwirlLayer {
                 var renderType = EnergySwirlLayer.getRenderType(TEXTURE, f);
                 VertexConsumer vertexconsumer = bufferSource.getBuffer(renderType);
                 poseStack.pushPose();
-//            this.getRenderer().setCurrentRTB(bufferIn);
                 bakedModel.getBone("body").ifPresent((rootBone) -> {
                     rootBone.getChildBones().forEach(bone -> {
                         bone.updateScale(1.1f, 1.1f, 1.1f);

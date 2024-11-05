@@ -1,6 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "irons_spellbooks:item/dragonskin_spell_book"
-  }
-}

@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "irons_spellbooks:arcane_anvil"
+      "id": "irons_spellbooks:arcane_anvil"
     },
     "title": {
       "translate": "advancements.irons_spellbooks.make_arcane_anvil.title"

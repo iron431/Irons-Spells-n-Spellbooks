@@ -2,7 +2,7 @@
   "display": {
     "hidden": true,
     "icon": {
-      "item": "irons_spellbooks:villager_spell_book"
+      "id": "irons_spellbooks:villager_spell_book"
     },
     "title": {
       "translate": "advancements.irons_spellbooks.spell_book_villager.title"

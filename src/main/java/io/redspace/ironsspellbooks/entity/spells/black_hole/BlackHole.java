@@ -12,10 +12,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.Tags;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,7 +123,7 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
         float radius = (float) (bb.getXsize());
         boolean hitTick = this.tickCount % 10 == 0;
         for (Entity entity : trackingEntities) {
-            if (entity != getOwner() && !DamageSources.isFriendlyFireBetween(getOwner(), entity)) {
+            if (entity != getOwner() && !DamageSources.isFriendlyFireBetween(getOwner(), entity) && !entity.isSpectator()) {
                 Vec3 center = bb.getCenter();
                 float distance = (float) center.distanceTo(entity.position());
                 if (distance > radius) {
@@ -128,8 +131,11 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
                 }
                 float f = 1 - distance / radius;
                 float scale = f * f * f * f * .25f;
+                float resistance = entity instanceof LivingEntity livingEntity ? Mth.clamp(1 - (float) livingEntity.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE), .3f, 1f) : 1f;
+                float bossResistance = entity.getType().is(Tags.EntityTypes.BOSSES) ? 0.5f : 1f;
 
-                Vec3 diff = center.subtract(entity.position()).scale(scale);
+
+                Vec3 diff = center.subtract(entity.position()).scale(scale * resistance * bossResistance);
                 entity.push(diff.x, diff.y, diff.z);
                 if (hitTick && distance < 9 && canHitEntity(entity)) {
                     DamageSources.applyDamage(entity, damage, SpellRegistry.BLACK_HOLE_SPELL.get().getDamageSource(this, getOwner()));

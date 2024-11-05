@@ -68,7 +68,6 @@ public class VoidTentacle extends LivingEntity implements GeoEntity, AntiMagicSu
 
     @Override
     public void tick() {
-        super.tick();
         if (!level.isClientSide) {
             if (age > 300) {
                 //IronsSpellbooks.LOGGER.debug("Discarding void Tentacle (age:{})", age);
@@ -76,22 +75,24 @@ public class VoidTentacle extends LivingEntity implements GeoEntity, AntiMagicSu
             } else {
                 if (age < 280 && (age) % 20 == 0) {
                     level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(1.2)).forEach(this::dealDamage);
-                    if (Utils.random.nextFloat() < .15f)
+                    if (Utils.random.nextFloat() < .15f) {
                         playSound(SoundRegistry.VOID_TENTACLES_AMBIENT.get(), 1.5f, .5f + Utils.random.nextFloat() * .65f);
+                    }
                 }
             }
-            if (age == 260 && Utils.random.nextFloat() < .3f)
+            if (age == 260 && Utils.random.nextFloat() < .3f) {
                 playSound(SoundRegistry.VOID_TENTACLES_LEAVE.get(), 2, 1);
+            }
         } else {
-            if (age < 280)
-//                for (int i = 0; i < 4; i++) {
-                if (Utils.random.nextFloat() < .15f)
+            if (age < 280) {
+                if (Utils.random.nextFloat() < .15f) {
                     level.addParticle(ParticleHelper.VOID_TENTACLE_FOG, getX() + Utils.getRandomScaled(.5f), getY() + Utils.getRandomScaled(.5f) + .2f, getZ() + Utils.getRandomScaled(.5f), Utils.getRandomScaled(2f), -random.nextFloat() * .5f, Utils.getRandomScaled(2f));
-//                }
+                }
+            }
         }
         age++;
-
     }
+
 
     @Override
     public HumanoidArm getMainArm() {

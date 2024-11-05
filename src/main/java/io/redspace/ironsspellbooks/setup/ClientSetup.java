@@ -414,6 +414,7 @@ public class ClientSetup {
             event.register(ModelResourceLocation.standalone(AffinityRingRenderer.getAffinityRingModelLocation(schoolType)));
             event.register(ModelResourceLocation.standalone(ScrollModel.getScrollModelLocation(schoolType)));
         }
+        event.register(ModelResourceLocation.standalone(IronsSpellbooks.id("item/template_open_spell_book_model")));
     }
 
     @SubscribeEvent
