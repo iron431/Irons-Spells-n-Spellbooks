@@ -66,6 +66,14 @@ public class ArmorMaterialRegistry {
             3,
             0);
 
+    public static DeferredHolder<ArmorMaterial, ArmorMaterial> PALADIN = register("paladin",
+            schoolArmorMap(),
+            20,
+            SoundEvents.ARMOR_EQUIP_NETHERITE,
+            () -> Ingredient.of(Tags.Items.INGOTS_NETHERITE),
+            3,
+            0);
+
     public static DeferredHolder<ArmorMaterial, ArmorMaterial> DEV = register("dev",
             makeArmorMap(20, 20, 20, 20),
             20,
