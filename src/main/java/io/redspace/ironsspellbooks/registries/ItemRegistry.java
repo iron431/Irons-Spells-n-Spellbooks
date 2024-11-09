@@ -156,10 +156,8 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> PROTECTION_RUNE = ITEMS.register("protection_rune", () -> new Item(ItemPropertiesHelper.material()));
     public static final DeferredHolder<Item, Item> NATURE_RUNE = ITEMS.register("nature_rune", () -> new Item(ItemPropertiesHelper.material()));
     public static final DeferredHolder<Item, Item> WAYWARD_COMPASS = ITEMS.register("wayward_compass", WaywardCompass::new);
-    //    public static final DeferredHolder<Item, Item> ANTIQUATED_COMPASS = ITEMS.register("antiquated_compass", AntiquatedCompass::new);
     public static final DeferredHolder<Item, Item> RUINED_BOOK = ITEMS.register("ruined_book", () -> new RuinedBookItem(ItemPropertiesHelper.material().rarity(Rarity.EPIC)));
     public static final DeferredHolder<Item, Item> CINDER_ESSENCE = ITEMS.register("cinder_essence", () -> new Item(ItemPropertiesHelper.material()));
-    //    public static final DeferredHolder<Item, Item> ARCANE_SALVAGE = ITEMS.register("arcane_salvage", ArcaneSalvageItem::new);
     public static final DeferredHolder<Item, Item> ARCANE_INGOT = ITEMS.register("arcane_ingot", () -> new Item(ItemPropertiesHelper.material()));
     public static final DeferredHolder<Item, Item> SHRIVING_STONE = ITEMS.register("shriving_stone", ShrivingStoneItem::new);
     public static final DeferredHolder<Item, Item> LESSER_SPELL_SLOT_UPGRADE = ITEMS.register("lesser_spell_slot_upgrade", () -> new SpellSlotUpgradeItem(12));
@@ -196,11 +194,6 @@ public class ItemRegistry {
     /**
      * Armor
      */
-//    public static final DeferredHolder<Item, Item> WIZARD_HAT = ITEMS.register("wizard_hat", () -> new WizardArmorItem(ArmorMaterials.LEATHER, ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment()));
-//    public static final DeferredHolder<Item, Item> WIZARD_ROBE = ITEMS.register("wizard_robe", () -> new WizardArmorItem(ArmorMaterials.LEATHER, ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment()));
-//    public static final DeferredHolder<Item, Item> WIZARD_PANTS = ITEMS.register("wizard_pants", () -> new WizardArmorItem(ArmorMaterials.LEATHER, ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment()));
-//    public static final DeferredHolder<Item, Item> WIZARD_BOOTS = ITEMS.register("wizard_boots", () -> new WizardArmorItem(ArmorMaterials.LEATHER, ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment()));
-
     public static final DeferredHolder<Item, Item> WANDERING_MAGICIAN_HELMET = ITEMS.register("wandering_magician_helmet", () -> new WanderingMagicianArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment(1).durability(ArmorItem.Type.HELMET.getDurability(22))));
     public static final DeferredHolder<Item, Item> WANDERING_MAGICIAN_CHESTPLATE = ITEMS.register("wandering_magician_chestplate", () -> new WanderingMagicianArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment(1).durability(ArmorItem.Type.CHESTPLATE.getDurability(22))));
     public static final DeferredHolder<Item, Item> WANDERING_MAGICIAN_LEGGINGS = ITEMS.register("wandering_magician_leggings", () -> new WanderingMagicianArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment(1).durability(ArmorItem.Type.LEGGINGS.getDurability(22))));

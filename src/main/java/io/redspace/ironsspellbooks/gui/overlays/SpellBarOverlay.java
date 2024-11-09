@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.gui.overlays;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.config.ClientConfigs;
@@ -46,7 +45,7 @@ public class SpellBarOverlay implements LayeredDraw.Layer {
     }
 
     static final int CONTEXTUAL_FADE_WAIT = 80;
-    static int fadeoutDelay;
+    public static int fadeoutDelay;
     static int lastTick;
     static float alpha;
     static int lastSpellCount;
@@ -110,7 +109,7 @@ public class SpellBarOverlay implements LayeredDraw.Layer {
         int selectedSpellIndex = ssm.getGlobalSelectionIndex();
 
         //Slot Border
-        //setTranslucentTexture(TEXTURE);
+        prepTranslucency();
         for (Vec2 location : locations) {
             guiHelper.blit(TEXTURE, centerX + (int) location.x, centerY + (int) location.y, 66, 84, 22, 22);
         }
@@ -120,7 +119,6 @@ public class SpellBarOverlay implements LayeredDraw.Layer {
         }
         //Border + Cooldowns
         for (int i = 0; i < locations.size(); i++) {
-            setTranslucentTexture(TEXTURE);
             if (i != selectedSpellIndex) {
                 guiHelper.blit(TEXTURE, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 22 + (!ssm.getAllSpells().get(i).slot.equals(Curios.SPELLBOOK_SLOT) ? 110 : 0), 84, 22, 22);
             }
@@ -137,6 +135,9 @@ public class SpellBarOverlay implements LayeredDraw.Layer {
                 guiHelper.blit(TEXTURE, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 0, 84, 22, 22);
             }
         }
+        guiHelper.flush();
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+
     }
 
     private static void handleFading(Player player) {
@@ -155,11 +156,10 @@ public class SpellBarOverlay implements LayeredDraw.Layer {
         }
     }
 
-    private static void setTranslucentTexture(ResourceLocation texture) {
+    private static void prepTranslucency() {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getRendertypeTranslucentShader);
         RenderSystem.setShaderColor(1f, 1f, 1f, alpha);
-        RenderSystem.setShaderTexture(0, texture);
     }
 }
