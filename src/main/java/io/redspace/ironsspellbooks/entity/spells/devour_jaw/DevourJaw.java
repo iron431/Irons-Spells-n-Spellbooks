@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.devour_jaw;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AoeEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -66,10 +67,11 @@ public class DevourJaw extends AoeEntity {
         } else if (tickCount == warmupTime) {
             if (level.isClientSide) {
                 float y = this.getYRot();
-                int countPerSide = 25;
+                int countPerSide = 50;
                 //These particles were not at all what I intended. But they're cooler. no clue how it works
                 for (int i = -countPerSide; i < countPerSide; i++) {
                     Vec3 motion = new Vec3(0, Math.abs(countPerSide) - i, countPerSide * .5f).yRot(y).normalize().multiply(.4f, .8f, .4f);
+                    motion = motion.scale(Utils.random.nextIntBetweenInclusive(6, 12) * .1f);
                     level.addParticle(ParticleHelper.BLOOD, getX(), getY() + .5f, getZ(), motion.x, motion.y, motion.z);
                 }
             } else {
