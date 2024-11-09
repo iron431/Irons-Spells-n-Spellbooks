@@ -37,4 +37,5 @@ public class ComponentRegistry {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<AutoloaderCrossbow.LoadStateComponent>> CROSSBOW_LOAD_STATE = register("crossbow_load_state", (builder) -> builder.persistent(AutoloaderCrossbow.LoadStateComponent.CODEC).networkSynchronized(AutoloaderCrossbow.LoadStateComponent.STREAM_CODEC).cacheEncoding());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> CASTING_IMPLEMENT = register("casting_implement", (builder) -> builder.persistent(Unit.CODEC).networkSynchronized(StreamCodec.unit(Unit.INSTANCE)).cacheEncoding());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> MULTIHAND_WEAPON = register("multihand_weapon", (builder) -> builder.persistent(Unit.CODEC).networkSynchronized(StreamCodec.unit(Unit.INSTANCE)).cacheEncoding());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> CLOTHING_ALT = register("transmog", (builder) -> builder.persistent(Unit.CODEC).networkSynchronized(StreamCodec.unit(Unit.INSTANCE)).cacheEncoding());
 }

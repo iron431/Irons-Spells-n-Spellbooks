@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.entity.armor;
+package io.redspace.ironsspellbooks.entity.armor.priest;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.PriestArmorItem;
