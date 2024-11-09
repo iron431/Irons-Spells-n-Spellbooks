@@ -72,7 +72,7 @@ public class ArmorMaterialRegistry {
             SoundEvents.ARMOR_EQUIP_NETHERITE,
             () -> Ingredient.of(Tags.Items.INGOTS_NETHERITE),
             3,
-            0);
+            0.2f);
 
     public static DeferredHolder<ArmorMaterial, ArmorMaterial> DEV = register("dev",
             makeArmorMap(20, 20, 20, 20),

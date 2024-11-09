@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:smithing_transform",
+  "category": "equipment",
+  "template": {
+    "item": "irons_spellbooks:mithril_weave"
+  },
+  "base": {
+    "item": "minecraft:iron_chestplate"
+  },
+  "addition": {
+    "item": "irons_spellbooks:holy_rune"
+  },
+  "result": {
+    "id": "irons_spellbooks:paladin_chestplate"
+  }
+}

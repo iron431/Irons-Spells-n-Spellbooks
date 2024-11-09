@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "MCM",
+    "CMC",
+    "MCM"
+  ],
+  "key": {
+    "M": {
+      "tag": "c:ingots/mithril"
+    },
+    "C": {
+      "item": "minecraft:chain"
+    }
+  },
+  "result": {
+    "id": "irons_spellbooks:mithril_weave",
+    "count": 1
+  }
+}
