@@ -94,8 +94,6 @@ dependencies {
     // If you want to run with tetra in dev comment the above line and uncomment the following 2 lines
 //    localRuntime "curse.maven:tetra-${tetra_version}"
 //    localRuntime "se.mickelus.mutil:mutil:${mutil_version}"
-    localRuntime "curse.maven:better-combat-by-daedelus-639842:5723092"
-    localRuntime "curse.maven:cloth-config-348521:5623420"
 
     // JEI ********************************************************************************************************
     compileOnly "mezz.jei:jei-${jei_mc_version}-common-api:${jei_version}"
@@ -109,19 +107,22 @@ dependencies {
     //compileOnly "top.theillusivec4.curios:curios-forge:8.0.1+1.20.6:api"
 
     // BETTER COMBAT **********************************************************************************************
-//    localRuntime "curse.maven:better-combat-by-daedelus-${better_combat_version}"
-//    localRuntime "curse.maven:cloth-config-348521:4633416"
-//
-//    // PATCHOULI **************************************************************************************************
+    var betterCombat = false;
+    if(betterCombat){
+        localRuntime "curse.maven:better-combat-by-daedelus-639842:5723092"
+        localRuntime "curse.maven:cloth-config-348521:5623420"
+    }
+
+   // PATCHOULI **************************************************************************************************
     compileOnly "vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE"
-    localRuntime "vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE"
+//    localRuntime "vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE"
 //
 //    // APOTHEOSIS
     compileOnly "curse.maven:apotheosis-${apotheosis_version}"
     compileOnly "curse.maven:apothic-attributes-898963:5597608"
 
-    localRuntime "curse.maven:placebo-${placebo_version}"
-    localRuntime "curse.maven:apothic-attributes-898963:5597608"
+//    localRuntime "curse.maven:placebo-${placebo_version}"
+//    localRuntime "curse.maven:apothic-attributes-898963:5597608"
 //    localRuntime "curse.maven:apotheosis-${apotheosis_version}"
 //    localRuntime "curse.maven:apothic-curios-950712:5108911"
 
