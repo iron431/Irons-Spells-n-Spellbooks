@@ -11,6 +11,7 @@
     "minecraft:dry_out",
     "minecraft:in_wall",
     "irons_spellbooks:blood_cauldron",
+    "irons_spellbooks:bloodlet",
     {
       "id": "neoforge:poison",
       "required": false

@@ -4,6 +4,7 @@
     "minecraft:starve",
     "minecraft:on_fire",
     "minecraft:wither",
+    "irons_spellbooks:bloodlet",
     {
       "id": "neoforge:poison",
       "required": false

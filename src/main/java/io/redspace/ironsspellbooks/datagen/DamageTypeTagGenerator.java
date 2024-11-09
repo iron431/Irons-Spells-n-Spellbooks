@@ -43,7 +43,7 @@ public class DamageTypeTagGenerator extends TagsProvider<DamageType> {
         tag(LIGHTNING_MAGIC).add(ISSDamageTypes.LIGHTNING_MAGIC);
         tag(HOLY_MAGIC).add(ISSDamageTypes.HOLY_MAGIC);
         tag(ENDER_MAGIC).add(ISSDamageTypes.ENDER_MAGIC);
-        tag(BLOOD_MAGIC).add(ISSDamageTypes.BLOOD_MAGIC);
+        tag(BLOOD_MAGIC).add(ISSDamageTypes.BLOOD_MAGIC, ISSDamageTypes.BLOODLET);
         tag(EVOCATION_MAGIC).add(ISSDamageTypes.EVOCATION_MAGIC);
         tag(ELDRITCH_MAGIC).add(ISSDamageTypes.ELDRITCH_MAGIC);
         tag(NATURE_MAGIC).add(ISSDamageTypes.NATURE_MAGIC);
@@ -59,7 +59,8 @@ public class DamageTypeTagGenerator extends TagsProvider<DamageType> {
                 DamageTypes.FELL_OUT_OF_WORLD,
                 DamageTypes.DRY_OUT,
                 DamageTypes.IN_WALL,
-                ISSDamageTypes.CAULDRON
+                ISSDamageTypes.CAULDRON,
+                ISSDamageTypes.BLOODLET
         );
         tag(BYPASS_EVASION).addOptional(
                 NeoForgeMod.POISON_DAMAGE.location()
@@ -69,7 +70,8 @@ public class DamageTypeTagGenerator extends TagsProvider<DamageType> {
                 DamageTypes.FREEZE,
                 DamageTypes.STARVE,
                 DamageTypes.ON_FIRE,
-                DamageTypes.WITHER
+                DamageTypes.WITHER,
+                ISSDamageTypes.BLOODLET
         );
         tag(LONG_CAST_IGNORE).addOptional(
                 NeoForgeMod.POISON_DAMAGE.location()

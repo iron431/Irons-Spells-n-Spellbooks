@@ -364,6 +364,7 @@
   "ui.irons_spellbooks.wandering_trader_scroll": "Any %s Scroll",
   "ui.irons_spellbooks.sacrifice_target_failure": "You must target one of your summons",
   "ui.irons_spellbooks.empty_spellbook_lectern": "This Spellbook is empty...",
+  "ui.irons_spellbooks.damage_on_cast": "%s Damage on Cast",
 
   "school.irons_spellbooks.fire": "Fire",
   "school.irons_spellbooks.ice": "Ice",
@@ -632,6 +633,8 @@
   "death.attack.blood_magic.item": "%1$s blood magic 2",
   "death.attack.blood_magic.player": "%1$s blood magic 3",
   "death.attack.blood_cauldron": "%1$s was cooked alive",
+  "death.attack.bloodlet": "%1$s was drained of blood",
+  "death.attack.bloodlet.player": "%2$s drained the blood of %1$s",
   "death.attack.bleed_effect": "%1$s bled to death",
   "death.attack.blood_cauldron.player": "%1$s was sacrificed by %2$s",
   "death.attack.heartstop": "%1$s's heart ruptured",

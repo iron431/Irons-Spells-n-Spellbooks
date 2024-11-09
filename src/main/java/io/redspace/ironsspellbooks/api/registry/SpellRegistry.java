@@ -96,6 +96,7 @@ public class SpellRegistry {
     public static final Supplier<AbstractSpell> RAY_OF_SIPHONING_SPELL = registerSpell(new RayOfSiphoningSpell());
     public static final Supplier<AbstractSpell> WITHER_SKULL_SPELL = registerSpell(new WitherSkullSpell());
     public static final Supplier<AbstractSpell> SACRIFICE_SPELL = registerSpell(new SacrificeSpell());
+    public static final Supplier<AbstractSpell> BLOODLET_SPELL = registerSpell(new BloodletSpell());
 
     // ENDER
     public static final Supplier<AbstractSpell> COUNTERSPELL_SPELL = registerSpell(new CounterspellSpell());

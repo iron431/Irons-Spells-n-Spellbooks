@@ -59,5 +59,8 @@ public class MobEffectRegistry {
             .addAttributeModifier(Attributes.SCALE, IronsSpellbooks.id("mobeffect_reduced"), -0.25, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
             .addAttributeModifier(Attributes.MOVEMENT_SPEED, IronsSpellbooks.id("mobeffect_reduced"), 0.125, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
     );
+    public static final DeferredHolder<MobEffect, MobEffect> BLOODLET = MOB_EFFECT_DEFERRED_REGISTER.register("bloodlet", () -> new BloodletEffect(MobEffectCategory.BENEFICIAL, 4393481)
+            .addAttributeModifier(AttributeRegistry.SPELL_POWER, IronsSpellbooks.id("mobeffect_bloodlet"), 0.075, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
+    );
 
 }

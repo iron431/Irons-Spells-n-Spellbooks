@@ -30,6 +30,7 @@ public class ISSDamageTypes {
     public static final ResourceKey<DamageType> DRAGON_BREATH_POOL = register("dragon_breath_pool");
     public static final ResourceKey<DamageType> FIRE_FIELD = register("fire_field");
     public static final ResourceKey<DamageType> POISON_CLOUD = register("poison_cloud");
+    public static final ResourceKey<DamageType> BLOODLET = register("bloodlet");
 
     public static void bootstrap(BootstrapContext<DamageType> context) {
         context.register(FIRE_MAGIC, new DamageType(FIRE_MAGIC.location().getPath(), DamageScaling.WHEN_CAUSED_BY_LIVING_NON_PLAYER, 0f));
@@ -47,6 +48,7 @@ public class ISSDamageTypes {
         context.register(DRAGON_BREATH_POOL, new DamageType(DRAGON_BREATH_POOL.location().getPath(), DamageScaling.WHEN_CAUSED_BY_LIVING_NON_PLAYER, 0f));
         context.register(FIRE_FIELD, new DamageType(FIRE_FIELD.location().getPath(), DamageScaling.WHEN_CAUSED_BY_LIVING_NON_PLAYER, 0f));
         context.register(POISON_CLOUD, new DamageType(POISON_CLOUD.location().getPath(), DamageScaling.WHEN_CAUSED_BY_LIVING_NON_PLAYER, 0f));
+        context.register(BLOODLET, new DamageType(BLOODLET.location().getPath(), DamageScaling.NEVER, 0f));
     }
 }
 
