@@ -5,10 +5,10 @@
     "item": "irons_spellbooks:mithril_weave"
   },
   "base": {
-    "item": "minecraft:iron_chestplate"
+    "item": "irons_spellbooks:priest_chestplate"
   },
   "addition": {
-    "item": "irons_spellbooks:holy_rune"
+    "item": "irons_spellbooks:holy_upgrade_orb"
   },
   "result": {
     "id": "irons_spellbooks:paladin_chestplate"
