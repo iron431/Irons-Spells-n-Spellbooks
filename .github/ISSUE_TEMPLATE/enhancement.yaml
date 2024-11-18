@@ -1,4 +1,4 @@
-name: 💡 Enhancement
+name: 🖥️ API Enhancement
 description: Suggest new functionality or improvements of the codebase/api
 labels: [enhancement]
 body:
@@ -13,5 +13,5 @@ body:
     attributes:
       label: Not a feature request
       options:
-        - label: I understand this is not a content/feature request for the mod (as those are on discord), but for the codebase
+        - label: I understand this is not a content/feature request, which can be found on discord
           required: true
