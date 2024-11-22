@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "#c:ingots/mithril",
+    "irons_spellbooks:arcane_ingot"
+  ]
+}
