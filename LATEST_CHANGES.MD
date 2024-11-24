@@ -1,15 +1,13 @@
 ### Additions
-- Spellbooks and other books can now be placed in chiselled bookshelves
 - 
+
 ### Changes
-- Removed Caelus as a dependency
+- 
 
 ### Fixes
-- Optimize Knockback handler
-- Optimize Guiding Bolt Manager
-- Fixed Guiding Bolt Effect not homing if you shoot a projectile from inside the mob's hitbox range
-- Fixed dangerous ordering of portal frame saving
-- Fixed Patchouli book recipe
+- Fixed gui fade option transparency not always working
+- Fixed contextual spell bar setting hiding spell bar while using scroll modifier keybind
+- Fixed Angel Wings implementation to be more compatible with various mods
 
 ### API
 - 
