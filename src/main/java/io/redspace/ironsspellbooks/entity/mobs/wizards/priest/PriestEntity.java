@@ -166,6 +166,11 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         };
     }
 
+    @Override
+    public boolean guardsBlocks() {
+        return false;
+    }
+
     @javax.annotation.Nullable
     protected SoundEvent getAmbientSound() {
         if (this.isSleeping()) {
