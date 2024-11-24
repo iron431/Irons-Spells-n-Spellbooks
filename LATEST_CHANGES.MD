@@ -2,7 +2,7 @@
 - 
 
 ### Changes
-- 
+- Priests no longer guard chests
 
 ### Fixes
 - Fixed gui fade option transparency not always working
