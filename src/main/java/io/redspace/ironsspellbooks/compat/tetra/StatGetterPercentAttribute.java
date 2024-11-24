@@ -7,8 +7,7 @@ import se.mickelus.tetra.gui.stats.getter.StatGetterAttribute;
 
 public class StatGetterPercentAttribute extends StatGetterAttribute {
     public StatGetterPercentAttribute(Attribute attribute) {
-        super(attribute);
-        withOffset(-1);
+        super(attribute, false, false, -1);
     }
 
     @Override
