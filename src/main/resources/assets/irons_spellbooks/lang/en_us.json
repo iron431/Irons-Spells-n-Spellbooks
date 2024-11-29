@@ -1059,5 +1059,24 @@
   "affix.irons_spellbooks:sword/attribute/mana_regen": "Mana-tapped",
   "affix.irons_spellbooks:sword/attribute/mana_regen.suffix": "of the Mana-tapped",
   "curios.identifier.spellbook": "Spell Book",
-  "curios.modifiers.spellbook": "When equipped as Spell Book:"
+  "curios.modifiers.spellbook": "When equipped as Spell Book:",
+
+  "pattern.irons_spellbooks.rune_inscribed_ring": "Rune Inscribed Ring",
+  "pattern.irons_spellbooks.rune_inscribed_ring.item": "%s-Inscribed Ring",
+  "part.irons_spellbooks.rune_inscription": "Rune Inscription",
+  "material.irons_spellbooks.arcane": "Arcane",
+  "material.irons_spellbooks.mithril": "Mithril",
+  "material.irons_spellbooks.rune_fire": "Fire",
+  "material.irons_spellbooks.rune_ice": "Ice",
+  "material.irons_spellbooks.rune_lightning": "Lightning",
+  "material.irons_spellbooks.rune_holy": "Holy",
+  "material.irons_spellbooks.rune_blood": "Blood",
+  "material.irons_spellbooks.rune_evocation": "Evocation",
+  "material.irons_spellbooks.rune_ender": "Ender",
+  "material.irons_spellbooks.rune_arcane": "Arcane",
+  "material.irons_spellbooks.rune_cooldown": "Recovery",
+  "material.irons_spellbooks.rune_protection": "Protection",
+  "material.irons_spellbooks.rune_nature": "Nature",
+  "material.irons_spellbooks.divine_pearl": "Divine Pearl",
+  "action.irons_spellbooks.explode.arcane": "Arcane"
 }

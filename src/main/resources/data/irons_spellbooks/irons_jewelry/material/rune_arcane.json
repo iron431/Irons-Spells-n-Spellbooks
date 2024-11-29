@@ -1,0 +1,18 @@
+{
+  "descriptionId": "material.irons_spellbooks.rune_arcane",
+  "ingredient": {
+    "item": "irons_spellbooks:arcane_rune"
+  },
+  "materialType": [
+    "spellbooks_rune"
+  ],
+  "paletteLocation": "irons_spellbooks:palettes/rune_arcane",
+  "quality": 1.5,
+  "bonusParameters": {
+    "irons_jewelry:attribute": {
+      "attribute": "irons_spellbooks:max_mana",
+      "amount": 25,
+      "operation": "add_value"
+    }
+  }
+}

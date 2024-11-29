@@ -1,0 +1,46 @@
+{
+  "descriptionId": "material.irons_spellbooks.mithril",
+  "ingredient": {
+    "tag": "c:ingots/mithril"
+  },
+  "materialType": [
+    "metal"
+  ],
+  "paletteLocation": "irons_spellbooks:palettes/mithril",
+  "quality": 3,
+  "bonusParameters": {
+    "irons_jewelry:attribute": {
+      "attribute": "irons_spellbooks:spell_power",
+      "amount": 0.05,
+      "operation": "add_multiplied_total"
+    },
+    "irons_jewelry:negative_effect": {
+      "effect": "irons_spellbooks:rend"
+    },
+    "irons_jewelry:positive_effect": {
+      "effect": "irons_spellbooks:charged"
+    },
+    "irons_jewelry:action": {
+      "targetSelf": false,
+      "action": {
+        "type": "irons_jewelry:explode",
+        "translation": "action.irons_spellbooks.explode.arcane",
+        "affect_self": false,
+        "radius": {
+          "base": 2,
+          "scalar": 1.5
+        },
+        "damage_type": "irons_spellbooks:evocation_magic",
+        "knockback_multiplier": 0.75,
+        "block_interaction": "none",
+        "large_particle": {
+          "type": "minecraft:explosion_emitter"
+        },
+        "small_particle": {
+          "type": "minecraft:gust_emitter_large"
+        },
+        "sound": "irons_spellbooks:spell.shockwave.cast"
+      }
+    }
+  }
+}
