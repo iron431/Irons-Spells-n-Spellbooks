@@ -760,10 +760,4 @@ public class Utils {
         itemStack.set(DataComponents.POTION_CONTENTS, new PotionContents(potion));
         return itemStack;
     }
-
-    @Deprecated
-    public static ItemStack setPotion(ItemStack itemStack, Potion potion) {
-        itemStack.set(DataComponents.POTION_CONTENTS, new PotionContents(new Holder.Direct<>(potion)));
-        return itemStack;
-    }
 }
