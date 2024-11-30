@@ -534,7 +534,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
     }
 
     public boolean isBoiling(BlockState blockState) {
-        return AlchemistCauldronBlock.isLit(blockState) && getLiquidLevel() >= 1;
+        return getLiquidLevel() >= 1;
     }
 
     public int getLiquidLevel() {
