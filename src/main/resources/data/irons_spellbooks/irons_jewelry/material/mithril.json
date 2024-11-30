@@ -31,15 +31,15 @@
           "scalar": 1.5
         },
         "damage_type": "irons_spellbooks:evocation_magic",
-        "knockback_multiplier": 0.75,
+        "knockback_multiplier": 0.0,
         "block_interaction": "none",
         "large_particle": {
-          "type": "minecraft:explosion_emitter"
+          "type": "irons_spellbooks:arcane_explosion_emitter"
         },
         "small_particle": {
-          "type": "minecraft:gust_emitter_large"
+          "type": "irons_spellbooks:arcane_explosion_emitter"
         },
-        "sound": "irons_spellbooks:spell.shockwave.cast"
+        "sound": "irons_spellbooks:spell.telekinesis.cast"
       }
     }
   }
