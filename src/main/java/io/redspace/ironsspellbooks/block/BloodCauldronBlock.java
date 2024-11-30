@@ -27,9 +27,6 @@ import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class BloodCauldronBlock extends LayeredCauldronBlock {
 
     public BloodCauldronBlock() {
@@ -73,10 +70,10 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
     }
 
     public static CauldronInteraction.InteractionMap getInteractionMap() {
-        var map = CauldronInteraction.EMPTY.map();
+        var map = CauldronInteraction.newInteractionMap("blood_cauldron");
 
         // Take Blood
-        map.put(Items.GLASS_BOTTLE, (blockState, level, blockPos, player, hand, itemStack) -> {
+        map.map().put(Items.GLASS_BOTTLE, (blockState, level, blockPos, player, hand, itemStack) -> {
             if (!level.isClientSide) {
                 Item item = itemStack.getItem();
                 player.setItemInHand(hand, ItemUtils.createFilledResult(itemStack, player, new ItemStack(ItemRegistry.BLOOD_VIAL.get())));
@@ -90,7 +87,7 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
             return ItemInteractionResult.sidedSuccess(level.isClientSide);
         });
 
-        return new CauldronInteraction.InteractionMap("blood_cauldron_interactions", map);
+        return map;
     }
 
     public interface CookExecution {
