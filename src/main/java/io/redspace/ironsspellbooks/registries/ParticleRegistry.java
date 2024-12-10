@@ -91,6 +91,4 @@ public class ParticleRegistry {
         }
     });
     public static final Supplier<SimpleParticleType> CLEANSE_PARTICLE = PARTICLE_TYPES.register("cleanse", () -> new SimpleParticleType(false));
-    public static final Supplier<SimpleParticleType> ARCANE_EXPLOSION_EMITTER = PARTICLE_TYPES.register("arcane_explosion_emitter", () -> new SimpleParticleType(false));
-
 }

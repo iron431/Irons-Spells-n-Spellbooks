@@ -19,28 +19,6 @@
     },
     "irons_jewelry:positive_effect": {
       "effect": "irons_spellbooks:charged"
-    },
-    "irons_jewelry:action": {
-      "targetSelf": false,
-      "action": {
-        "type": "irons_jewelry:explode",
-        "translation": "action.irons_spellbooks.explode.arcane",
-        "affect_self": false,
-        "radius": {
-          "base": 2,
-          "scalar": 1.5
-        },
-        "damage_type": "irons_spellbooks:evocation_magic",
-        "knockback_multiplier": 0.0,
-        "block_interaction": "none",
-        "large_particle": {
-          "type": "irons_spellbooks:arcane_explosion_emitter"
-        },
-        "small_particle": {
-          "type": "irons_spellbooks:arcane_explosion_emitter"
-        },
-        "sound": "irons_spellbooks:spell.telekinesis.cast"
-      }
     }
   }
 }
