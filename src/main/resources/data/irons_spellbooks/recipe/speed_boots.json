@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:smithing_transform",
+  "category": "equipment",
+  "template": {
+    "item": "irons_spellbooks:mithril_weave"
+  },
+  "base": {
+    "item": "irons_spellbooks:archevoker_boots"
+  },
+  "addition": {
+    "item": "minecraft:feather"
+  },
+  "result": {
+    "id": "irons_spellbooks:speed_boots"
+  }
+}
