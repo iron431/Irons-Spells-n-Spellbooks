@@ -82,70 +82,25 @@ public class EldritchResearchScreen extends Screen {
         viewportOffset = Vec2.ZERO;
         this.leftPos = (this.width - WINDOW_WIDTH) / 2;
         this.topPos = (this.height - WINDOW_HEIGHT) / 2;
-        float f = 6.282f / learnableSpells.size();
-        //RandomSource randomSource = RandomSource.create(431L);
-        //int gridsize = 64;
-
-        RandomSource randomSource = RandomSource.create(431L);
         nodes = new ArrayList<>();
-        ArrayList<Vec2> nodePoses = new ArrayList<>();
-        int nodeDim = 32;
-        int centerX = leftPos + WINDOW_WIDTH / 2;
-        int centerY = topPos + WINDOW_HEIGHT / 2;
-        for (int i = 0; i < learnableSpells.size(); i++) {
-            float r = 35;
-            float angle = randomSource.nextFloat() * Mth.TWO_PI;
-            int x, y;
+        RandomSource randomSource = RandomSource.create(431L);
 
-            if (i == 0) {
-                x = centerX;
-                y = centerY;
-            } else {
-                var node = nodePoses.get(randomSource.nextInt(nodePoses.size()));
-                x = (int) node.x;
-                y = (int) node.y;
+        float f = Mth.TWO_PI / 6; // current angel between nodes
+        float r = 35; // current radius
+        float circumference = 0; // tracked length of current ring
+        float offset = 0.5f; // angular offset of this ring (units of f)
+        for (int i = 0; i < learnableSpells.size(); i++) {
+            if (circumference > r * Mth.TWO_PI) {
+                r += 40;
+                f /= 2;
+                circumference = 0;
+                offset = i;
             }
-            int posx = 0;
-            int posy = 0;
-            for (int j = 0; j < 100; j++) {
-                posx = x + (int) (r * Mth.cos(angle));
-                posy = y + (int) (r * Mth.sin(angle));
-                //int x = leftPos + WINDOW_WIDTH / 2 - 8 + (int) (r * Mth.cos(f * i));
-                //int posy = topPos + WINDOW_HEIGHT / 2 - 8 + (int) (r * Mth.sin(f * i));
-                //resolve collisions
-                boolean anyIntersect = false;
-                for (Vec2 node : nodePoses) {
-                    int x11 = (int) node.x;
-                    int x12 = (int) node.x + nodeDim;
-                    int y11 = (int) node.y;
-                    int y12 = (int) node.y + nodeDim;
-                    int x21 = posx;
-                    int x22 = posx + nodeDim;
-                    int y21 = posy;
-                    int y22 = posy + nodeDim;
-                    boolean intersects = !(x12 < x21 || x22 < x11 || y12 < y21 || y22 < y11);
-                    if (intersects) {
-                        r += 10;
-                        anyIntersect = true;
-                        break;
-                    }
-                }
-                if (!anyIntersect) {
-                    break;
-                }
-            }
-            nodePoses.add(new Vec2(posx, posy));
-        }
-        int averageX = 0;
-        int averageY = 0;
-        for (Vec2 node : nodePoses) {
-            averageY += (int) node.x;
-            averageY += (int) node.y;
-        }
-        averageX = averageX / nodePoses.size() - centerX;
-        averageY = averageY / nodePoses.size() - centerY;
-        for (int i = 0; i < nodePoses.size(); i++) {
-            nodes.add(new SpellNode(learnableSpells.get(i), (int) nodePoses.get(i).x-averageX, (int) nodePoses.get(i).y-averageY));
+            float a = f * (i + offset) ;
+            int x = leftPos + WINDOW_WIDTH / 2 - 8 + (int) (r * Mth.cos(a));
+            int y = topPos + WINDOW_HEIGHT / 2 - 8 + (int) (r * Mth.sin(a));
+            nodes.add(new SpellNode(learnableSpells.get(i), x, y));
+            circumference += r * f * 1.1f;
         }
         float maxDistX = 0;
         float maxDistY = 0;
