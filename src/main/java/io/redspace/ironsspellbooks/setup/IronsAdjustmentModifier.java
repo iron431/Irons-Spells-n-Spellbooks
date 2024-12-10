@@ -14,6 +14,7 @@ import java.util.function.BiFunction;
  * Implementation of {@link AdjustmentModifier} but uses a BiFunction to include the additional parameter of partial tick when making adjustments
  */
 public class IronsAdjustmentModifier extends AbstractModifier {
+    public static IronsAdjustmentModifier INSTANCE;
     public boolean enabled = true;
 
     protected BiFunction<String, Float, Optional<AdjustmentModifier.PartModifier>> transformFunction;
