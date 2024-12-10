@@ -149,7 +149,8 @@ public class RuinedBookItem extends Item implements ILecternPlaceable {
                     13 * 2 * 4,
                     484 / 4,
                     324 / 3 / 1,
-                    46 * 1,
+                    27 / 1 * 4,
+                    44 * 1,
                     64 / 2,
                     65 / 4 * 4 + 1,
                     114 / 1 * 1,
@@ -158,7 +159,8 @@ public class RuinedBookItem extends Item implements ILecternPlaceable {
                     832 * 1 / 2 / 4,
                     121 * 1 / 1,
                     135 / 5 * 4,
-                    184 / 4,
+                    27 / 1 * 4,
+                    184 / 4 - 2,
                     16 * 2,
                     195 * 1 / 3,
                     228 * 1 / 2,
@@ -167,6 +169,9 @@ public class RuinedBookItem extends Item implements ILecternPlaceable {
                     312 / 1 / 3,
                     121 * 1,
                     27 / 1 * 4,
+                    27 / 1 * 4,
+                    23 * 2,
+                    23 * 2,
                     23 * 2
             })
     ).withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("alt")));
