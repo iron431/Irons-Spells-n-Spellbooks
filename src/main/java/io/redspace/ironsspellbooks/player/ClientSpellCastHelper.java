@@ -20,6 +20,7 @@ import io.redspace.ironsspellbooks.gui.EldritchResearchScreen;
 import io.redspace.ironsspellbooks.network.casting.CastErrorPacket;
 import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.setup.IronsAdjustmentModifier;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.spells.holy.CloudOfRegenerationSpell;
 import io.redspace.ironsspellbooks.spells.holy.FortifySpell;
@@ -57,7 +58,6 @@ public class ClientSpellCastHelper {
     }
 
     public static void setSuppressRightClicks(boolean suppressRightClicks) {
-        //Ironsspellbooks.logger.debug("ClientSpellCastHelper.setSuppressRightClicks {}", suppressRightClicks);
         ClientSpellCastHelper.suppressRightClicks = suppressRightClicks;
     }
 
@@ -69,8 +69,9 @@ public class ClientSpellCastHelper {
         var spell = SpellRegistry.getSpell(packet.spellId);
         if (packet.errorType == CastErrorPacket.ErrorType.COOLDOWN) {
             //ignore cooldown message if we are simply holding right click.
-            if (ClientInputEvents.hasReleasedSinceCasting)
+            if (ClientInputEvents.hasReleasedSinceCasting) {
                 Minecraft.getInstance().gui.setOverlayMessage(Component.translatable("ui.irons_spellbooks.cast_error_cooldown", spell.getDisplayName(Minecraft.getInstance().player)).withStyle(ChatFormatting.RED), false);
+            }
         } else {
             Minecraft.getInstance().gui.setOverlayMessage(Component.translatable("ui.irons_spellbooks.cast_error_mana", spell.getDisplayName(Minecraft.getInstance().player)).withStyle(ChatFormatting.RED), false);
         }
@@ -189,27 +190,28 @@ public class ClientSpellCastHelper {
      * Animation Helper
      */
     private static void animatePlayerStart(Player player, ResourceLocation resourceLocation) {
-        //IronsSpellbooks.LOGGER.debug("animatePlayerStart {} {}", player, resourceLocation);
         var rawanimation = PlayerAnimationRegistry.getAnimation(resourceLocation);
         if (rawanimation instanceof KeyframeAnimation keyframeAnimation) {
             //noinspection unchecked
-            var animation = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(SpellAnimations.ANIMATION_RESOURCE);
-            if (animation != null) {
-                var castingAnimationPlayer = new KeyframeAnimationPlayer(keyframeAnimation);
-                ClientMagicData.castingAnimationPlayerLookup.put(player.getUUID(), castingAnimationPlayer);
+            var playerAnimationData = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(SpellAnimations.ANIMATION_RESOURCE);
+            if (playerAnimationData != null) {
+                var animation = new KeyframeAnimationPlayer(keyframeAnimation) {
+                    @Override
+                    public void stop() {
+                        playerAnimationData.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(4, Ease.INOUTSINE), null, false);
+                        IronsAdjustmentModifier.INSTANCE.fadeOut(5);
+                    }
+                };
+//                ClientMagicData.castingAnimationPlayerLookup.put(player.getUUID(), animation);
                 var armsFlag = SHOW_FIRST_PERSON_ARMS.get();
                 var itemsFlag = SHOW_FIRST_PERSON_ITEMS.get();
-
                 if (armsFlag || itemsFlag) {
-                    castingAnimationPlayer.setFirstPersonMode(/*resourceLocation.getPath().equals("charge_arrow") ? FirstPersonMode.VANILLA : */FirstPersonMode.THIRD_PERSON_MODEL);
-                    castingAnimationPlayer.setFirstPersonConfiguration(new FirstPersonConfiguration(armsFlag, armsFlag, itemsFlag, itemsFlag));
+                    animation.setFirstPersonMode(FirstPersonMode.THIRD_PERSON_MODEL);
+                    animation.setFirstPersonConfiguration(new FirstPersonConfiguration(armsFlag, armsFlag, itemsFlag, itemsFlag));
                 } else {
-                    castingAnimationPlayer.setFirstPersonMode(FirstPersonMode.DISABLED);
+                    animation.setFirstPersonMode(FirstPersonMode.DISABLED);
                 }
-
-                //You might use  animation.replaceAnimationWithFade(); to create fade effect instead of sudden change
-                //animation.setAnimation(castingAnimationPlayer);
-                animation.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(2, Ease.INOUTSINE), castingAnimationPlayer, true);
+                playerAnimationData.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(2, Ease.INOUTSINE), animation, true);
             }
         }
     }
@@ -233,10 +235,6 @@ public class ClientSpellCastHelper {
     }
 
     public static void handleClientboundFieryExplosion(Vec3 pos, float radius) {
-//        MagicManager.spawnParticles(level, new BlastwaveParticleOptions(new Vector3f(1, .6f, 0.3f), explosionRadius + 2), x, y, z, 1, 0, 0, 0, 0, true);
-//        MagicManager.spawnParticles(level, ParticleTypes.CAMPFIRE_COSY_SMOKE, x, y, z, 50 + (int) (25 * explosionRadius), explosionRadius * .25f, explosionRadius * .125f, explosionRadius * .25f, 0.03, true);
-//        MagicManager.spawnParticles(level, ParticleHelper.EMBERS, x, y, z, 50, .25f * explosionRadius, .25f * explosionRadius, .25f * explosionRadius, 0.08, false);
-//        MagicManager.spawnParticles(level, ParticleHelper.EMBERS, x, y, z, 100, .25f * explosionRadius, .25f * explosionRadius, .25f * explosionRadius, 0.2 + .1 * explosionRadius, false);
         MinecraftInstanceHelper.ifPlayerPresent(player -> {
             var level = player.level;
             var x = pos.x;
@@ -310,9 +308,10 @@ public class ClientSpellCastHelper {
         if (finishAnimation.getForPlayer().isPresent() && !cancelled) {
             animatePlayerStart(player, finishAnimation.getForPlayer().get());
         } else if (finishAnimation != AnimationHolder.pass() || cancelled) {
-            var animationPlayer = ClientMagicData.castingAnimationPlayerLookup.getOrDefault(castingEntityId, null);
-            if (animationPlayer != null) {
-                animationPlayer.stop();
+            var animation = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(SpellAnimations.ANIMATION_RESOURCE);
+            if (animation != null) {
+                animation.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(4, Ease.INOUTSINE), null, false);
+                IronsAdjustmentModifier.INSTANCE.fadeOut(5);
             }
         }
 
