@@ -97,7 +97,7 @@ public class RayOfFrostSpell extends AbstractSpell {
     }
 
     private float getDamage(int spellLevel, LivingEntity caster) {
-        return getSpellPower(spellLevel, caster) * 1.5f;
+        return 3 + getSpellPower(spellLevel, caster) * 1.5f;
     }
 
     private int getFreezeTime(int spellLevel, LivingEntity caster) {

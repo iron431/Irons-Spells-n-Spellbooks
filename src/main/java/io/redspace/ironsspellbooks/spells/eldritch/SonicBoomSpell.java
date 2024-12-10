@@ -21,7 +21,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -82,19 +82,21 @@ public class SonicBoomSpell extends AbstractEldritchSpell {
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         CameraShakeManager.addCameraShake(new CameraShakeData(10, entity.position(), 20));
-        var hitResult = Utils.raycastForEntity(level, entity, getRange(spellLevel, entity), false, .25f);
-        if (hitResult.getType() == HitResult.Type.ENTITY) {
-            Entity target = ((EntityHitResult) hitResult).getEntity();
-            if (target instanceof LivingEntity) {
-                if (DamageSources.applyDamage(target, getDamage(spellLevel, entity), getDamageSource(entity))) {
-                    //TODO: some kind of on hit effect?
-                    //deafen warden or something would be cool
-                }
+        var range = getRange(spellLevel, entity);
+        Vec3 start = entity.getEyePosition();
+        Vec3 end = start.add(entity.getForward().scale(range));
+        AABB boundingBox = entity.getBoundingBox().expandTowards(end.subtract(start));
+
+        List<? extends Entity> entities = level.getEntities(entity, boundingBox);
+        for (Entity target : entities) {
+            HitResult hit = Utils.checkEntityIntersecting(target, start, end, .4f);
+            if (hit.getType() != HitResult.Type.MISS) {
+                DamageSources.applyDamage(target, getDamage(spellLevel, entity), getDamageSource(entity));
             }
         }
-        float distance = (float) hitResult.distanceTo(entity);
+
         Vec3 vec3 = entity.getLookAngle().normalize();
-        for (int i = 0; i < distance; i++) {
+        for (int i = 0; i < range; i++) {
             var vec32 = vec3.scale(i).add(entity.getEyePosition());
             MagicManager.spawnParticles(level, ParticleTypes.SONIC_BOOM, vec32.x, vec32.y, vec32.z, 1, 0, 0, 0, 0, false);
         }
