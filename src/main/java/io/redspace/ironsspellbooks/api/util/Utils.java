@@ -363,6 +363,13 @@ public class Utils {
         return false;
     }
 
+    /**
+     * @return min(|A|, |B|) with sign of a
+     */
+    public static double signedMin(double a, double b) {
+        return (a < 0 ? -1 : 1) * Math.min(Math.abs(a), Math.abs(b));
+    }
+
     public static boolean serverSideInitiateQuickCast(ServerPlayer serverPlayer, int slot) {
         var spellSelection = new SpellSelectionManager(serverPlayer).getSpellSlot(slot);
         if (spellSelection != null) {

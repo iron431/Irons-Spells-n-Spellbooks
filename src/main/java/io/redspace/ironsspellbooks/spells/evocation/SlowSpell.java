@@ -41,10 +41,10 @@ public class SlowSpell extends AbstractSpell {
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.UNCOMMON)
+            .setMinRarity(SpellRarity.EPIC)
             .setSchoolResource(SchoolRegistry.EVOCATION_RESOURCE)
-            .setMaxLevel(6)
-            .setCooldownSeconds(45)
+            .setMaxLevel(4)
+            .setCooldownSeconds(80)
             .build();
 
     public SlowSpell() {
