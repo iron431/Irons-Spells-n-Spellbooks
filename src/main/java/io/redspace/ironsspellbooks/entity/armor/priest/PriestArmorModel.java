@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.entity.armor;
+package io.redspace.ironsspellbooks.entity.armor.priest;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.PriestArmorItem;
@@ -25,10 +25,4 @@ public class PriestArmorModel extends DefaultedItemGeoModel<PriestArmorItem> {
     public ResourceLocation getAnimationResource(PriestArmorItem animatable) {
         return new ResourceLocation(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
-//    public static String listOfBonesToString(List<IBone> list){
-//        String s = "";
-//        for (IBone o:list)
-//            s += o.getName()+", ";
-//        return s;
-//    }
 }

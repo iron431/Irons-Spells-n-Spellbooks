@@ -170,7 +170,7 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> RAW_MITHRIL = ITEMS.register("raw_mithril", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.RARE)));
     public static final DeferredHolder<Item, Item> MITHRIL_SCRAP = ITEMS.register("mithril_scrap", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.RARE)));
     public static final DeferredHolder<Item, Item> MITHRIL_INGOT = ITEMS.register("mithril_ingot", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.RARE)/*.component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)*/));
-//    public static final DeferredHolder<Item, Item> MITHRIL_WEAVE = ITEMS.register("mithril_weave", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.RARE)/*.component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)*/));
+    public static final DeferredHolder<Item, Item> MITHRIL_WEAVE = ITEMS.register("mithril_weave", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.RARE)/*.component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)*/));
 
     public static final DeferredHolder<Item, Item> WEAPON_PARTS = ITEMS.register("weapon_parts", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.RARE)/*.component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)*/));
 
@@ -249,7 +249,8 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> NETHERITE_MAGE_LEGGINGS = ITEMS.register("netherite_mage_leggings", () -> new NetheriteMageArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment(1).fireResistant().durability(ArmorItem.Type.LEGGINGS.getDurability(37))));
     public static final DeferredHolder<Item, Item> NETHERITE_MAGE_BOOTS = ITEMS.register("netherite_mage_boots", () -> new NetheriteMageArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment(1).fireResistant().durability(ArmorItem.Type.BOOTS.getDurability(37))));
 
-//    public static final DeferredHolder<Item, Item> PALADIN_CHESTPLATE = ITEMS.register("paladin_chestplate", () -> new PaladinArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment(1).fireResistant().durability(ArmorItem.Type.CHESTPLATE.getDurability(37))));
+    public static final DeferredHolder<Item, Item> PALADIN_CHESTPLATE = ITEMS.register("paladin_chestplate", () -> new PaladinArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment(1).rarity(Rarity.EPIC).fireResistant().durability(ArmorItem.Type.CHESTPLATE.getDurability(37))));
+    public static final DeferredHolder<Item, Item> BOOTS_OF_SPEED = ITEMS.register("speed_boots", () -> new BootsOfSpeedArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment(1).rarity(Rarity.EPIC).fireResistant().durability(ArmorItem.Type.BOOTS.getDurability(37))));
 
     public static final DeferredHolder<Item, Item> TARNISHED_CROWN = ITEMS.register("tarnished_helmet", () -> new TarnishedCrownArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment(1).rarity(Rarity.UNCOMMON).durability(ArmorItem.Type.HELMET.getDurability(26))));
     public static final DeferredHolder<Item, Item> DEV_CROWN = ITEMS.register("gold_crown", () -> new GoldCrownArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.hidden(1).rarity(Rarity.EPIC)));

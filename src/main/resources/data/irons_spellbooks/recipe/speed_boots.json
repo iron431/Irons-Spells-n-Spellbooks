@@ -1,23 +1,22 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "G G",
-    "WAW",
-    "GWG"
+    "FWF",
+    " A "
   ],
   "key": {
     "A": {
-      "item": "irons_spellbooks:priest_chestplate"
+      "item": "irons_spellbooks:archevoker_boots"
     },
     "W": {
       "item": "irons_spellbooks:mithril_weave"
     },
-    "G": {
-      "tag": "c:ingots/gold"
+    "F": {
+      "item": "minecraft:feather"
     }
   },
   "result": {
-    "id": "irons_spellbooks:paladin_chestplate",
+    "id": "irons_spellbooks:speed_boots",
     "count": 1
   }
 }
