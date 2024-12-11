@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
 
 import org.joml.Vector3f;
-import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
 
 import java.util.HashMap;
@@ -14,14 +13,8 @@ public class TransformStack {
     private final Map<GeoBone, Stack<Vector3f>> rotationStack = new HashMap<>();
     private boolean needsReset;
 
-    public Stack<Vector3f> create(Vector3f defaultValue) {
-        var stack = new Stack<Vector3f>();
-        stack.push(defaultValue);
-        return stack;
-    }
-
     public void pushPosition(GeoBone bone, Vector3f appendVec) {
-        var stack = positionStack.getOrDefault(bone, create(bone.getPositionVector().get(new Vector3f())));
+        var stack = positionStack.getOrDefault(bone, new Stack<>());
         stack.push(appendVec);
         positionStack.put(bone, stack);
     }
@@ -31,7 +24,7 @@ public class TransformStack {
     }
 
     public void pushRotation(GeoBone bone, Vector3f appendVec) {
-        var stack = rotationStack.getOrDefault(bone, create(bone.getRotationVector().get(new Vector3f())));
+        var stack = rotationStack.getOrDefault(bone, new Stack<>());
         stack.push(appendVec);
         rotationStack.put(bone, stack);
     }
@@ -40,20 +33,13 @@ public class TransformStack {
         pushRotation(bone, new Vector3f(x, y, z));
     }
 
-    public void popStack(AnimationState<?> animationState) {
-        var bonesBeingAnimated = animationState.getController().getBoneAnimationQueues().keySet();
+    public void popStack() {
         positionStack.forEach((bone, stack) -> {
-            if (!bonesBeingAnimated.contains(bone.getName())) {
-                stack.removeFirst();
-            }
             Vector3f position = new Vector3f(0, 0, 0);
             stack.forEach(position::add);
             setPosImpl(bone, position);
         });
         rotationStack.forEach((bone, stack) -> {
-            if (!bonesBeingAnimated.contains(bone.getName())) {
-                stack.removeFirst();
-            }
             Vector3f rotation = new Vector3f(0, 0, 0);
             stack.forEach(rotation::add);
             setRotImpl(bone, rotation);
