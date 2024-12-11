@@ -35,12 +35,12 @@ public class TransformStack {
 
     public void popStack() {
         positionStack.forEach((bone, stack) -> {
-            Vector3f position = new Vector3f(0, 0, 0);
+            Vector3f position = bone.getPositionVector().get(new Vector3f());
             stack.forEach(position::add);
             setPosImpl(bone, position);
         });
         rotationStack.forEach((bone, stack) -> {
-            Vector3f rotation = new Vector3f(0, 0, 0);
+            Vector3f rotation = bone.getRotationVector().get(new Vector3f(0, 0, 0));
             stack.forEach(rotation::add);
             setRotImpl(bone, rotation);
         });

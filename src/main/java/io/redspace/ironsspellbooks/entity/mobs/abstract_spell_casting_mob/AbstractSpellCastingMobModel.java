@@ -83,6 +83,7 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
             GeoBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
             GeoBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
             GeoBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
+            List<GeoBone> bones = List.of(head, body, torso, rightArm, leftArm, rightLeg, leftLeg);
 
         /*
             Head Controls
