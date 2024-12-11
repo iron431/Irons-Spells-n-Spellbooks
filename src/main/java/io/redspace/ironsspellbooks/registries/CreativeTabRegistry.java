@@ -100,6 +100,8 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.NETHERITE_MAGE_CHESTPLATE.get());
                 entries.accept(ItemRegistry.NETHERITE_MAGE_LEGGINGS.get());
                 entries.accept(ItemRegistry.NETHERITE_MAGE_BOOTS.get());
+                entries.accept(ItemRegistry.PALADIN_CHESTPLATE.get());
+                entries.accept(ItemRegistry.BOOTS_OF_SPEED.get());
                 entries.accept(ItemRegistry.TARNISHED_CROWN.get());
                 entries.accept(ItemRegistry.HITHER_THITHER_WAND.get());
 

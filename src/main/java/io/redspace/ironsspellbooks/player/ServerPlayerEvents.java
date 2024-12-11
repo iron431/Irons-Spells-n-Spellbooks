@@ -314,12 +314,15 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onLivingDeathEvent(LivingDeathEvent event) {
-        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            Utils.serverSideCancelCast(serverPlayer);
-            MagicData.getPlayerMagicData(serverPlayer).getPlayerRecasts().removeAll(RecastResult.DEATH);
-            serverPlayer.getActiveEffects().forEach(mobEffectInstance -> {
+        var entity = event.getEntity();
+        if(!entity.level.isClientSide){
+            if (entity instanceof ServerPlayer serverPlayer) {
+                Utils.serverSideCancelCast(serverPlayer);
+                MagicData.getPlayerMagicData(serverPlayer).getPlayerRecasts().removeAll(RecastResult.DEATH);
+            }
+            entity.getActiveEffects().forEach(mobEffectInstance -> {
                 if (mobEffectInstance.getEffect().value() instanceof IMobEffectEndCallback callback) {
-                    callback.onEffectRemoved(serverPlayer, mobEffectInstance.getAmplifier());
+                    callback.onEffectRemoved(entity, mobEffectInstance.getAmplifier());
                 }
             });
         }

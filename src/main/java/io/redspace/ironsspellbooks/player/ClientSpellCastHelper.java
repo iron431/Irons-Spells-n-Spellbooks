@@ -202,7 +202,6 @@ public class ClientSpellCastHelper {
                         IronsAdjustmentModifier.INSTANCE.fadeOut(5);
                     }
                 };
-//                ClientMagicData.castingAnimationPlayerLookup.put(player.getUUID(), animation);
                 var armsFlag = SHOW_FIRST_PERSON_ARMS.get();
                 var itemsFlag = SHOW_FIRST_PERSON_ITEMS.get();
                 if (armsFlag || itemsFlag) {
