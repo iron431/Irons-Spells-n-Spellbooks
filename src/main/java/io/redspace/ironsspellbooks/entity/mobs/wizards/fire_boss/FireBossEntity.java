@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
@@ -26,6 +27,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.animation.*;
 
@@ -78,7 +80,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.goalSelector.addGoal(1, new FloatGoal(this));
         this.goalSelector.addGoal(3, new GenericAnimatedWarlockAttackGoal<>(this, 1.25f, 50, 75, 3f)
                 .setMoveset(List.of(
-                        new AttackAnimationData(40, -2, "test", 20)
+                        new AttackAnimationData(40, new Vec3(0, .3, -2), "scythe_backpedal", 20)
                 ))
                 .setComboChance(.4f)
                 .setMeleeAttackInverval(10, 30)
@@ -115,11 +117,17 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     public static AttributeSupplier.Builder prepareAttributes() {
         return LivingEntity.createLivingAttributes()
-                .add(Attributes.ATTACK_DAMAGE, 3.0)
-                .add(Attributes.ATTACK_KNOCKBACK, 0.0)
-                .add(Attributes.MAX_HEALTH, 60.0)
-                .add(Attributes.FOLLOW_RANGE, 24.0)
-                .add(Attributes.MOVEMENT_SPEED, .25);
+                .add(Attributes.ATTACK_DAMAGE, 10.0)
+                .add(AttributeRegistry.SPELL_POWER, 1.15)
+                .add(Attributes.ARMOR, 15)
+                .add(AttributeRegistry.SPELL_RESIST, 1)
+                .add(Attributes.MAX_HEALTH, 400.0)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
+                .add(Attributes.ATTACK_KNOCKBACK, .6)
+                .add(Attributes.FOLLOW_RANGE, 32.0)
+                .add(Attributes.SCALE, 1.25)
+                .add(Attributes.GRAVITY, 0.03)
+                .add(Attributes.MOVEMENT_SPEED, .155);
     }
 
     RawAnimation animationToPlay = null;

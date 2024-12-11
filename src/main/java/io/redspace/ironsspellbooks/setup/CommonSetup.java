@@ -17,6 +17,7 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.alchemist.ApothecaristEnt
 import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cultist.CultistEntity;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.FireBossEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.priest.PriestEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import io.redspace.ironsspellbooks.entity.spells.root.RootEntity;
@@ -25,7 +26,6 @@ import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacle;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.world.entity.SpawnPlacementTypes;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.PolarBear;
 import net.minecraft.world.entity.monster.Vindicator;
 import net.minecraft.world.entity.monster.Zombie;
@@ -83,7 +83,7 @@ public class CommonSetup {
         event.put(EntityRegistry.FIREFLY_SWARM.get(), WispEntity.prepareAttributes().build());
         event.put(EntityRegistry.APOTHECARIST.get(), ApothecaristEntity.prepareAttributes().build());
         event.put(EntityRegistry.CULTIST.get(), CultistEntity.prepareAttributes().build());
-        event.put(EntityRegistry.FIRE_BOSS.get(), DeadKingBoss.prepareAttributes().add(Attributes.SCALE,1.25).build());
+        event.put(EntityRegistry.FIRE_BOSS.get(), FireBossEntity.prepareAttributes().build());
     }
 
     @SubscribeEvent

@@ -1,24 +1,26 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
+import net.minecraft.world.phys.Vec3;
+
 public class AttackAnimationData {
     //public final int id;
     public final int lengthInTicks;
     public final String animationId;
     public final int[] attackTimestamps;
-    public final float lungeStrength;
+    public final Vec3 lungeVector;
 
     public AttackAnimationData(int lengthInTicks, String animationId, int... attackTimestamps) {
         this.animationId = animationId;
         this.lengthInTicks = lengthInTicks;
         this.attackTimestamps = attackTimestamps;
-        this.lungeStrength = .45f;
+        this.lungeVector = new Vec3(0,0,.45f);
     }
 
-    public AttackAnimationData(int lengthInTicks, float lungeStrength, String animationId, int... attackTimestamps) {
+    public AttackAnimationData(int lengthInTicks, Vec3 lungeVector, String animationId, int... attackTimestamps) {
         this.animationId = animationId;
         this.lengthInTicks = lengthInTicks;
         this.attackTimestamps = attackTimestamps;
-        this.lungeStrength = lungeStrength;
+        this.lungeVector = lungeVector;
     }
 
     /**

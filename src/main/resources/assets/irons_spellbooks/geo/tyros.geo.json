@@ -151,32 +151,9 @@
 					"parent": "right_arm",
 					"pivot": [-6, 15, -1],
 					"cubes": [
-						{"origin": [-6, 14, -15], "size": [1, 3, 17], "inflate": 0.25, "uv": [27, 19]},
 						{
 							"origin": [-6, 15, -1],
 							"size": [0, 0, 0],
-							"uv": {
-								"north": {"uv": [0, 0], "uv_size": [0, 0]},
-								"east": {"uv": [0, 0], "uv_size": [0, 0]},
-								"south": {"uv": [0, 0], "uv_size": [0, 0]},
-								"west": {"uv": [0, 0], "uv_size": [0, 0]},
-								"up": {"uv": [0, 0], "uv_size": [0, 0]},
-								"down": {"uv": [0, 0], "uv_size": [0, 0]}
-							}
-						}
-					]
-				},
-				{
-					"name": "rightItem",
-					"parent": "right_arm",
-					"pivot": [-6, 14, 0],
-					"rotation": [-90, 0, 0],
-					"cubes": [
-						{
-							"origin": [-6, 14, 0],
-							"size": [0, 0, 0],
-							"pivot": [-6, 14, 0],
-							"rotation": [-90, 0, 0],
 							"uv": {
 								"north": {"uv": [0, 0], "uv_size": [0, 0]},
 								"east": {"uv": [0, 0], "uv_size": [0, 0]},

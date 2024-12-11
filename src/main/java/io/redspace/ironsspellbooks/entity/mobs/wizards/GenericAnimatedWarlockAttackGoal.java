@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards;
 
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.goals.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WarlockAttackGoal;
@@ -46,7 +47,8 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
             meleeAnimTimer--;
             if (currentAttack.isHitFrame(meleeAnimTimer)) {
                 playSwingSound();
-                Vec3 lunge = target.position().subtract(mob.position()).normalize().scale(currentAttack.lungeStrength);
+
+                Vec3 lunge = currentAttack.lungeVector.yRot(-Utils.getAngle(mob.getX(), mob.getZ(), target.getX(), target.getZ()) - Mth.HALF_PI);
                 mob.push(lunge.x, lunge.y, lunge.z);
 
                 if (distanceSquared <= meleeRange * meleeRange) {
