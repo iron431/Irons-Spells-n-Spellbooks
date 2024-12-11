@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobRenderer;
@@ -10,7 +9,6 @@ import io.redspace.ironsspellbooks.util.DefaultBipedBoneIdents;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.util.Mth;
@@ -21,7 +19,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.SwordItem;
 import software.bernie.geckolib.animatable.GeoAnimatable;
-import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
@@ -213,16 +210,5 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
         poseStack.translate(0.0F, -1.501F, 0.0F);
         this.hardCodedCapeLayer.render(poseStack, bufferSource, packedLight, entity, 0, 0, partialTick, 0, 0, 0);
         poseStack.popPose();
-    }
-
-    @Override
-    public void actuallyRender(PoseStack poseStack, T entity, BakedGeoModel model, @org.jetbrains.annotations.Nullable RenderType renderType, MultiBufferSource bufferSource, @org.jetbrains.annotations.Nullable VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
-        super.actuallyRender(poseStack, entity, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
-
-    }
-
-    @Override
-    public void applyRenderLayers(PoseStack poseStack, T entity, BakedGeoModel model, @org.jetbrains.annotations.Nullable RenderType renderType, MultiBufferSource bufferSource, @org.jetbrains.annotations.Nullable VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
-        super.applyRenderLayers(poseStack, entity, model, renderType, bufferSource, buffer, partialTick, packedLight, packedOverlay);
     }
 }
