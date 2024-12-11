@@ -46,7 +46,7 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
         }
         if (entity.getMainHandItem().is(ItemRegistry.HELLRAZOR)) {
             GeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
-            Vector3f armPose = new Vector3f(40, -34, 40);
+            Vector3f armPose = new Vector3f(-30, -30, 10);
             armPose.mul(Mth.DEG_TO_RAD * (1 - isAnimatingLerp));
             transformStack.pushRotation(rightArm, armPose);
         }

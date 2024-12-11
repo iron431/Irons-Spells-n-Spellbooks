@@ -10775,7 +10775,7 @@
 			}
 		},
 		"scythe_backpedal": {
-			"animation_length": 2.2917,
+			"animation_length": 1.9583,
 			"bones": {
 				"torso": {
 					"rotation": {
@@ -10953,10 +10953,6 @@
 						"1.9583": {
 							"vector": [-9.68212, 39.53831, 27.34902],
 							"easing": "easeOutQuad"
-						},
-						"2.2917": {
-							"vector": [0, 0, 0],
-							"easing": "easeInOutSine"
 						}
 					},
 					"position": {
@@ -10980,10 +10976,6 @@
 						"1.9583": {
 							"vector": [0, 0, 0],
 							"easing": "easeOutQuad"
-						},
-						"2.2917": {
-							"vector": [0, 0, 0],
-							"easing": "easeInOutSine"
 						}
 					}
 				},
@@ -11004,10 +10996,6 @@
 						},
 						"1.9583": {
 							"vector": [10.13101, 24.37044, -24.64536]
-						},
-						"2.2917": {
-							"vector": [0, 0, 0],
-							"easing": "easeInOutSine"
 						}
 					},
 					"position": {
@@ -11023,10 +11011,6 @@
 						},
 						"1.9583": {
 							"vector": [0, -1, 1]
-						},
-						"2.2917": {
-							"vector": [0, 0, 0],
-							"easing": "easeInOutSine"
 						}
 					}
 				},
@@ -11043,7 +11027,7 @@
 							"vector": [0, 25, -80],
 							"easing": "easeInOutQuad"
 						},
-						"2.0": {
+						"1.9583": {
 							"vector": [0, 0, 0],
 							"easing": "easeInOutQuad"
 						}

@@ -161,6 +161,6 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     @Override
     public boolean isAnimating() {
-        return meleeController.getAnimationState() != AnimationController.State.STOPPED || super.isAnimating();
+        return meleeController.getAnimationState() == AnimationController.State.RUNNING || super.isAnimating();
     }
 }
