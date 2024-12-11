@@ -3,14 +3,10 @@ package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobModel;
-import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.joml.Vector3f;
 import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.cache.object.GeoBone;
 
 public class FireBossModel extends AbstractSpellCastingMobModel {
     public static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/tyros.png");
@@ -34,22 +30,22 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
 
     @Override
     public void setCustomAnimations(AbstractSpellCastingMob entity, long instanceId, AnimationState<AbstractSpellCastingMob> animationState) {
+//        if (Minecraft.getInstance().isPaused()) {
+//            return;
+//        }
+//        float partialTick = animationState.getPartialTick();
+//        if (entity.isAnimating()) {
+//            isAnimatingLerp = Mth.lerp(.2f * partialTick, isAnimatingLerp, 1);
+//        } else {
+//            isAnimatingLerp = Mth.lerp(.2f * partialTick, isAnimatingLerp, 0);
+//        }
+//        if (entity.getMainHandItem().is(ItemRegistry.HELLRAZOR)) {
+//            GeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
+//            Vector3f armPose = new Vector3f(-30, -30, 10);
+//            armPose.mul(Mth.DEG_TO_RAD * (1 - isAnimatingLerp));
+//            transformStack.pushRotation(rightArm, armPose);
+//        }
         super.setCustomAnimations(entity, instanceId, animationState);
-        if (Minecraft.getInstance().isPaused()) {
-            return;
-        }
-        float partialTick = animationState.getPartialTick();
-        if (entity.isAnimating()) {
-            isAnimatingLerp = Mth.lerp(.2f * partialTick, isAnimatingLerp, 1);
-        } else {
-            isAnimatingLerp = Mth.lerp(.2f * partialTick, isAnimatingLerp, 0);
-        }
-        if (entity.getMainHandItem().is(ItemRegistry.HELLRAZOR)) {
-            GeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
-            Vector3f armPose = new Vector3f(-30, -30, 10);
-            armPose.mul(Mth.DEG_TO_RAD * (1 - isAnimatingLerp));
-            transformStack.pushRotation(rightArm, armPose);
-        }
     }
     //    @Override
 //    protected Vector2f getLimbSwing(AbstractSpellCastingMob entity, WalkAnimationState walkAnimationState, float partialTick) {

@@ -33,10 +33,25 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
         return AbstractSpellCastingMob.animationInstantCast;
     }
 
+    boolean a, b;
+
     @Override
     public void setCustomAnimations(AbstractSpellCastingMob entity, long instanceId, AnimationState<AbstractSpellCastingMob> animationState) {
         super.setCustomAnimations(entity, instanceId, animationState);
-
+//
+//        a = entity.onGround();
+//        if (a != b) {
+//            this.getAnimationProcessor().getBone(PartNames.HEAD).setRotY(5);
+//        }
+//        b = a;
+//        var bone = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
+//        transformStack.pushRotation(bone,Mth.sin((entity.tickCount + animationState.getPartialTick())),0,0);
+//        transformStack.popStack(animationState);
+//
+//
+//        if (true) {
+//            return;
+//        }
         if (Minecraft.getInstance().isPaused() || !entity.shouldBeExtraAnimated())
             return;
 
@@ -111,8 +126,8 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
             Arm Controls
          */
         if (!entity.isAnimating()) {
-            transformStack.pushRotationWithBase(rightArm, Mth.cos(limbSwingSpeed * 0.6662F + (float) Math.PI) * 2.0F * limbSwingAmount * 0.5F, 0, 0);
-            transformStack.pushRotationWithBase(leftArm, Mth.cos(limbSwingSpeed * 0.6662F) * 2.0F * limbSwingAmount * 0.5F, 0, 0);
+            transformStack.pushRotation(rightArm, Mth.cos(limbSwingSpeed * 0.6662F + (float) Math.PI) * 2.0F * limbSwingAmount * 0.5F, 0, 0);
+            transformStack.pushRotation(leftArm, Mth.cos(limbSwingSpeed * 0.6662F) * 2.0F * limbSwingAmount * 0.5F, 0, 0);
             bobBone(rightArm, entity.tickCount, 1);
             bobBone(leftArm, entity.tickCount, -1);
             if (entity.isDrinkingPotion()) {
@@ -124,7 +139,7 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
             }
         }
 
-        transformStack.popStack();
+        transformStack.popStack(animationState);
     }
 
     protected void resetSnapshot(GeoBone bone) {

@@ -423,7 +423,6 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     private AbstractSpell instantCastSpellType = SpellRegistry.none();
     private boolean cancelCastAnimation = false;
     private boolean animatingLegs = false;
-    private final RawAnimation idle = RawAnimation.begin().thenLoop("blank");
     private final AnimationController animationControllerOtherCast = new AnimationController(this, "other_casting", 0, this::otherCastingPredicate);
     private final AnimationController animationControllerInstantCast = new AnimationController(this, "instant_casting", 0, this::instantCastingPredicate);
     private final AnimationController animationControllerLongCast = new AnimationController(this, "long_casting", 0, this::longCastingPredicate);
@@ -449,11 +448,6 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         controllerRegistrar.add(animationControllerInstantCast);
         controllerRegistrar.add(animationControllerLongCast);
         //controllerRegistrar.add(new AnimationController(this, "idle", 0, this::idlePredicate));
-    }
-
-    private PlayState idlePredicate(AnimationState event) {
-        event.getController().setAnimation(idle);
-        return PlayState.STOP;
     }
 
     private PlayState instantCastingPredicate(AnimationState event) {
