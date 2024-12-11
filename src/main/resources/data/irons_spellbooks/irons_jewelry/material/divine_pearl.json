@@ -1,0 +1,34 @@
+{
+  "descriptionId": "material.irons_spellbooks.divine_pearl",
+  "ingredient": {
+    "item": "irons_spellbooks:divine_pearl"
+  },
+  "materialType": [
+    "gem"
+  ],
+  "paletteLocation": "irons_spellbooks:palettes/divine_pearl",
+  "quality": 1,
+  "bonusParameters": {
+    "irons_jewelry:attribute": {
+      "attribute": "irons_spellbooks:casting_movespeed",
+      "amount": 0.10,
+      "operation": "add_multiplied_total"
+    },
+    "irons_jewelry:negative_effect": {
+      "effect": "irons_spellbooks:rend"
+    },
+    "irons_jewelry:positive_effect": {
+      "effect": "irons_spellbooks:fortify"
+    },
+    "irons_jewelry:action": {
+      "targetSelf": true,
+      "action": {
+        "type": "irons_jewelry:heal",
+        "amount": {
+          "base": 4.0,
+          "scalar": 2.0
+        }
+      }
+    }
+  }
+}

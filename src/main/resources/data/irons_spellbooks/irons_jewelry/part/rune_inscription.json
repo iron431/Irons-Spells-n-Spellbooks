@@ -1,0 +1,8 @@
+{
+  "descriptionId": "part.irons_spellbooks.rune_inscription",
+  "allowedMaterialTypes": [
+    "spellbooks_rune"
+  ],
+  "paletteKey": "irons_spellbooks:palettes/rune_key",
+  "baseTextureLocation": "irons_spellbooks:item/irons_jewelry/rune_inscription"
+}

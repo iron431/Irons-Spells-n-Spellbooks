@@ -122,6 +122,8 @@ dependencies {
 
     localRuntime "curse.maven:placebo-${placebo_version}"
     localRuntime "curse.maven:apothic-attributes-898963:5597608"
+    implementation "curse.maven:irons-jewelry-1101111:5943490"
+    implementation "curse.maven:atlas-api-1145462:5940096"
 //    localRuntime "curse.maven:apotheosis-${apotheosis_version}"
 //    localRuntime "curse.maven:apothic-curios-950712:5108911"
 
