@@ -46,7 +46,7 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
             meleeAnimTimer--;
             if (currentAttack.isHitFrame(meleeAnimTimer)) {
                 playSwingSound();
-                Vec3 lunge = target.position().subtract(mob.position()).normalize().scale(.45f);
+                Vec3 lunge = target.position().subtract(mob.position()).normalize().scale(currentAttack.lungeStrength);
                 mob.push(lunge.x, lunge.y, lunge.z);
 
                 if (distanceSquared <= meleeRange * meleeRange) {

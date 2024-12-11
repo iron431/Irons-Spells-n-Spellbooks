@@ -31,6 +31,7 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.alchemist.ApothecaristRen
 import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cultist.CultistRenderer;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.FireBossRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.priest.PriestRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerRenderer;
 import io.redspace.ironsspellbooks.entity.spells.acid_orb.AcidOrbRenderer;
@@ -292,6 +293,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.CULTIST.get(), CultistRenderer::new);
         event.registerEntityRenderer(EntityRegistry.BALL_LIGHTNING.get(), BallLightningRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ICE_SPIKE.get(), IceSpikeRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.FIRE_BOSS.get(), FireBossRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);

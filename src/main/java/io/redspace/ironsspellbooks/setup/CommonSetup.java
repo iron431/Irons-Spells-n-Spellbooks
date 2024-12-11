@@ -25,6 +25,7 @@ import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacle;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.world.entity.SpawnPlacementTypes;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.PolarBear;
 import net.minecraft.world.entity.monster.Vindicator;
 import net.minecraft.world.entity.monster.Zombie;
@@ -82,6 +83,7 @@ public class CommonSetup {
         event.put(EntityRegistry.FIREFLY_SWARM.get(), WispEntity.prepareAttributes().build());
         event.put(EntityRegistry.APOTHECARIST.get(), ApothecaristEntity.prepareAttributes().build());
         event.put(EntityRegistry.CULTIST.get(), CultistEntity.prepareAttributes().build());
+        event.put(EntityRegistry.FIRE_BOSS.get(), DeadKingBoss.prepareAttributes().add(Attributes.SCALE,1.25).build());
     }
 
     @SubscribeEvent

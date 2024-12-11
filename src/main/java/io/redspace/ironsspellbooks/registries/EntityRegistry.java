@@ -13,6 +13,7 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.alchemist.ApothecaristEnt
 import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cultist.CultistEntity;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.FireBossEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.priest.PriestEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import io.redspace.ironsspellbooks.entity.spells.*;
@@ -287,6 +288,12 @@ public class EntityRegistry {
                     .sized(.85f, 2.3f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "citadel_keeper").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<FireBossEntity>> FIRE_BOSS =
+            ENTITIES.register("fire_boss", () -> EntityType.Builder.<FireBossEntity>of(FireBossEntity::new, MobCategory.MONSTER)
+                    .sized(.85f, 2.3f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "fire_boss").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<VoidTentacle>> SCULK_TENTACLE =
             ENTITIES.register("sculk_tentacle", () -> EntityType.Builder.<VoidTentacle>of(VoidTentacle::new, MobCategory.MISC)
