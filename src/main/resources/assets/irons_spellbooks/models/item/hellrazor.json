@@ -1,5 +1,5 @@
 {
-  "parent": "irons_spellbooks:item/template_large_sword",
+  "parent": "irons_spellbooks:item/template_verylarge_sword",
   "textures": {
     "layer0": "irons_spellbooks:item/hellrazor"
   }

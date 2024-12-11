@@ -149,7 +149,7 @@
 				{
 					"name": "bipedHandRight",
 					"parent": "right_arm",
-					"pivot": [-6, 15, -1],
+					"pivot": [-6, 13, -1],
 					"cubes": [
 						{
 							"origin": [-6, 15, -1],
@@ -189,7 +189,7 @@
 				{
 					"name": "bipedHandLeft",
 					"parent": "left_arm",
-					"pivot": [6, 14, -1],
+					"pivot": [6, 13, -1],
 					"cubes": [
 						{
 							"origin": [6, 14, -1],

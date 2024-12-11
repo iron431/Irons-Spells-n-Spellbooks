@@ -55,15 +55,14 @@ public class TransformStack {
     }
 
     public void setRotImpl(GeoBone bone, Vector3f vector3f) {
-        bone.setRotX(wrapRadians(vector3f.x()));
-        bone.setRotY(wrapRadians(vector3f.y()));
-        bone.setRotZ(wrapRadians(vector3f.z()));
+        bone.getInitialSnapshot().updateRotation(
+                wrapRadians(vector3f.x()),
+                wrapRadians(vector3f.y()),
+                wrapRadians(vector3f.z()));
     }
 
     public void setPosImpl(GeoBone bone, Vector3f vector3f) {
-        bone.setPosX(vector3f.x());
-        bone.setPosY(vector3f.y());
-        bone.setPosZ(vector3f.z());
+        bone.getInitialSnapshot().updateOffset(vector3f.x, vector3f.y, vector3f.z);
     }
 
     public static float wrapRadians(float pValue) {

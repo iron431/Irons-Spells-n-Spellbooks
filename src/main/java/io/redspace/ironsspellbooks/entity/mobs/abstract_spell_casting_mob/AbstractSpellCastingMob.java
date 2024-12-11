@@ -439,11 +439,16 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     }
 
     @Override
+    public double getBoneResetTime() {
+        return 5;
+    }
+
+    @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
         controllerRegistrar.add(animationControllerOtherCast);
         controllerRegistrar.add(animationControllerInstantCast);
         controllerRegistrar.add(animationControllerLongCast);
-        controllerRegistrar.add(new AnimationController(this, "idle", 0, this::idlePredicate));
+        //controllerRegistrar.add(new AnimationController(this, "idle", 0, this::idlePredicate));
     }
 
     private PlayState idlePredicate(AnimationState event) {

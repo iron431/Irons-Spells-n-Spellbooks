@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.WalkAnimationState;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector2f;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
@@ -68,30 +69,10 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
         /*
             Crazy Vanilla Magic Calculations (LivingEntityRenderer:116 & HumanoidModel#setupAnim
          */
-        WalkAnimationState walkAnimationState = entity.walkAnimation;
-        float pLimbSwingAmount = 0.0F;
-        float pLimbSwing = 0.0F;
-        if (entity.isAlive()) {
-            pLimbSwingAmount = walkAnimationState.speed(partialTick);
-            pLimbSwing = walkAnimationState.position(partialTick);
-            if (entity.isBaby()) {
-                pLimbSwing *= 3.0F;
-            }
+        Vector2f limbSwing = getLimbSwing(entity, entity.walkAnimation, partialTick);
+        float limbSwingAmount = limbSwing.x;
+        float limbSwingSpeed = limbSwing.y;
 
-            if (pLimbSwingAmount > 1.0F) {
-                pLimbSwingAmount = 1.0F;
-            }
-        }
-        float f = 1.0F;
-        if (entity.getFallFlyingTicks() > 4) {
-            f = (float) entity.getDeltaMovement().lengthSqr();
-            f /= 0.2F;
-            f *= f * f;
-        }
-
-        if (f < 1.0F) {
-            f = 1.0F;
-        }
         /*
             Leg Controls
          */
@@ -114,24 +95,24 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
             Vec3 facingOrth = new Vec3(-facing.z, 0, facing.x);
             float directionForward = (float) facing.dot(momentum);
             float directionSide = (float) facingOrth.dot(momentum) * .35f; //scale side to side movement so they dont rip off thier own legs
-            float rightLateral = -Mth.sin(pLimbSwing * 0.6662F) * 4 * pLimbSwingAmount;
-            float leftLateral = -Mth.sin(pLimbSwing * 0.6662F - Mth.PI) * 4 * pLimbSwingAmount;
-            transformStack.pushPosition(rightLeg, rightLateral * directionSide, Mth.cos(pLimbSwing * 0.6662F) * 4 * strength * pLimbSwingAmount, rightLateral * directionForward);
-            transformStack.pushRotation(rightLeg, Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount * strength, 0, 0);
+            float rightLateral = -Mth.sin(limbSwingSpeed * 0.6662F) * 4 * limbSwingAmount;
+            float leftLateral = -Mth.sin(limbSwingSpeed * 0.6662F - Mth.PI) * 4 * limbSwingAmount;
+            transformStack.pushPosition(rightLeg, rightLateral * directionSide, Mth.cos(limbSwingSpeed * 0.6662F) * 4 * strength * limbSwingAmount, rightLateral * directionForward);
+            transformStack.pushRotation(rightLeg, Mth.cos(limbSwingSpeed * 0.6662F) * 1.4F * limbSwingAmount * strength, 0, 0);
 
-            transformStack.pushPosition(leftLeg, leftLateral * directionSide, Mth.cos(pLimbSwing * 0.6662F - Mth.PI) * 4 * strength * pLimbSwingAmount, leftLateral * directionForward);
-            transformStack.pushRotation(leftLeg, Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 1.4F * pLimbSwingAmount * strength, 0, 0);
+            transformStack.pushPosition(leftLeg, leftLateral * directionSide, Mth.cos(limbSwingSpeed * 0.6662F - Mth.PI) * 4 * strength * limbSwingAmount, leftLateral * directionForward);
+            transformStack.pushRotation(leftLeg, Mth.cos(limbSwingSpeed * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount * strength, 0, 0);
 
             if (entity.bobBodyWhileWalking()) {
-                transformStack.pushPosition(body, 0, Mth.abs(Mth.cos((pLimbSwing * 1.2662F - Mth.PI * .5f) * .5f)) * 2 * strength * pLimbSwingAmount, 0);
+                transformStack.pushPosition(body, 0, Mth.abs(Mth.cos((limbSwingSpeed * 1.2662F - Mth.PI * .5f) * .5f)) * 2 * strength * limbSwingAmount, 0);
             }
         }
         /*
             Arm Controls
          */
         if (!entity.isAnimating()) {
-            transformStack.pushRotationWithBase(rightArm, Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 2.0F * pLimbSwingAmount * 0.5F / f, 0, 0);
-            transformStack.pushRotationWithBase(leftArm, Mth.cos(pLimbSwing * 0.6662F) * 2.0F * pLimbSwingAmount * 0.5F / f, 0, 0);
+            transformStack.pushRotationWithBase(rightArm, Mth.cos(limbSwingSpeed * 0.6662F + (float) Math.PI) * 2.0F * limbSwingAmount * 0.5F, 0, 0);
+            transformStack.pushRotationWithBase(leftArm, Mth.cos(limbSwingSpeed * 0.6662F) * 2.0F * limbSwingAmount * 0.5F, 0, 0);
             bobBone(rightArm, entity.tickCount, 1);
             bobBone(leftArm, entity.tickCount, -1);
             if (entity.isDrinkingPotion()) {
@@ -141,33 +122,40 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
                         (entity.isLeftHanded() ? 15 : -15) * Mth.DEG_TO_RAD
                 );
             }
-        } else if (entity.shouldPointArmsWhileCasting() && entity.isCasting()) {
-//            if (testsnapshot1 == null) {
-//                IronsSpellbooks.LOGGER.debug("setting bone snapshot");
-//                testsnapshot1 = rightArm.saveSnapshot();
-//                testsnapshot2 = leftArm.saveSnapshot();
-//            }
-//            transformStack.pushRotation(rightArm, -entity.getXRot() * Mth.DEG_TO_RAD + testsnapshot1.getRotX(), testsnapshot1.getRotY(), testsnapshot1.getRotZ());
-//            transformStack.pushRotation(leftArm, -entity.getXRot() * Mth.DEG_TO_RAD + testsnapshot2.getRotX(), testsnapshot2.getRotY(), testsnapshot2.getRotZ());
-            //transformStack.pushRotationWithBase(rightArm, -entity.getXRot() * Mth.DEG_TO_RAD , 0, 0);
-            //transformStack.pushRotationWithBase(leftArm, -entity.getXRot() * Mth.DEG_TO_RAD, 0, 0);
-            //transformStack.pushRotationWithBase(leftArm, 1 * Mth.DEG_TO_RAD, 0, 0);
-            transformStack.pushRotation(leftArm, leftArm.getRotX() -entity.getXRot() * Mth.DEG_TO_RAD, leftArm.getRotY(), leftArm.getRotZ());
-            transformStack.pushRotation(rightArm, rightArm.getRotX() -entity.getXRot() * Mth.DEG_TO_RAD, rightArm.getRotY(), rightArm.getRotZ());
-        } /*else if (testsnapshot1 != null) {
-            IronsSpellbooks.LOGGER.debug("removing bone snapshot");
-            testsnapshot1 = null;
-            testsnapshot2 = null;
-        }*/
+        }
 
         transformStack.popStack();
     }
 
-    //BoneSnapshot testsnapshot1, testsnapshot2;
+    protected void resetSnapshot(GeoBone bone) {
+        bone.getInitialSnapshot().updateRotation(0, 0, 0);
+        bone.getInitialSnapshot().updateOffset(0, 0, 0);
+    }
 
     protected void bobBone(GeoBone bone, int offset, float multiplier) {
         float z = multiplier * (Mth.cos(offset * 0.09F) * 0.05F + 0.05F);
         float x = multiplier * Mth.sin(offset * 0.067F) * 0.05F;
         transformStack.pushRotation(bone, x, 0, z);
+    }
+
+    /**
+     * @param walkAnimationState
+     * @return x: amount, y: speed
+     */
+    protected Vector2f getLimbSwing(AbstractSpellCastingMob entity, WalkAnimationState walkAnimationState, float partialTick) {
+        float limbSwingAmount = 0;
+        float limbSwingSpeed = 0;
+        if (entity.isAlive()) {
+            limbSwingAmount = walkAnimationState.speed(partialTick);
+            limbSwingSpeed = walkAnimationState.position(partialTick);
+            if (entity.isBaby()) {
+                limbSwingSpeed *= 3.0F;
+            }
+
+            if (limbSwingAmount > 1.0F) {
+                limbSwingAmount = 1.0F;
+            }
+        }
+        return new Vector2f(limbSwingAmount, limbSwingSpeed);
     }
 }
