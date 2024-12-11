@@ -37,9 +37,11 @@ public class ShieldPart extends PartEntity<AbstractShieldEntity> {
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
-        if (!parentEntity.hurtThisTick) {
-            parentEntity.takeDamage(pSource, pAmount, this.getBoundingBox().getCenter());
-            parentEntity.hurtThisTick = true;
+        if (!level.isClientSide) {
+            if (!parentEntity.hurtThisTick) {
+                parentEntity.takeDamage(pSource, pAmount, this.getBoundingBox().getCenter());
+                parentEntity.hurtThisTick = true;
+            }
         }
         return false;
     }
