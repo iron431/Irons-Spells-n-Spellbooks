@@ -81,10 +81,10 @@
 				{
 					"name": "armorBipedRightFoot",
 					"parent": "right_leg",
-					"pivot": [-2, 14, 0],
+					"pivot": [-2, 12, 0],
 					"cubes": [
 						{
-							"origin": [-4, 0, -2],
+							"origin": [-4, -2, -2],
 							"size": [4, 12, 4],
 							"inflate": 1,
 							"uv": {}
@@ -115,10 +115,10 @@
 				{
 					"name": "armorBipedLeftFoot",
 					"parent": "left_leg",
-					"pivot": [2, 14, 0],
+					"pivot": [2, 12, 0],
 					"cubes": [
 						{
-							"origin": [0, 0, -2],
+							"origin": [0, -2, -2],
 							"size": [4, 12, 4],
 							"inflate": 1,
 							"uv": {}
@@ -149,7 +149,7 @@
 				{
 					"name": "bipedHandRight",
 					"parent": "right_arm",
-					"pivot": [-6, 13, -1],
+					"pivot": [-6, 13, 0],
 					"cubes": [
 						{
 							"origin": [-6, 15, -1],
@@ -189,7 +189,7 @@
 				{
 					"name": "bipedHandLeft",
 					"parent": "left_arm",
-					"pivot": [6, 13, -1],
+					"pivot": [6, 13, 0],
 					"cubes": [
 						{
 							"origin": [6, 14, -1],

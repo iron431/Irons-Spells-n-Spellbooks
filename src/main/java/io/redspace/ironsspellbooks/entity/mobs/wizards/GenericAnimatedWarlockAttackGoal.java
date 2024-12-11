@@ -41,25 +41,34 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
         }
         //Handling Animation hit frames
         mob.getLookControl().setLookAt(target);
-        if (meleeAnimTimer > 0) {
+        if (meleeAnimTimer > 0 && currentAttack != null) {
             //We are currently attacking and are in a melee animation
             forceFaceTarget();
             meleeAnimTimer--;
             if (currentAttack.isHitFrame(meleeAnimTimer)) {
                 playSwingSound();
-
-                Vec3 lunge = currentAttack.lungeVector.yRot(-Utils.getAngle(mob.getX(), mob.getZ(), target.getX(), target.getZ()) - Mth.HALF_PI);
+                AttackAnimationData.AttackKeyframe attackData = currentAttack.getHitFrame(meleeAnimTimer);
+                float f = -Utils.getAngle(mob.getX(), mob.getZ(), target.getX(), target.getZ()) - Mth.HALF_PI;
+                Vec3 lunge = attackData.lungeVector().yRot(f);
                 mob.push(lunge.x, lunge.y, lunge.z);
 
                 if (distanceSquared <= meleeRange * meleeRange) {
                     boolean flag = this.mob.doHurtTarget(target);
                     target.invulnerableTime = 0;
                     if (flag) {
+                        if (attackData.extraKnockback() != Vec3.ZERO) {
+                            target.setDeltaMovement(target.getDeltaMovement().add(attackData.extraKnockback().yRot(f)));
+                        }
                         if (currentAttack.isSingleHit() && ((mob.getRandom().nextFloat() < (comboChance * (target.isBlocking() ? 2 : 1))))) {
                             //Attack again! combos!
                             queueCombo = randomizeNextAttack(0);
                         }
                     }
+                }
+            }
+            if(currentAttack.canCancel){
+                if(distanceSquared > meleeRange * meleeRange * 2.5 * 2.5){
+                    stopMeleeAction();
                 }
             }
         } else if (queueCombo != null && target != null && !target.isDeadOrDying()) {
@@ -99,6 +108,13 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
         mob.setYBodyRot(yRot);
         mob.setYHeadRot(yRot);
         mob.setYRot(yRot);
+    }
+
+    protected void stopMeleeAction(){
+        if(currentAttack != null){
+            meleeAnimTimer = 0;
+            PacketDistributor.sendToPlayersTrackingEntity(mob, new SyncAnimationPacket<>("", mob));
+        }
     }
 
     @Override
