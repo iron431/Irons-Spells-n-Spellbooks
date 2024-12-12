@@ -31,7 +31,7 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
     }
 
     float leglerp = 1f;
-    float isAnimatingLerp;
+    float isAnimatingDampener;
 
     @Override
     public void setCustomAnimations(AbstractSpellCastingMob entity, long instanceId, AnimationState<AbstractSpellCastingMob> animationState) {
@@ -40,19 +40,19 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
         }
         float partialTick = animationState.getPartialTick();
         if (entity.isAnimating()) {
-            isAnimatingLerp = Mth.lerp(.2f * partialTick, isAnimatingLerp, 0);
+            isAnimatingDampener = Mth.lerp(.3f * partialTick, isAnimatingDampener, 0);
         } else {
-            isAnimatingLerp = Mth.lerp(.2f * partialTick, isAnimatingLerp, 1);
+            isAnimatingDampener = Mth.lerp(.1f * partialTick, isAnimatingDampener, 1);
         }
         if (entity.getMainHandItem().is(ItemRegistry.HELLRAZOR)) {
             GeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
             GeoBone rightHand = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT);
             Vector3f armPose = new Vector3f(-30, -30, 10);
-            armPose.mul(Mth.DEG_TO_RAD * isAnimatingLerp);
+            armPose.mul(Mth.DEG_TO_RAD * isAnimatingDampener);
             transformStack.pushRotation(rightArm, armPose);
 
             Vector3f scythePos = new Vector3f(-5, 0, -40);
-            scythePos.mul(Mth.DEG_TO_RAD * isAnimatingLerp);
+            scythePos.mul(Mth.DEG_TO_RAD * isAnimatingDampener);
             transformStack.pushRotation(rightHand, scythePos);
         }
         super.setCustomAnimations(entity, instanceId, animationState);

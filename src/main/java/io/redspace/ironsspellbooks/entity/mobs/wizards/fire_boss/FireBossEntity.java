@@ -82,8 +82,13 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.goalSelector.addGoal(3, new GenericAnimatedWarlockAttackGoal<>(this, 1.25f, 50, 75)
                 .setMoveset(List.of(
                         new AttackAnimationData(40, "scythe_backpedal", new AttackAnimationData.AttackKeyframe(20, new Vec3(0, .3, -2))),
-                        new AttackAnimationData(54, "scythe_sideslash_downslash", 18,32),
-                        new AttackAnimationData(true, 45, "scythe_jump_combo", new AttackAnimationData.AttackKeyframe(20, new Vec3(0, 1, 0), new Vec3(0, 1.15, .1)), new AttackAnimationData.AttackKeyframe(35, new Vec3(0, 0, 0), new Vec3(0, 0, 0.5)))
+                        new AttackAnimationData(54, "scythe_sideslash_downslash", 18, 32),
+                        new AttackAnimationData(true, 45, "scythe_jump_combo",
+                                new AttackAnimationData.AttackKeyframe(20, new Vec3(0, 1, 0), new Vec3(0, 1.15, .1)),
+                                new AttackAnimationData.AttackKeyframe(35, new Vec3(0, 0, 0), new Vec3(0, 0, 0.5))),
+                        new AttackAnimationData(true, 60, "scythe_downslash_pull",
+                                new AttackAnimationData.AttackKeyframe(22, new Vec3(0, 0, .5f), new Vec3(0, -.2, 0)),
+                                new AttackAnimationData.AttackKeyframe(38, new Vec3(0, .2, -1.5), new Vec3(0, .3, -1.8)))
                 ))
                 .setComboChance(.4f)
                 .setMeleeAttackInverval(10, 30)
@@ -135,7 +140,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 .add(Attributes.FOLLOW_RANGE, 32.0)
                 .add(Attributes.SCALE, 1.4)
                 .add(Attributes.GRAVITY, 0.03)
-                .add(Attributes.ENTITY_INTERACTION_RANGE,3.5)
+                .add(Attributes.ENTITY_INTERACTION_RANGE, 3.5)
                 .add(Attributes.MOVEMENT_SPEED, .155);
     }
 
@@ -170,6 +175,6 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     @Override
     public boolean isAnimating() {
-        return meleeController.getAnimationState() == AnimationController.State.RUNNING || super.isAnimating();
+        return meleeController.getAnimationState() != AnimationController.State.STOPPED || super.isAnimating();
     }
 }

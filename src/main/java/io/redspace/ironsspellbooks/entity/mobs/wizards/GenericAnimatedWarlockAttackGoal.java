@@ -93,12 +93,14 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
         }
     }
 
+    int debug = 0;
     private AttackAnimationData randomizeNextAttack(float distanceSquared) {
         //TODO: IAttackAnimationProvider?
         if (this.moveList.isEmpty()) {
             return null;
         } else {
-            return moveList.get(mob.getRandom().nextInt(moveList.size()));
+            debug%=moveList.size();
+            return moveList.get(debug++/*mob.getRandom().nextInt(moveList.size())*/);
         }
     }
 
