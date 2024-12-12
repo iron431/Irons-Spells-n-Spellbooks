@@ -643,5 +643,15 @@
     "sounds": [
       "irons_spellbooks:ice_spike_emerge"
     ]
+  },
+  "spell.fire_arrow.charge": {
+    "sounds": [
+      "irons_spellbooks:fire_arrow_charge"
+    ]
+  },
+  "spell.fire_arrow.cast": {
+    "sounds": [
+      "irons_spellbooks:fire_arrow_cast"
+    ]
   }
 }

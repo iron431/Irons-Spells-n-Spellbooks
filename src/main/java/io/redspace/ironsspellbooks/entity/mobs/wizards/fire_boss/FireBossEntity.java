@@ -112,6 +112,16 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     @Override
+    public void calculateEntityAnimation(boolean pIncludeHeight) {
+        super.calculateEntityAnimation(false);
+    }
+
+    @Override
+    protected void updateWalkAnimation(float f) {
+        super.updateWalkAnimation(f * (this.onGround() ? 1.15f : .25f));
+    }
+
+    @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData) {
         RandomSource randomsource = Utils.random;
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
@@ -142,7 +152,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 .add(Attributes.SCALE, 1.4)
                 .add(Attributes.GRAVITY, 0.03)
                 .add(Attributes.ENTITY_INTERACTION_RANGE, 3.5)
-                .add(Attributes.MOVEMENT_SPEED, .155);
+                .add(Attributes.MOVEMENT_SPEED, .165);
     }
 
     RawAnimation animationToPlay = null;

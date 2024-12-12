@@ -9,6 +9,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.WalkAnimationState;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
@@ -56,6 +58,11 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
             transformStack.pushRotation(rightHand, scythePos);
         }
         super.setCustomAnimations(entity, instanceId, animationState);
+    }
+
+    @Override
+    protected Vector2f getLimbSwing(AbstractSpellCastingMob entity, WalkAnimationState walkAnimationState, float partialTick) {
+        return super.getLimbSwing(entity, walkAnimationState, partialTick);
     }
     //    @Override
 //    protected Vector2f getLimbSwing(AbstractSpellCastingMob entity, WalkAnimationState walkAnimationState, float partialTick) {
