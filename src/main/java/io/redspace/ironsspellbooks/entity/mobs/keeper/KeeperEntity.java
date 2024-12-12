@@ -223,16 +223,4 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
     public boolean isAnimating() {
         return meleeController.getAnimationState() != AnimationController.State.STOPPED || super.isAnimating();
     }
-
-    @Override
-    public boolean shouldAlwaysAnimateLegs() {
-        return false;
-    }
-
-    //    @Override
-//    public boolean doHurtTarget(Entity pEntity) {
-//        level.playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_HIT.get(), SoundSource.HOSTILE, 1, 1);
-//        return super.doHurtTarget(pEntity);
-//    }
-
 }

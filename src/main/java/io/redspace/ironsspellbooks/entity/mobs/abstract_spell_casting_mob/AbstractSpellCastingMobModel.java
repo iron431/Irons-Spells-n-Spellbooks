@@ -13,6 +13,7 @@ import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoModel<AbstractSpellCastingMob> {
 
@@ -39,41 +40,31 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
 
     @Override
     public void handleAnimations(AbstractSpellCastingMob entity, long instanceId, AnimationState<AbstractSpellCastingMob> animationState, float partialTick) {
-        GeoBone head = this.getAnimationProcessor().getBone(PartNames.HEAD);
-        GeoBone body = this.getAnimationProcessor().getBone(PartNames.BODY);
-        GeoBone torso = this.getAnimationProcessor().getBone("torso");
-        GeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
-        GeoBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
-        GeoBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
-        GeoBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
-        List<GeoBone> bones = List.of(head, body, torso, rightArm, leftArm, rightLeg, leftLeg);
-        for (GeoBone bone : bones) {
+        Stream<GeoBone> bones = getBonesForStackReset();
+        bones.forEach((bone)-> {
             var snapshot = bone.getInitialSnapshot();
             bone.updatePosition(snapshot.getOffsetX(), snapshot.getOffsetY(), snapshot.getOffsetZ());
             bone.updateRotation(snapshot.getRotX(), snapshot.getRotY(), snapshot.getRotZ());
             bone.resetStateChanges();
-        }
+        });
         super.handleAnimations(entity, instanceId, animationState, partialTick);
     }
 
+    protected Stream<GeoBone> getBonesForStackReset() {
+        return Stream.of(
+                this.getAnimationProcessor().getBone(PartNames.HEAD),
+                this.getAnimationProcessor().getBone(PartNames.BODY),
+                this.getAnimationProcessor().getBone("torso"),
+                this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM),
+                this.getAnimationProcessor().getBone(PartNames.LEFT_ARM),
+                this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG),
+                this.getAnimationProcessor().getBone(PartNames.LEFT_LEG)
+        );
+    }
 
     @Override
-    public final void setCustomAnimations(AbstractSpellCastingMob entity, long instanceId, AnimationState<AbstractSpellCastingMob> animationState) {
+    public void setCustomAnimations(AbstractSpellCastingMob entity, long instanceId, AnimationState<AbstractSpellCastingMob> animationState) {
         super.setCustomAnimations(entity, instanceId, animationState);
-//
-//        a = entity.onGround();
-//        if (a != b) {
-//            this.getAnimationProcessor().getBone(PartNames.HEAD).setRotY(5);
-//        }
-//        b = a;
-//        var bone = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
-//        transformStack.pushRotation(bone,Mth.sin((entity.tickCount + animationState.getPartialTick())),0,0);
-//        transformStack.popStack(animationState);
-//
-//
-//        if (true) {
-//            return;
-//        }
         if (!(Minecraft.getInstance().isPaused() || !entity.shouldBeExtraAnimated())) {
             var partialTick = animationState.getPartialTick();
             GeoBone head = this.getAnimationProcessor().getBone(PartNames.HEAD);
@@ -151,19 +142,6 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
                     );
                 }
             }
-
-//we would like for all bone transformations to be addivite. however, if the bone is not being animated by keyf
-//        var keyframedAnimationTargets = animationState.getController().getBoneAnimationQueues().keySet();
-//        for (String boneName : keyframedAnimationTargets) {
-//            var bone = this.getAnimationProcessor().getBone(boneName);
-//            if (bone.hasRotationChanged()) {
-//                transformStack.pushRotation(bone, bone.getRotationVector().get(new Vector3f()));
-//            }
-//            if (bone.hasPositionChanged()) {
-//                transformStack.pushPosition(bone, bone.getPositionVector().get(new Vector3f()));
-//            }
-//
-//        }
             transformStack.popStack();
         }
     }
