@@ -267,9 +267,8 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 tasks.register('copyAnimations', Copy) {
-    from "src/main/resources/assets/${mod_id}/player_animation"
-    include 'casting_animations.json'
-    into "src/main/resources/assets/${mod_id}/animations"
+    from layout.projectDirectory.file("src/main/resources/assets/${mod_id}/player_animations/casting_animations.json")
+    into layout.projectDirectory.dir("src/main/resources/assets/${mod_id}/animations")
 }
 
 tasks.classes.dependsOn(tasks.copyAnimations)
