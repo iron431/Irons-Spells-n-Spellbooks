@@ -82,6 +82,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.goalSelector.addGoal(3, new GenericAnimatedWarlockAttackGoal<>(this, 1.25f, 50, 75)
                 .setMoveset(List.of(
                         new AttackAnimationData(40, "scythe_backpedal", new AttackAnimationData.AttackKeyframe(20, new Vec3(0, .3, -2))),
+                        new AttackAnimationData(40, "scythe_low_rightward_sweep", new AttackAnimationData.AttackKeyframe(20, new Vec3(0, .1, 0.8))),
                         new AttackAnimationData(54, "scythe_sideslash_downslash", 18, 32),
                         new AttackAnimationData(true, 45, "scythe_jump_combo",
                                 new AttackAnimationData.AttackKeyframe(20, new Vec3(0, 1, 0), new Vec3(0, 1.15, .1)),
