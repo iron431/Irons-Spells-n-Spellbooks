@@ -1,0 +1,18 @@
+{
+  "descriptionId": "material.irons_spellbooks.rune_holy",
+  "ingredient": {
+    "item": "irons_spellbooks:holy_rune"
+  },
+  "materialType": [
+    "spellbooks_rune"
+  ],
+  "paletteLocation": "irons_spellbooks:palettes/rune_holy",
+  "quality": 1.5,
+  "bonusParameters": {
+    "irons_jewelry:attribute": {
+      "attribute": "irons_spellbooks:holy_spell_power",
+      "amount": 0.05,
+      "operation": "add_multiplied_total"
+    }
+  }
+}

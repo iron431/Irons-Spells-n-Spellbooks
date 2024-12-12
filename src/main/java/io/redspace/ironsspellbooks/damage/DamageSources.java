@@ -82,7 +82,7 @@ public class DamageSources {
         if (livingEntity.getServer() != null) {
             var tickCount = livingEntity.getServer().getTickCount();
             //help manage memory
-            knockbackImmunes.entrySet().stream().filter(entry -> tickCount - entry.getValue() >= 10).toList().forEach(entry -> knockbackImmunes.remove(entry.getKey()));
+            knockbackImmunes.entrySet().removeIf(entry -> tickCount - entry.getValue() >= 10);
             //enter entity
             knockbackImmunes.put(livingEntity.getUUID(), tickCount);
         }
