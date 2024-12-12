@@ -11,8 +11,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     final KeeperEntity keeper;
 
-    public KeeperAnimatedWarlockAttackGoal(KeeperEntity abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval, float meleeRange) {
-        super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval, meleeRange);
+    public KeeperAnimatedWarlockAttackGoal(KeeperEntity abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval) {
+        super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);
         keeper = abstractSpellCastingMob;
         nextAttack = randomizeNextAttack(0);
         this.wantsToMelee = true;
@@ -34,6 +34,7 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     @Override
     protected void handleAttackLogic(double distanceSquared) {
         //Handling Animation hit frames
+        var meleeRange = meleeRange();
         float distance = Mth.sqrt((float) distanceSquared);
         mob.getLookControl().setLookAt(target);
         if (meleeAnimTimer > 0) {
@@ -106,6 +107,7 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
 
     private KeeperEntity.AttackType randomizeNextAttack(float distance) {
         //Lunge is the last enum. If we are close, no need to lunge. if we are far, we favor lunging
+        var meleeRange = meleeRange();
         int i;
         if (distance < meleeRange * 1.5f) {
             i = KeeperEntity.AttackType.values().length - 1;
@@ -144,6 +146,7 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
 
     @Override
     protected void doMovement(double distanceSquared) {
+        var meleeRange = meleeRange();
         if (target.isDeadOrDying()) {
             this.mob.getNavigation().stop();
         } else if (distanceSquared > meleeRange * meleeRange) {

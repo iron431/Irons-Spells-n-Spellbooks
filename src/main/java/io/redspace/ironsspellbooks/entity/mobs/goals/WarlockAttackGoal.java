@@ -10,7 +10,6 @@ import java.util.List;
 
 public class WarlockAttackGoal extends WizardAttackGoal {
 
-    protected float meleeRange;
     protected boolean wantsToMelee;
     protected int meleeTime;
     protected int meleeDecisionTime;
@@ -19,9 +18,8 @@ public class WarlockAttackGoal extends WizardAttackGoal {
     protected float meleeMoveSpeedModifier;
     protected int meleeAttackIntervalMin;
     protected int meleeAttackIntervalMax;
-    public WarlockAttackGoal(IMagicEntity abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval, float meleeRange) {
+    public WarlockAttackGoal(IMagicEntity abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval) {
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);
-        this.meleeRange = meleeRange;
         this.meleeDecisionTime = mob.getRandom().nextIntBetweenInclusive(80, 200);
         this.meleeBiasMin = .25f;
         this.meleeBiasMax = .75f;
@@ -40,13 +38,16 @@ public class WarlockAttackGoal extends WizardAttackGoal {
             meleeDecisionTime = mob.getRandom().nextIntBetweenInclusive(60, 120);
         }
     }
-
+    public float meleeRange(){
+        return (float) (mob.getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE) * mob.getScale());
+    }
     protected float meleeBias() {
         return Mth.clampedLerp(meleeBiasMin, meleeBiasMax, mob.getHealth() / mob.getMaxHealth());
     }
 
     @Override
     protected void doMovement(double distanceSquared) {
+        var meleeRange = meleeRange();
         if (!wantsToMelee) {
             super.doMovement(distanceSquared);
             return;
@@ -83,6 +84,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
 
     @Override
     protected void handleAttackLogic(double distanceSquared) {
+        var meleeRange = meleeRange();
         if (!wantsToMelee || distanceSquared > meleeRange * meleeRange || spellCastingMob.isCasting()) {
             super.handleAttackLogic(distanceSquared);
         } else if (--this.attackTime == 0) {
@@ -142,6 +144,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
 
     @Override
     protected void resetAttackTimer(double distanceSquared) {
+        var meleeRange = meleeRange();
         if (!wantsToMelee || distanceSquared > meleeRange * meleeRange || spellCastingMob.isCasting()) {
             super.resetAttackTimer(distanceSquared);
         } else {

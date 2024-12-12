@@ -77,7 +77,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(4, new KeeperAnimatedWarlockAttackGoal(this, 1f, 10, 30, 3.5f));
+        this.goalSelector.addGoal(4, new KeeperAnimatedWarlockAttackGoal(this, 1f, 10, 30));
         this.goalSelector.addGoal(4, new WaterAvoidingRandomStrollGoal(this, 1.0D));
         this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
 
@@ -155,6 +155,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
                 .add(Attributes.ATTACK_KNOCKBACK, 2.0)
                 .add(Attributes.STEP_HEIGHT, 1)
+                .add(Attributes.ENTITY_INTERACTION_RANGE, 3.5)
                 .add(Attributes.MOVEMENT_SPEED, .19);
     }
 

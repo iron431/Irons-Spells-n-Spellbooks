@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimatedAttacker & IMagicEntity> extends WarlockAttackGoal {
-    public GenericAnimatedWarlockAttackGoal(T abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval, float meleeRange) {
-        super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval, meleeRange);
+    public GenericAnimatedWarlockAttackGoal(T abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval) {
+        super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);
         nextAttack = randomizeNextAttack(0);
         this.wantsToMelee = true;
         this.mob = abstractSpellCastingMob; //shadows super.mob
@@ -35,6 +35,7 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
 
     @Override
     protected void handleAttackLogic(double distanceSquared) {
+        var meleeRange = meleeRange();
         if (meleeAnimTimer < 0 && (!wantsToMelee || distanceSquared > meleeRange * meleeRange || mob.isCasting())) {
             super.handleAttackLogic(distanceSquared);
             return;

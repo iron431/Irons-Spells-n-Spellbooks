@@ -16,8 +16,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     final DeadKingBoss deadKing;
 
-    public DeadKingAnimatedWarlockAttackGoal(DeadKingBoss abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval, float meleeRange) {
-        super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval, meleeRange);
+    public DeadKingAnimatedWarlockAttackGoal(DeadKingBoss abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval) {
+        super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);
         deadKing = abstractSpellCastingMob;
         nextAttack = randomizeNextAttack(0);
         this.wantsToMelee = true;
@@ -30,6 +30,7 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
 
     @Override
     protected void handleAttackLogic(double distanceSquared) {
+        var meleeRange = meleeRange();
         if (meleeAnimTimer < 0 && (!wantsToMelee || distanceSquared > meleeRange * meleeRange || spellCastingMob.isCasting())) {
             super.handleAttackLogic(distanceSquared);
             return;
@@ -129,6 +130,7 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
 
     @Override
     protected void doMovement(double distanceSquared) {
+        var meleeRange = meleeRange();
         if (target.isDeadOrDying()) {
             this.mob.getNavigation().stop();
         } else if (distanceSquared > meleeRange * meleeRange) {

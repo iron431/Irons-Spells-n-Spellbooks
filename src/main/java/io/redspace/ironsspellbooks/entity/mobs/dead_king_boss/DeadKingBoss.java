@@ -117,7 +117,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     private DeadKingAnimatedWarlockAttackGoal getCombatGoal() {
-        return (DeadKingAnimatedWarlockAttackGoal) new DeadKingAnimatedWarlockAttackGoal(this, 1f, 55, 85, 4f).setSpellQuality(.3f, .5f).setSpells(
+        return (DeadKingAnimatedWarlockAttackGoal) new DeadKingAnimatedWarlockAttackGoal(this, 1f, 55, 85).setSpellQuality(.3f, .5f).setSpells(
                 List.of(
                         SpellRegistry.RAY_OF_SIPHONING_SPELL.get(),
                         SpellRegistry.BLOOD_SLASH_SPELL.get(), SpellRegistry.BLOOD_SLASH_SPELL.get(),
@@ -338,6 +338,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
                 .add(Attributes.MAX_HEALTH, 400.0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
                 .add(Attributes.ATTACK_KNOCKBACK, .6)
+                .add(Attributes.ENTITY_INTERACTION_RANGE, 4)
                 .add(Attributes.FOLLOW_RANGE, 32.0)
                 .add(Attributes.MOVEMENT_SPEED, .155);
     }

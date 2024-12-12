@@ -287,6 +287,7 @@ public class EntityRegistry {
             ENTITIES.register("citadel_keeper", () -> EntityType.Builder.<KeeperEntity>of(KeeperEntity::new, MobCategory.MONSTER)
                     .sized(.85f, 2.3f)
                     .clientTrackingRange(64)
+                    .eyeHeight(2.3f)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "citadel_keeper").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<FireBossEntity>> FIRE_BOSS =

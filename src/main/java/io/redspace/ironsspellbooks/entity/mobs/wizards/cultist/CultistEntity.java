@@ -81,7 +81,7 @@ public class CultistEntity extends NeutralWizard implements Enemy, IAnimatedAtta
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new FloatGoal(this));
         this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.DEVOUR_SPELL.get(), 3, 6, 100, 250, 1));
-        this.goalSelector.addGoal(3, new GenericAnimatedWarlockAttackGoal<>(this, 1.25f, 50, 75, 3f)
+        this.goalSelector.addGoal(3, new GenericAnimatedWarlockAttackGoal<>(this, 1.25f, 50, 75)
                 .setMoveset(List.of(
                         new AttackAnimationData(9, "simple_sword_upward_swipe", 5),
                         new AttackAnimationData(8, "simple_sword_lunge_stab", 6),
@@ -132,6 +132,7 @@ public class CultistEntity extends NeutralWizard implements Enemy, IAnimatedAtta
                 .add(Attributes.ATTACK_KNOCKBACK, 0.0)
                 .add(Attributes.MAX_HEALTH, 60.0)
                 .add(Attributes.FOLLOW_RANGE, 24.0)
+                .add(Attributes.ENTITY_INTERACTION_RANGE, 3)
                 .add(Attributes.MOVEMENT_SPEED, .25);
     }
 
