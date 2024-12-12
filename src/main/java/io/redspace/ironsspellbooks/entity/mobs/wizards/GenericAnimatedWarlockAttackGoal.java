@@ -68,7 +68,7 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
                 }
             }
             if(currentAttack.canCancel){
-                if(distanceSquared > meleeRange * meleeRange * 2.5 * 2.5){
+                if(distanceSquared > meleeRange * meleeRange * 2 * 2){
                     stopMeleeAction();
                 }
             }

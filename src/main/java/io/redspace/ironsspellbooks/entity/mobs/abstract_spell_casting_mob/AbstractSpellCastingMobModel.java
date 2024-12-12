@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.util.DefaultBipedBoneIdents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.resources.ResourceLocation;
@@ -41,7 +42,7 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
     @Override
     public void handleAnimations(AbstractSpellCastingMob entity, long instanceId, AnimationState<AbstractSpellCastingMob> animationState, float partialTick) {
         Stream<GeoBone> bones = getBonesForStackReset();
-        bones.forEach((bone)-> {
+        bones.forEach((bone) -> {
             var snapshot = bone.getInitialSnapshot();
             bone.updatePosition(snapshot.getOffsetX(), snapshot.getOffsetY(), snapshot.getOffsetZ());
             bone.updateRotation(snapshot.getRotX(), snapshot.getRotY(), snapshot.getRotZ());
@@ -58,7 +59,9 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
                 this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM),
                 this.getAnimationProcessor().getBone(PartNames.LEFT_ARM),
                 this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG),
-                this.getAnimationProcessor().getBone(PartNames.LEFT_LEG)
+                this.getAnimationProcessor().getBone(PartNames.LEFT_LEG),
+                this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT),
+                this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.LEFT_HAND_BONE_IDENT)
         );
     }
 
@@ -132,8 +135,8 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
             if (!entity.isAnimating()) {
                 transformStack.pushRotation(rightArm, Mth.cos(limbSwingSpeed * 0.6662F + (float) Math.PI) * 2.0F * limbSwingAmount * 0.5F, 0, 0);
                 transformStack.pushRotation(leftArm, Mth.cos(limbSwingSpeed * 0.6662F) * 2.0F * limbSwingAmount * 0.5F, 0, 0);
-                bobBone(rightArm, entity.tickCount, 1);
-                bobBone(leftArm, entity.tickCount, -1);
+                bobBone(rightArm, entity.tickCount + partialTick, 1);
+                bobBone(leftArm, entity.tickCount + partialTick, -1);
                 if (entity.isDrinkingPotion()) {
                     transformStack.pushRotation(entity.isLeftHanded() ? leftArm : rightArm,
                             35 * Mth.DEG_TO_RAD,
@@ -151,7 +154,7 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
         bone.getInitialSnapshot().updateOffset(0, 0, 0);
     }
 
-    protected void bobBone(GeoBone bone, int offset, float multiplier) {
+    protected void bobBone(GeoBone bone, float offset, float multiplier) {
         float z = multiplier * (Mth.cos(offset * 0.09F) * 0.05F + 0.05F);
         float x = multiplier * Mth.sin(offset * 0.067F) * 0.05F;
         transformStack.pushRotation(bone, x, 0, z);

@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobModel;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.util.DefaultBipedBoneIdents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.resources.ResourceLocation;
@@ -30,7 +31,7 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
     }
 
     float leglerp = 1f;
-    float isAnimatingLerp = 1f;
+    float isAnimatingLerp;
 
     @Override
     public void setCustomAnimations(AbstractSpellCastingMob entity, long instanceId, AnimationState<AbstractSpellCastingMob> animationState) {
@@ -39,15 +40,20 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
         }
         float partialTick = animationState.getPartialTick();
         if (entity.isAnimating()) {
-            isAnimatingLerp = Mth.lerp(.2f * partialTick, isAnimatingLerp, 1);
-        } else {
             isAnimatingLerp = Mth.lerp(.2f * partialTick, isAnimatingLerp, 0);
+        } else {
+            isAnimatingLerp = Mth.lerp(.2f * partialTick, isAnimatingLerp, 1);
         }
         if (entity.getMainHandItem().is(ItemRegistry.HELLRAZOR)) {
             GeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
+            GeoBone rightHand = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT);
             Vector3f armPose = new Vector3f(-30, -30, 10);
-            armPose.mul(Mth.DEG_TO_RAD * (1 - isAnimatingLerp));
+            armPose.mul(Mth.DEG_TO_RAD * isAnimatingLerp);
             transformStack.pushRotation(rightArm, armPose);
+
+            Vector3f scythePos = new Vector3f(-5, 0, -40);
+            scythePos.mul(Mth.DEG_TO_RAD * isAnimatingLerp);
+            transformStack.pushRotation(rightHand, scythePos);
         }
         super.setCustomAnimations(entity, instanceId, animationState);
     }

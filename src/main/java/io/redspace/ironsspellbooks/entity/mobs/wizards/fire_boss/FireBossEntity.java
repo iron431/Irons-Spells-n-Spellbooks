@@ -82,6 +82,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.goalSelector.addGoal(3, new GenericAnimatedWarlockAttackGoal<>(this, 1.25f, 50, 75)
                 .setMoveset(List.of(
                         new AttackAnimationData(40, "scythe_backpedal", new AttackAnimationData.AttackKeyframe(20, new Vec3(0, .3, -2))),
+                        new AttackAnimationData(54, "scythe_sideslash_downslash", 18,32),
                         new AttackAnimationData(true, 45, "scythe_jump_combo", new AttackAnimationData.AttackKeyframe(20, new Vec3(0, 1, 0), new Vec3(0, 1.15, .1)), new AttackAnimationData.AttackKeyframe(35, new Vec3(0, 0, 0), new Vec3(0, 0, 0.5)))
                 ))
                 .setComboChance(.4f)
@@ -132,7 +133,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
                 .add(Attributes.ATTACK_KNOCKBACK, .6)
                 .add(Attributes.FOLLOW_RANGE, 32.0)
-                .add(Attributes.SCALE, 1.25)
+                .add(Attributes.SCALE, 1.4)
                 .add(Attributes.GRAVITY, 0.03)
                 .add(Attributes.ENTITY_INTERACTION_RANGE,3.5)
                 .add(Attributes.MOVEMENT_SPEED, .155);
