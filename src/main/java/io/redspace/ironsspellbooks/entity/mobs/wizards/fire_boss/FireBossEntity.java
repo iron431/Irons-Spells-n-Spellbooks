@@ -89,7 +89,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                                 new AttackAnimationData.AttackKeyframe(35, new Vec3(0, 0, 0), new Vec3(0, 0, 0.5))),
                         new AttackAnimationData(true, 60, "scythe_downslash_pull",
                                 new AttackAnimationData.AttackKeyframe(22, new Vec3(0, 0, .5f), new Vec3(0, -.2, 0)),
-                                new AttackAnimationData.AttackKeyframe(38, new Vec3(0, .2, -1.5), new Vec3(0, .3, -1.8)))
+                                new AttackAnimationData.AttackKeyframe(38, new Vec3(0, .2, -0.8), new Vec3(0, .3, -1.8)))
                 ))
                 .setComboChance(.4f)
                 .setMeleeAttackInverval(10, 30)

@@ -11262,11 +11262,11 @@
 							"vector": [0, 0, 0]
 						},
 						"0.2917": {
-							"vector": [0, 0, -90],
+							"vector": [0, 0, -80],
 							"easing": "easeInOutQuad"
 						},
 						"1.0833": {
-							"vector": [0, 0, -90],
+							"vector": [0, 0, -80],
 							"easing": "easeInOutQuad"
 						},
 						"1.4583": {
