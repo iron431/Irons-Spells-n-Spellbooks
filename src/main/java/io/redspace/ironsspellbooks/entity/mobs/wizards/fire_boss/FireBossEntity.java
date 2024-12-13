@@ -82,25 +82,25 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.goalSelector.addGoal(1, new FloatGoal(this));
         this.goalSelector.addGoal(3, new GenericAnimatedWarlockAttackGoal<>(this, 1.25f, 50, 75)
                 .setMoveset(List.of(
-//                        new AttackAnimationData(40, "scythe_backpedal", new AttackAnimationData.AttackKeyframe(20, new Vec3(0, .3, -2))),
-                        new AttackAnimationData(false, 0.25f, 40, "scythe_low_rightward_sweep", new AttackAnimationData.AttackKeyframe(20, new Vec3(0, .1, 0.8)))/*,
+                        new AttackAnimationData(40, "scythe_backpedal", new AttackAnimationData.AttackKeyframe(20, new Vec3(0, .3, -2))),
+                        new AttackAnimationData(false, 0.25f, 40, "scythe_low_rightward_sweep", new AttackAnimationData.AttackKeyframe(20, new Vec3(0, .1, 0.8))),
                         new AttackAnimationData(54, "scythe_sideslash_downslash", 18, 32),
                         new AttackAnimationData(true, 45, "scythe_jump_combo",
                                 new AttackAnimationData.AttackKeyframe(20, new Vec3(0, 1, 0), new Vec3(0, 1.15, .1)),
                                 new AttackAnimationData.AttackKeyframe(35, new Vec3(0, 0, 0), new Vec3(0, 0, 0.5))),
                         new AttackAnimationData(true, 60, "scythe_downslash_pull",
                                 new AttackAnimationData.AttackKeyframe(22, new Vec3(0, 0, .5f), new Vec3(0, -.2, 0)),
-                                new AttackAnimationData.AttackKeyframe(38, new Vec3(0, .2, -0.8), new Vec3(0, .3, -1.8)))*/
+                                new AttackAnimationData.AttackKeyframe(38, new Vec3(0, .2, -0.8), new Vec3(0, .3, -1.8)))
                 ))
                 .setComboChance(.4f)
-                .setMeleeAttackInverval(10, 30)
+                .setMeleeAttackInverval(0, 30)
                 .setMeleeBias(1f, 1f)
                 .setSpells(
-                        List.of(SpellRegistry.FLAMING_STRIKE_SPELL.get()),
+                        List.of(SpellRegistry.FIRE_ARROW_SPELL.get()),
                         List.of(),
                         List.of(),
                         List.of()
-                ).setDrinksPotions()
+                )
 
         );
         this.goalSelector.addGoal(4, new PatrolNearLocationGoal(this, 30, .75f));
