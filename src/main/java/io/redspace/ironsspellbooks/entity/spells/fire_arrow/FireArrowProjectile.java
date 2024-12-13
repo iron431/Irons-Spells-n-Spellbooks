@@ -33,12 +33,21 @@ import java.util.UUID;
 public class FireArrowProjectile extends AbstractMagicProjectile {
     public FireArrowProjectile(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-        this.setNoGravity(true);
+        super.setNoGravity(true); // avoid lcoal gravity flag by using super
     }
 
     public FireArrowProjectile(Level pLevel, LivingEntity pShooter) {
         this(EntityRegistry.FIRE_ARROW_PROJECTILE.get(), pLevel);
         this.setOwner(pShooter);
+    }
+
+    boolean suspendGravity; // if true, we always have no gravity
+
+    @Override
+    public void setNoGravity(boolean pNoGravity) {
+        // if some takes away our gravity, also take away our gravity mechanic
+        suspendGravity = pNoGravity;
+        super.setNoGravity(pNoGravity);
     }
 
     @Override
@@ -54,10 +63,17 @@ public class FireArrowProjectile extends AbstractMagicProjectile {
             var x = Mth.lerp(f, d0, this.getX() + vec3.x);
             var y = Mth.lerp(f, d1, this.getY() + vec3.y) - .4;
             var z = Mth.lerp(f, d2, this.getZ() + vec3.z);
-            this.level.addParticle(ParticleHelper.FIRE_EMITTER, x - random.x, y + 0.5D - random.y, z - random.z, random.x * .5f, random.y * .5f, random.z * .5f);
+            this.level.addParticle(ParticleHelper.FIRE_EMITTER, true,x - random.x, y + 0.5D - random.y, z - random.z, random.x * .5f, random.y * .5f, random.z * .5f);
         }
     }
 
+    @Override
+    public void tick() {
+        if (this.tickCount == 10 && !suspendGravity) {
+            this.setNoGravity(false);
+        }
+        super.tick();
+    }
 
     @Override
     public void impactParticles(double x, double y, double z) {
@@ -76,7 +92,6 @@ public class FireArrowProjectile extends AbstractMagicProjectile {
     @Override
     protected void onHit(HitResult hitResult) {
         if (!this.level.isClientSide) {
-            impactParticles(xOld, yOld, zOld);
             float directDamage = this.damage;
             float explosionDamage = directDamage * .5f;
             UUID ignore = null;
@@ -116,7 +131,7 @@ public class FireArrowProjectile extends AbstractMagicProjectile {
                     explosion.finalizeExplosion(false);
                 }
             }
-            PacketDistributor.sendToPlayersTrackingEntity(this, new FieryExplosionParticlesPacket(new Vec3(getX(), getY() + .15f, getZ()), getExplosionRadius() * .7f));
+            PacketDistributor.sendToPlayersTrackingEntity(this, new FieryExplosionParticlesPacket(hitResult.getLocation().subtract(getDeltaMovement().scale(0.25)), getExplosionRadius() * .7f));
             playSound(SoundEvents.GENERIC_EXPLODE.value(), 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F);
             this.discard();
         }

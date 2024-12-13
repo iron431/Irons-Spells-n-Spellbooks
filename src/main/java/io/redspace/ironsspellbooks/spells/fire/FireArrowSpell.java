@@ -39,8 +39,8 @@ public class FireArrowSpell extends AbstractSpell {
 
     public FireArrowSpell() {
         this.manaCostPerLevel = 5;
-        this.baseSpellPower = 10;
-        this.spellPowerPerLevel = 2;
+        this.baseSpellPower = 11;
+        this.spellPowerPerLevel = 1;
         this.castTime = 20;
         this.baseManaCost = 40;
     }

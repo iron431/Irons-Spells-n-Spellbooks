@@ -52,8 +52,8 @@ public class MagicFireball extends AbstractMagicProjectile {
             var x = Mth.lerp(f, d0, this.getX());
             var y = Mth.lerp(f, d1, this.getY());
             var z = Mth.lerp(f, d2, this.getZ());
-            this.level.addParticle(ParticleTypes.LARGE_SMOKE, x - random.x, y + 0.5D - random.y, z - random.z, random.x * .5f, random.y * .5f, random.z * .5f);
-            this.level.addParticle(ParticleHelper.EMBERS, x - random.x, y + 0.5D - random.y, z - random.z, random.x * .5f, random.y * .5f, random.z * .5f);
+            this.level.addParticle(ParticleTypes.LARGE_SMOKE, true, x - random.x, y + 0.5D - random.y, z - random.z, random.x * .5f, random.y * .5f, random.z * .5f);
+            this.level.addParticle(ParticleHelper.FIRE, x - random.x, y + 0.5D - random.y, z - random.z, random.x * .5f, random.y * .5f, random.z * .5f);
         }
     }
 
@@ -106,7 +106,7 @@ public class MagicFireball extends AbstractMagicProjectile {
                     explosion.finalizeExplosion(false);
                 }
             }
-            PacketDistributor.sendToPlayersTrackingEntity(this, new FieryExplosionParticlesPacket(new Vec3(getX(), getY() + .15f, getZ()), getExplosionRadius()));
+            PacketDistributor.sendToPlayersTrackingEntity(this, new FieryExplosionParticlesPacket(hitResult.getLocation().subtract(getDeltaMovement().scale(0.5)), getExplosionRadius()));
             playSound(SoundEvents.GENERIC_EXPLODE.value(), 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F);
             this.discard();
         }
