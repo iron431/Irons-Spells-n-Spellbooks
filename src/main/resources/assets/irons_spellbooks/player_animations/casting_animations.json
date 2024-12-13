@@ -12305,6 +12305,21 @@
 							"vector": [0.64, -0.64, -0.32]
 						}
 					}
+				},
+				"bipedHandRight": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.9167": {
+							"vector": [0, 0, -4],
+							"easing": "easeInOutCubic"
+						},
+						"2.0": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutCubic"
+						}
+					}
 				}
 			}
 		}

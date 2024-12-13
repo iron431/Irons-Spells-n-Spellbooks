@@ -3,6 +3,8 @@ package io.redspace.ironsspellbooks.entity.mobs.goals;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.Optional;
+
 public class AttackAnimationData {
     public record AttackKeyframe(int timeStamp, Vec3 lungeVector,
                                  Vec3 extraKnockback/*, Vec2 knockbackMultipliers, float damageMultiplier*/) {
@@ -16,6 +18,7 @@ public class AttackAnimationData {
     public final String animationId;
     public final Int2ObjectOpenHashMap<AttackKeyframe> attacks;
     public final boolean canCancel;
+    public final Optional<Float> areaAttackThreshold;
 
     public AttackAnimationData(int lengthInTicks, String animationId, int... attackTimestamps) {
         this.animationId = animationId;
@@ -25,6 +28,7 @@ public class AttackAnimationData {
         for (int i : attackTimestamps) {
             attacks.put(i, new AttackKeyframe(i, new Vec3(0, 0, .45f)/*, Vec2.ONE, 1f*/));
         }
+        this.areaAttackThreshold = Optional.empty();
     }
 
     public AttackAnimationData(int lengthInTicks, String animationId, AttackKeyframe... attacks) {
@@ -35,6 +39,7 @@ public class AttackAnimationData {
         for (AttackKeyframe a : attacks) {
             this.attacks.put(a.timeStamp, a);
         }
+        this.areaAttackThreshold = Optional.empty();
     }
 
     public AttackAnimationData(boolean canCancel, int lengthInTicks, String animationId, AttackKeyframe... attacks) {
@@ -45,6 +50,18 @@ public class AttackAnimationData {
         for (AttackKeyframe a : attacks) {
             this.attacks.put(a.timeStamp, a);
         }
+        this.areaAttackThreshold = Optional.empty();
+    }
+
+    public AttackAnimationData(boolean canCancel, float areaAttackThreshold, int lengthInTicks, String animationId, AttackKeyframe... attacks) {
+        this.animationId = animationId;
+        this.lengthInTicks = lengthInTicks;
+        this.attacks = new Int2ObjectOpenHashMap<>();
+        this.canCancel = canCancel;
+        for (AttackKeyframe a : attacks) {
+            this.attacks.put(a.timeStamp, a);
+        }
+        this.areaAttackThreshold = Optional.of(areaAttackThreshold);
     }
 
     /**

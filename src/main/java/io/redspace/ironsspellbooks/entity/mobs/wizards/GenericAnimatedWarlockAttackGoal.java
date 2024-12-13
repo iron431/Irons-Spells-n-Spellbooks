@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.network.SyncAnimationPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -53,22 +54,21 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
                 Vec3 lunge = attackData.lungeVector().yRot(f);
                 mob.push(lunge.x, lunge.y, lunge.z);
 
-                if (distanceSquared <= meleeRange * meleeRange) {
-                    boolean flag = this.mob.doHurtTarget(target);
-                    target.invulnerableTime = 0;
-                    if (flag) {
-                        if (attackData.extraKnockback() != Vec3.ZERO) {
-                            target.setDeltaMovement(target.getDeltaMovement().add(attackData.extraKnockback().yRot(f)));
-                        }
-                        if (currentAttack.isSingleHit() && ((mob.getRandom().nextFloat() < (comboChance * (target.isBlocking() ? 2 : 1))))) {
-                            //Attack again! combos!
-                            queueCombo = randomizeNextAttack(0);
-                        }
+                var forward = mob.getForward();
+                // if this is an area attack, collect all nearby like-entities, and evaluate a dot product to determine if our area cone can hit them
+                var targets = currentAttack.areaAttackThreshold.isEmpty() ?
+                        List.of(target) :
+                        mob.level.getEntitiesOfClass(target.getClass(), mob.getBoundingBox().inflate(attackRadius),
+                                (entity -> forward.dot(entity.position().subtract(mob.position()).normalize()) >= currentAttack.areaAttackThreshold.get())
+                        );
+                for (LivingEntity target : targets) {
+                    if (target.distanceToSqr(mob) <= meleeRange * meleeRange) {
+                        handleDamaging(target, attackData);
                     }
                 }
             }
-            if(currentAttack.canCancel){
-                if(distanceSquared > meleeRange * meleeRange * 2 * 2){
+            if (currentAttack.canCancel) {
+                if (distanceSquared > meleeRange * meleeRange * 2 * 2) {
                     stopMeleeAction();
                 }
             }
@@ -93,6 +93,21 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
         }
     }
 
+    private void handleDamaging(LivingEntity target, AttackAnimationData.AttackKeyframe attackData) {
+        boolean flag = this.mob.doHurtTarget(target);
+        target.invulnerableTime = 0;
+        float f = -Utils.getAngle(mob.getX(), mob.getZ(), target.getX(), target.getZ()) - Mth.HALF_PI;
+        if (flag) {
+            if (attackData.extraKnockback() != Vec3.ZERO) {
+                target.setDeltaMovement(target.getDeltaMovement().add(attackData.extraKnockback().yRot(f)));
+            }
+            if (currentAttack.isSingleHit() && ((mob.getRandom().nextFloat() < (comboChance * (target.isBlocking() ? 2 : 1))))) {
+                //Attack again! combos!
+                queueCombo = randomizeNextAttack(0);
+            }
+        }
+    }
+
     private AttackAnimationData randomizeNextAttack(float distanceSquared) {
         //TODO: IAttackAnimationProvider?
         if (this.moveList.isEmpty()) {
@@ -111,8 +126,8 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
         mob.setYRot(yRot);
     }
 
-    protected void stopMeleeAction(){
-        if(currentAttack != null){
+    protected void stopMeleeAction() {
+        if (currentAttack != null) {
             meleeAnimTimer = 0;
             PacketDistributor.sendToPlayersTrackingEntity(mob, new SyncAnimationPacket<>("", mob));
         }
