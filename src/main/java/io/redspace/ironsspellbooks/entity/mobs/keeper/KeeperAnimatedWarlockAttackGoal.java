@@ -32,6 +32,11 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     private Vec3 oldLungePos;
 
     @Override
+    public boolean isActing() {
+        return super.isActing() || meleeAnimTimer > 0;
+    }
+
+    @Override
     protected void handleAttackLogic(double distanceSquared) {
         //Handling Animation hit frames
         var meleeRange = meleeRange();

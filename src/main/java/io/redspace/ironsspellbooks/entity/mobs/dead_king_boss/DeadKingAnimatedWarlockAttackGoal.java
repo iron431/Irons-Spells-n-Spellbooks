@@ -29,6 +29,11 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     public DeadKingBoss.AttackType queueCombo;
 
     @Override
+    public boolean isActing() {
+        return super.isActing() || meleeAnimTimer > 0;
+    }
+
+    @Override
     protected void handleAttackLogic(double distanceSquared) {
         var meleeRange = meleeRange();
         if (meleeAnimTimer < 0 && (!wantsToMelee || distanceSquared > meleeRange * meleeRange || spellCastingMob.isCasting())) {

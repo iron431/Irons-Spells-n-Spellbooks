@@ -56,6 +56,7 @@ public class WizardAttackGoal extends Goal {
     protected boolean drinksPotions;
     protected final PathfinderMob mob;
     protected final IMagicEntity spellCastingMob;
+
     public WizardAttackGoal(IMagicEntity abstractSpellCastingMob, double pSpeedModifier, int pAttackInterval) {
         this(abstractSpellCastingMob, pSpeedModifier, pAttackInterval, pAttackInterval);
     }
@@ -65,7 +66,8 @@ public class WizardAttackGoal extends Goal {
         this.spellCastingMob = abstractSpellCastingMob;
         if (abstractSpellCastingMob instanceof PathfinderMob m) {
             this.mob = m;
-        }else throw new IllegalStateException("Unable to add " + this.getClass().getSimpleName() + "to entity, must extend PathfinderMob.");
+        } else
+            throw new IllegalStateException("Unable to add " + this.getClass().getSimpleName() + "to entity, must extend PathfinderMob.");
 
         this.speedModifier = pSpeedModifier;
         this.attackIntervalMin = pAttackIntervalMin;
@@ -216,6 +218,10 @@ public class WizardAttackGoal extends Goal {
                 spellCastingMob.cancelCast();
             }
         }
+    }
+
+    public boolean isActing() {
+        return spellCastingMob.isCasting() || spellCastingMob.isDrinkingPotion();
     }
 
     protected void resetAttackTimer(double distanceSquared) {

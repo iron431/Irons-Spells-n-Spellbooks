@@ -35,6 +35,11 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
     float comboChance = .3f;
 
     @Override
+    public boolean isActing() {
+        return super.isActing() || meleeAnimTimer > 0;
+    }
+
+    @Override
     protected void handleAttackLogic(double distanceSquared) {
         var meleeRange = meleeRange();
         if (meleeAnimTimer < 0 && (!wantsToMelee || distanceSquared > meleeRange * meleeRange || mob.isCasting())) {
@@ -68,7 +73,9 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
                 }
             }
             if (currentAttack.canCancel) {
-                if (distanceSquared > meleeRange * meleeRange * 2 * 2) {
+                Vec3 delta = mob.position().subtract(target.position());
+                var modifiedDistanceSquared = delta.x * delta.x + delta.y * delta.y * .6 * .6 + delta.z * delta.z;
+                if (modifiedDistanceSquared > meleeRange * meleeRange * 2 * 2) {
                     stopMeleeAction();
                 }
             }
