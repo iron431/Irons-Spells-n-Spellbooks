@@ -36,7 +36,11 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
 
     @Override
     public boolean isActing() {
-        return super.isActing() || meleeAnimTimer > 0;
+        return super.isActing() || isMeleeing();
+    }
+
+    public boolean isMeleeing() {
+        return meleeAnimTimer > 0;
     }
 
     @Override
@@ -74,8 +78,8 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
             }
             if (currentAttack.canCancel) {
                 Vec3 delta = mob.position().subtract(target.position());
-                var modifiedDistanceSquared = delta.x * delta.x + delta.y * delta.y * .6 * .6 + delta.z * delta.z;
-                if (modifiedDistanceSquared > meleeRange * meleeRange * 2 * 2) {
+                var modifiedDistanceSquared = delta.x * delta.x + delta.y * delta.y * .5 * .5 + delta.z * delta.z;
+                if (modifiedDistanceSquared > meleeRange * meleeRange * 1.8 * 1.8) {
                     stopMeleeAction();
                 }
             }

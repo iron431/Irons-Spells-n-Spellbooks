@@ -9,12 +9,15 @@ import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.Abstra
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
 import io.redspace.ironsspellbooks.entity.mobs.goals.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
-import io.redspace.ironsspellbooks.entity.mobs.goals.WizardAttackGoal;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.GenericAnimatedWarlockAttackGoal;
 import io.redspace.ironsspellbooks.network.SyncAnimationPacket;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import net.minecraft.server.level.ServerBossEvent;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -81,22 +84,69 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         };
     }
 
-    WizardAttackGoal attackGoal;
+    private final ServerBossEvent bossEvent = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true);
+
+    public void startSeenByPlayer(ServerPlayer pPlayer) {
+        super.startSeenByPlayer(pPlayer);
+        this.bossEvent.addPlayer(pPlayer);
+//        PacketDistributor.sendToPlayer(pPlayer, new EntityEventPacket<DeadKingBoss>(this, START_MUSIC));
+    }
+
+    public void stopSeenByPlayer(ServerPlayer pPlayer) {
+        super.stopSeenByPlayer(pPlayer);
+        this.bossEvent.removePlayer(pPlayer);
+//        PacketDistributor.sendToPlayer(pPlayer, new EntityEventPacket<DeadKingBoss>(this, STOP_MUSIC));
+    }
+
+    GenericAnimatedWarlockAttackGoal<?> attackGoal;
 
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.attackGoal = new GenericAnimatedWarlockAttackGoal<>(this, 1.25f, 50, 75)
+        this.attackGoal = (GenericAnimatedWarlockAttackGoal<?>) new GenericAnimatedWarlockAttackGoal<>(this, 1.25f, 50, 75)
                 .setMoveset(List.of(
-                        new AttackAnimationData(40, "scythe_backpedal", new AttackAnimationData.AttackKeyframe(20, new Vec3(0, .3, -2))),
-                        new AttackAnimationData(false, 0.25f, 40, "scythe_low_rightward_sweep", new AttackAnimationData.AttackKeyframe(20, new Vec3(0, .1, 0.8))),
-                        new AttackAnimationData(54, "scythe_sideslash_downslash", 18, 32),
-                        new AttackAnimationData(true, 45, "scythe_jump_combo",
-                                new AttackAnimationData.AttackKeyframe(20, new Vec3(0, 1, 0), new Vec3(0, 1.15, .1)),
-                                new AttackAnimationData.AttackKeyframe(35, new Vec3(0, 0, 0), new Vec3(0, 0, 0.5))),
-                        new AttackAnimationData(true, 60, "scythe_downslash_pull",
-                                new AttackAnimationData.AttackKeyframe(22, new Vec3(0, 0, .5f), new Vec3(0, -.2, 0)),
-                                new AttackAnimationData.AttackKeyframe(38, new Vec3(0, .2, -0.8), new Vec3(0, .3, -1.8)))
+                        AttackAnimationData.builder("scythe_backpedal")
+                                .length(40)
+                                .attacks(
+                                        new AttackAnimationData.AttackKeyframe(20, new Vec3(0, .3, -2))
+                                )
+                                .build(),
+                        AttackAnimationData.builder("scythe_low_rightward_sweep")
+                                .length(40)
+                                .area(0.25f)
+                                .attacks(
+                                        new AttackAnimationData.AttackKeyframe(20, new Vec3(0, .1, 0.8))
+                                )
+                                .build(),
+                        AttackAnimationData.builder("scythe_sideslash_downslash")
+                                .length(54)
+                                .attacks(18, 32)
+                                .build(),
+                        AttackAnimationData.builder("scythe_jump_combo")
+                                .length(45)
+                                .cancellable()
+                                .attacks(
+                                        new AttackAnimationData.AttackKeyframe(20, new Vec3(0, 1, 0), new Vec3(0, 1.15, .1)),
+                                        new AttackAnimationData.AttackKeyframe(35, new Vec3(0, 0, -.2), new Vec3(0, 0, 0.5))
+                                )
+                                .build(),
+                        AttackAnimationData.builder("scythe_downslash_pull")
+                                .length(60)
+                                .cancellable()
+                                .attacks(
+                                        new AttackAnimationData.AttackKeyframe(22, new Vec3(0, 0, .5f), new Vec3(0, -.2, 0)),
+                                        new AttackAnimationData.AttackKeyframe(38, new Vec3(0, .2, -0.8), new Vec3(0, .3, -1.8))
+                                )
+                                .build(),
+                        AttackAnimationData.builder("scythe_horizontal_slash_spin")
+                                .length(45)
+                                .area(0.25f)
+                                .attacks(
+                                        new AttackAnimationData.AttackKeyframe(16, new Vec3(0, 0, -0.5), new Vec3(0, .1, -1)),
+                                        new AttackAnimationData.AttackKeyframe(36, new Vec3(0, 0, 1), new Vec3(0, .3, 1))
+                                )
+                                .build()
+
                 ))
                 .setComboChance(.4f)
                 .setMeleeAttackInverval(0, 30)
@@ -120,13 +170,20 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     @Override
+    public void tick() {
+        super.tick();
+        this.bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
+    }
+
+    @Override
     public void calculateEntityAnimation(boolean pIncludeHeight) {
         super.calculateEntityAnimation(false);
     }
 
     @Override
     protected void updateWalkAnimation(float f) {
-        super.updateWalkAnimation(f * (this.onGround() ? .9f : .3f));
+        //reduce walk animation swing if we are floating or meleeing
+        super.updateWalkAnimation(f * ((!this.onGround() || attackGoal.isMeleeing()) ? .3f : .9f));
     }
 
     @Override
@@ -199,8 +256,20 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
-        //parry
-        if (!level.isClientSide && !attackGoal.isActing() && this.random.nextFloat() < 0.5) {
+        /*
+        can parry:
+        - serverside
+        - we aren't in melee attack anim or spell cast
+        - the damage source is caused by an entity (ie not fall damage)
+        - the damage is caused within our rough field of vision (117 degrees)
+        - the damage is not /kill
+         */
+        boolean canParry = !level.isClientSide &&
+                !attackGoal.isActing() &&
+                pSource.getEntity() != null &&
+                pSource.getSourcePosition() != null && pSource.getSourcePosition().subtract(this.position()).normalize().dot(this.getForward()) >= 0.35
+                && !pSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY);
+        if (canParry && this.random.nextFloat() < 0.5) {
             PacketDistributor.sendToPlayersTrackingEntity(this, new SyncAnimationPacket<>("instant_self", this));
             this.playSound(SoundEvents.SHIELD_BLOCK);
             return false;
