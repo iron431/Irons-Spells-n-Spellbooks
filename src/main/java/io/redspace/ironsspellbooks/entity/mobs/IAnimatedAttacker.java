@@ -7,7 +7,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 public interface IAnimatedAttacker {
     void playAnimation(String animationId);
 
-    default <T extends Entity & IAnimatedAttacker> void serverTriggerAnimation(String animationId, T mob) {
-        PacketDistributor.sendToPlayersTrackingEntity(mob, new SyncAnimationPacket<>(animationId, mob));
+    default <T extends Entity & IAnimatedAttacker> void serverTriggerAnimation(String animationId) {
+        PacketDistributor.sendToPlayersTrackingEntity((T) this, new SyncAnimationPacket<>(animationId, (T) this));
     }
 }

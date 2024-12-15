@@ -3,6 +3,8 @@ package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.util.CameraShakeData;
+import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
@@ -175,8 +177,8 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     private final ServerBossEvent bossEvent = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true);
     int stanceBreakCounter;
     int stanceBreakTimer;
-    static final int STANCE_BREAK_ANIM_TIME = (int) (9.21 * 20);
-    static final int ERUPTION_BEING_ANIM_TIME = (int) (5.13 * 20);
+    static final int STANCE_BREAK_ANIM_TIME = (int) (10.5 * 20);
+    static final int ERUPTION_BEGIN_ANIM_TIME = (int) (6.5 * 20);
     static final int STANCE_BREAK_COUNT = 2;
 
     public void triggerStanceBreak() {
@@ -184,7 +186,15 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         stanceBreakTimer = STANCE_BREAK_ANIM_TIME;
         this.castComplete();
         this.attackGoal.stop();
-        this.serverTriggerAnimation("fire_boss_break_stance", this);
+        this.serverTriggerAnimation("fire_boss_break_stance");
+//        FireField visualFire = new FireField(this.level);
+//        visualFire.setDamage(0);
+//        visualFire.setRadius(1);
+//        float f = (14 - 1) / 4f / ERUPTION_BEGIN_ANIM_TIME;
+//        visualFire.setRadiusPerTick(f);
+//        visualFire.setDuration(ERUPTION_BEGIN_ANIM_TIME);
+//        visualFire.moveTo(Utils.moveToRelativeGroundLevel(level, this.position(), 2));
+//        level.addFreshEntity(visualFire);
     }
 
     public boolean isStanceBroken() {
@@ -206,13 +216,13 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             if (isStanceBroken()) {
                 stanceBreakTimer--;
                 int tick = STANCE_BREAK_ANIM_TIME - stanceBreakTimer;
-                if (tick >= ERUPTION_BEING_ANIM_TIME) {
-                    if (tick == ERUPTION_BEING_ANIM_TIME) {
-                        createEruptionEntity(4, 15);
-                    } else if (tick == ERUPTION_BEING_ANIM_TIME + 25) {
-                        createEruptionEntity(7, 25);
-                    } else if (tick == ERUPTION_BEING_ANIM_TIME + 50) {
-                        createEruptionEntity(12, 40);
+                if (tick >= ERUPTION_BEGIN_ANIM_TIME) {
+                    if (tick == ERUPTION_BEGIN_ANIM_TIME) {
+                        createEruptionEntity(6, 15);
+                    } else if (tick == ERUPTION_BEGIN_ANIM_TIME + 25) {
+                        createEruptionEntity(9, 25);
+                    } else if (tick == ERUPTION_BEGIN_ANIM_TIME + 50) {
+                        createEruptionEntity(14, 40);
                     }
                 }
             }
@@ -227,6 +237,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         aoe.setDamage(damage);
         aoe.moveTo(pos);
         level.addFreshEntity(aoe);
+        CameraShakeManager.addCameraShake(new CameraShakeData(10 + (int) radius, pos, radius * 2 + 5));
     }
 
     @Override
