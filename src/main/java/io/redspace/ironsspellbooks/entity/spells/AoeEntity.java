@@ -111,7 +111,7 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
 
     @Override
     protected boolean canHitEntity(Entity pTarget) {
-        return (getOwner() != null && pTarget != getOwner() && !getOwner().isAlliedTo(pTarget)) && super.canHitEntity(pTarget);
+        return (getOwner() == null || (pTarget != getOwner() && !getOwner().isAlliedTo(pTarget))) && super.canHitEntity(pTarget);
     }
 
     /**

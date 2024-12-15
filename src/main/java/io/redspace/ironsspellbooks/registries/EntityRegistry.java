@@ -533,5 +533,11 @@ public class EntityRegistry {
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "fire_arrow").toString()));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<FireEruptionAoe>> FIRE_ERUPTION_AOE =
+            ENTITIES.register("fire_eruption", () -> EntityType.Builder.<FireEruptionAoe>of(FireEruptionAoe::new, MobCategory.MISC)
+                    .sized(4f, .8f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "fire_eruption").toString()));
+
 }
 

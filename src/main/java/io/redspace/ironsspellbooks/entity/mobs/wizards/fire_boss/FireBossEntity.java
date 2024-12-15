@@ -4,14 +4,18 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
 import io.redspace.ironsspellbooks.entity.mobs.goals.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.GenericAnimatedWarlockAttackGoal;
+import io.redspace.ironsspellbooks.entity.spells.FireEruptionAoe;
 import io.redspace.ironsspellbooks.network.SyncAnimationPacket;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -84,7 +88,6 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         };
     }
 
-    private final ServerBossEvent bossEvent = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true);
 
     public void startSeenByPlayer(ServerPlayer pPlayer) {
         super.startSeenByPlayer(pPlayer);
@@ -169,10 +172,77 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
     }
 
+    private final ServerBossEvent bossEvent = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true);
+    int stanceBreakCounter;
+    int stanceBreakTimer;
+    static final int STANCE_BREAK_ANIM_TIME = (int) (9.21 * 20);
+    static final int ERUPTION_BEING_ANIM_TIME = (int) (5.13 * 20);
+    static final int STANCE_BREAK_COUNT = 2;
+
+    public void triggerStanceBreak() {
+        stanceBreakCounter++;
+        stanceBreakTimer = STANCE_BREAK_ANIM_TIME;
+        this.castComplete();
+        this.attackGoal.stop();
+        this.serverTriggerAnimation("fire_boss_break_stance", this);
+    }
+
+    public boolean isStanceBroken() {
+        return stanceBreakTimer > 0;
+    }
+
+    @Override
+    protected boolean isImmobile() {
+        return super.isImmobile() || isStanceBroken();
+    }
+
     @Override
     public void tick() {
         super.tick();
-        this.bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
+        float maxHealth = this.getMaxHealth();
+        float currentHealth = this.getHealth();
+        this.bossEvent.setProgress(currentHealth / maxHealth);
+        if (!level.isClientSide) {
+            if (isStanceBroken()) {
+                stanceBreakTimer--;
+                int tick = STANCE_BREAK_ANIM_TIME - stanceBreakTimer;
+                if (tick >= ERUPTION_BEING_ANIM_TIME) {
+                    if (tick == ERUPTION_BEING_ANIM_TIME) {
+                        createEruptionEntity(4, 15);
+                    } else if (tick == ERUPTION_BEING_ANIM_TIME + 25) {
+                        createEruptionEntity(7, 25);
+                    } else if (tick == ERUPTION_BEING_ANIM_TIME + 50) {
+                        createEruptionEntity(12, 40);
+                    }
+                }
+            }
+        }
+    }
+
+    private void createEruptionEntity(float radius, float damage) {
+        Vec3 forward = this.getForward().multiply(1, 0, 1).normalize().scale(3);
+        Vec3 pos = Utils.moveToRelativeGroundLevel(level, this.position().add(forward).add(0, 1, 0), 2);
+        FireEruptionAoe aoe = new FireEruptionAoe(level, radius);
+        aoe.setOwner(this);
+        aoe.setDamage(damage);
+        aoe.moveTo(pos);
+        level.addFreshEntity(aoe);
+    }
+
+    @Override
+    protected void customServerAiStep() {
+        super.customServerAiStep();
+        float maxHealth = this.getMaxHealth();
+        float currentHealth = this.getHealth();
+        float eruptionHealthStep = maxHealth / (STANCE_BREAK_COUNT + 1);
+        if (currentHealth < maxHealth - eruptionHealthStep * (stanceBreakCounter + 1)) {
+            MagicManager.spawnParticles(level, ParticleTypes.LAVA, getX(), getY(), getZ(), 100, 1, 1, 1, 1, true);
+            triggerStanceBreak();
+        }
+
+        if (this.tickCount % 30 == 0 && this.getTarget() == null && this.tickCount - this.getLastHurtByMobTimestamp() > 100) {
+            this.heal(10);
+        }
     }
 
     @Override
@@ -183,7 +253,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     @Override
     protected void updateWalkAnimation(float f) {
         //reduce walk animation swing if we are floating or meleeing
-        super.updateWalkAnimation(f * ((!this.onGround() || attackGoal.isMeleeing()) ? .3f : .9f));
+        super.updateWalkAnimation(f * ((!this.onGround() || this.isAnimating()) ? .3f : .9f));
     }
 
     @Override
@@ -256,6 +326,9 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
+        if (level.isClientSide) {
+            return false;
+        }
         /*
         can parry:
         - serverside
@@ -265,6 +338,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         - the damage is not /kill
          */
         boolean canParry = !level.isClientSide &&
+                !isImmobile() &&
                 !attackGoal.isActing() &&
                 pSource.getEntity() != null &&
                 pSource.getSourcePosition() != null && pSource.getSourcePosition().subtract(this.position()).normalize().dot(this.getForward()) >= 0.35
@@ -274,6 +348,35 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             this.playSound(SoundEvents.SHIELD_BLOCK);
             return false;
         }
+        if (isStanceBroken()) {
+            pAmount *= 0.5f;
+        }
         return super.hurt(pSource, pAmount);
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag pCompound) {
+        super.addAdditionalSaveData(pCompound);
+        pCompound.putInt("stanceBreakCount", stanceBreakCounter);
+        if (stanceBreakTimer > 0) {
+            pCompound.putInt("stanceBreakTime", stanceBreakTimer);
+        }
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag pCompound) {
+        super.readAdditionalSaveData(pCompound);
+        this.stanceBreakCounter = pCompound.getInt("stanceBreakCount");
+        if (this.hasCustomName()) {
+            this.bossEvent.setName(this.getDisplayName());
+        }
+        int stanceTime = pCompound.getInt("stanceBreakTime");
+        if (stanceTime > 0) {
+            this.stanceBreakTimer = stanceTime;
+            if (level.isClientSide) {
+                //todo: sync anim to completed time
+                this.animationToPlay = RawAnimation.begin().thenPlay("fire_boss_break_stance");
+            }
+        }
     }
 }
