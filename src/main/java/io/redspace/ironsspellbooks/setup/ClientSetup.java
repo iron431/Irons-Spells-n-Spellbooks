@@ -320,6 +320,7 @@ public class ClientSetup {
         event.registerSpriteSet(ParticleRegistry.SPARK_PARTICLE.get(), SparkParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.SNOW_DUST.get(), SnowDustParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.CLEANSE_PARTICLE.get(), CleanseParticle.Provider::new);
+        event.registerSpriteSet(ParticleRegistry.FLAME_STRIKE_PARTICLE.get(), FlameStrikeParticle.Provider::new);
 
     }
 
