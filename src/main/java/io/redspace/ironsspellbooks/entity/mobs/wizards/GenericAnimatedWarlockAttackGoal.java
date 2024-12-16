@@ -3,8 +3,9 @@ package io.redspace.ironsspellbooks.entity.mobs.wizards;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
-import io.redspace.ironsspellbooks.entity.mobs.goals.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WarlockAttackGoal;
+import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
+import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.network.SyncAnimationPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -27,7 +28,7 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
     }
 
     List<AttackAnimationData> moveList = new ArrayList<>();
-    final T mob;
+    protected final T mob;
     int meleeAnimTimer = -1;
     public @Nullable AttackAnimationData currentAttack;
     public @Nullable AttackAnimationData nextAttack;
@@ -57,24 +58,7 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
             forceFaceTarget();
             meleeAnimTimer--;
             if (currentAttack.isHitFrame(meleeAnimTimer)) {
-                playSwingSound();
-                AttackAnimationData.AttackKeyframe attackData = currentAttack.getHitFrame(meleeAnimTimer);
-                float f = -Utils.getAngle(mob.getX(), mob.getZ(), target.getX(), target.getZ()) - Mth.HALF_PI;
-                Vec3 lunge = attackData.lungeVector().yRot(f);
-                mob.push(lunge.x, lunge.y, lunge.z);
-
-                var forward = mob.getForward();
-                // if this is an area attack, collect all nearby like-entities, and evaluate a dot product to determine if our area cone can hit them
-                var targets = currentAttack.areaAttackThreshold.isEmpty() ?
-                        List.of(target) :
-                        mob.level.getEntitiesOfClass(target.getClass(), mob.getBoundingBox().inflate(attackRadius),
-                                (entity -> forward.dot(entity.position().subtract(mob.position()).normalize()) >= currentAttack.areaAttackThreshold.get())
-                        );
-                for (LivingEntity target : targets) {
-                    if (target.distanceToSqr(mob) <= meleeRange * meleeRange) {
-                        handleDamaging(target, attackData);
-                    }
-                }
+                onHitFrame(meleeRange);
             }
             if (currentAttack.canCancel) {
                 Vec3 delta = mob.position().subtract(target.position());
@@ -104,7 +88,28 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
         }
     }
 
-    private void handleDamaging(LivingEntity target, AttackAnimationData.AttackKeyframe attackData) {
+    protected void onHitFrame(float meleeRange) {
+        playSwingSound();
+        AttackKeyframe attackData = currentAttack.getHitFrame(meleeAnimTimer);
+        float f = -Utils.getAngle(mob.getX(), mob.getZ(), target.getX(), target.getZ()) - Mth.HALF_PI;
+        Vec3 lunge = attackData.lungeVector().yRot(f);
+        mob.push(lunge.x, lunge.y, lunge.z);
+
+        var forward = mob.getForward();
+        // if this is an area attack, collect all nearby like-entities, and evaluate a dot product to determine if our area cone can hit them
+        var targets = currentAttack.areaAttackThreshold.isEmpty() ?
+                List.of(target) :
+                mob.level.getEntitiesOfClass(target.getClass(), mob.getBoundingBox().inflate(attackRadius),
+                        (entity -> forward.dot(entity.position().subtract(mob.position()).normalize()) >= currentAttack.areaAttackThreshold.get())
+                );
+        for (LivingEntity target : targets) {
+            if (target.distanceToSqr(mob) <= meleeRange * meleeRange) {
+                handleDamaging(target, attackData);
+            }
+        }
+    }
+
+    private void handleDamaging(LivingEntity target, AttackKeyframe attackData) {
         boolean flag = this.mob.doHurtTarget(target);
         target.invulnerableTime = 0;
         float f = -Utils.getAngle(mob.getX(), mob.getZ(), target.getX(), target.getZ()) - Mth.HALF_PI;

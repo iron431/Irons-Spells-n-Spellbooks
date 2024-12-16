@@ -10,9 +10,9 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
-import io.redspace.ironsspellbooks.entity.mobs.goals.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
-import io.redspace.ironsspellbooks.entity.mobs.wizards.GenericAnimatedWarlockAttackGoal;
+import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
+import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.entity.spells.FireEruptionAoe;
 import io.redspace.ironsspellbooks.network.SyncAnimationPacket;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -103,24 +103,24 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 //        PacketDistributor.sendToPlayer(pPlayer, new EntityEventPacket<DeadKingBoss>(this, STOP_MUSIC));
     }
 
-    GenericAnimatedWarlockAttackGoal<?> attackGoal;
+    FireBossAttackGoal attackGoal;
 
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.attackGoal = (GenericAnimatedWarlockAttackGoal<?>) new GenericAnimatedWarlockAttackGoal<>(this, 1.25f, 50, 75)
+        this.attackGoal = (FireBossAttackGoal) new FireBossAttackGoal(this, 1.25f, 50, 75)
                 .setMoveset(List.of(
                         AttackAnimationData.builder("scythe_backpedal")
                                 .length(40)
                                 .attacks(
-                                        new AttackAnimationData.AttackKeyframe(20, new Vec3(0, .3, -2))
+                                        new AttackKeyframe(20, new Vec3(0, .3, -2))
                                 )
                                 .build(),
                         AttackAnimationData.builder("scythe_low_rightward_sweep")
                                 .length(40)
                                 .area(0.25f)
                                 .attacks(
-                                        new AttackAnimationData.AttackKeyframe(20, new Vec3(0, .1, 0.8))
+                                        new AttackKeyframe(20, new Vec3(0, .1, 0.8))
                                 )
                                 .build(),
                         AttackAnimationData.builder("scythe_sideslash_downslash")
@@ -131,24 +131,24 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                                 .length(45)
                                 .cancellable()
                                 .attacks(
-                                        new AttackAnimationData.AttackKeyframe(20, new Vec3(0, 1, 0), new Vec3(0, 1.15, .1)),
-                                        new AttackAnimationData.AttackKeyframe(35, new Vec3(0, 0, -.2), new Vec3(0, 0, 0.5))
+                                        new AttackKeyframe(20, new Vec3(0, 1, 0), new Vec3(0, 1.15, .1)),
+                                        new AttackKeyframe(35, new Vec3(0, 0, -.2), new Vec3(0, 0, 0.5))
                                 )
                                 .build(),
                         AttackAnimationData.builder("scythe_downslash_pull")
                                 .length(60)
                                 .cancellable()
                                 .attacks(
-                                        new AttackAnimationData.AttackKeyframe(22, new Vec3(0, 0, .5f), new Vec3(0, -.2, 0)),
-                                        new AttackAnimationData.AttackKeyframe(38, new Vec3(0, .2, -0.8), new Vec3(0, .3, -1.8))
+                                        new AttackKeyframe(22, new Vec3(0, 0, .5f), new Vec3(0, -.2, 0)),
+                                        new AttackKeyframe(38, new Vec3(0, .2, -0.8), new Vec3(0, .3, -1.8))
                                 )
                                 .build(),
                         AttackAnimationData.builder("scythe_horizontal_slash_spin")
                                 .length(45)
                                 .area(0.25f)
                                 .attacks(
-                                        new AttackAnimationData.AttackKeyframe(16, new Vec3(0, 0, -0.5), new Vec3(0, .1, -1)),
-                                        new AttackAnimationData.AttackKeyframe(36, new Vec3(0, 0, 1), new Vec3(0, .3, 1))
+                                        new AttackKeyframe(16, new Vec3(0, 0, -0.5), new Vec3(0, .1, -1)),
+                                        new AttackKeyframe(36, new Vec3(0, 0, 1), new Vec3(0, .3, 1))
                                 )
                                 .build()
 
@@ -231,7 +231,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     private void createEruptionEntity(float radius, float damage) {
         Vec3 forward = this.getForward().multiply(1, 0, 1).normalize().scale(3);
-        Vec3 pos = Utils.moveToRelativeGroundLevel(level, this.position().add(forward).add(0, 1, 0), 2);
+        Vec3 pos = Utils.moveToRelativeGroundLevel(level, this.position().add(forward).add(0, 1, 0), 4);
         FireEruptionAoe aoe = new FireEruptionAoe(level, radius);
         aoe.setOwner(this);
         aoe.setDamage(damage);
