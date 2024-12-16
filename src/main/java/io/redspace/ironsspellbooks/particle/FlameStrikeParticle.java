@@ -21,8 +21,7 @@ public class FlameStrikeParticle extends TextureSheetParticle {
     private static final Vector3f TRANSFORM_VECTOR = new Vector3f(-1.0F, -1.0F, 0.0F);
     private static final float DEGREES_90 = Mth.PI / 2f;
     private final SpriteSet sprites;
-    private final float xrot;
-    private final float yrot;
+    private final Vec3 normal;
 
     FlameStrikeParticle(ClientLevel pLevel, double pX, double pY, double pZ, SpriteSet spriteSet, double xd, double yd, double zd, FlameStrikeParticleOptions options) {
         super(pLevel, pX, pY, pZ, 0, 0, 0);
@@ -35,9 +34,8 @@ public class FlameStrikeParticle extends TextureSheetParticle {
         this.gravity = 0;
         sprites = spriteSet;
 
-        this.xrot = options.xrot * Mth.DEG_TO_RAD;
-        this.yrot = options.yrot * Mth.DEG_TO_RAD;
         this.quadSize = options.scale * 3.25f;
+        this.normal = new Vec3(options.xn, options.yn, options.zn).normalize();
 
         this.friction = 1;
     }
@@ -50,26 +48,82 @@ public class FlameStrikeParticle extends TextureSheetParticle {
         }
     }
 
+    /**
+     * projection_u(v)
+     */
+    public Vec3 proj(Vec3 u, Vec3 v) {
+        return u.scale(v.dot(u) / u.lengthSqr());
+    }
+
     @Override
-    public void render(VertexConsumer buffer, Camera camera, float partialticks) {
+    public void render(VertexConsumer buffer, Camera camera, float partialTick) {
         boolean mirrored = false;
-//        this.renderRotatedParticle(buffer, camera, partialticks, !mirrored, (p_234005_) -> {
-//            p_234005_.mul(Axis.XP.rotation(-DEGREES_90));
-//            p_234005_.mul(Axis.YP.rotation(yrot));
-//            p_234005_.mul(Axis.XP.rotation(xrot));
+        Vec3 forward = this.normal;
+        Vec3 up = new Vec3(0, 1, 0);
+        if (forward.dot(up) > .999) {
+            up = new Vec3(1, 0, 0);
+        }
+        Vec3 right = forward.cross(up);
+
+        // apply gram schmidt orthonormalization
+        up = up.subtract(proj(forward, up)).normalize();
+        right = right.subtract(proj(forward, right)).subtract(proj(up, right)).normalize();
+
+
+        Vec3 vec3 = camera.getPosition();
+        float f = (float) (Mth.lerp(partialTick, this.xo, this.x) - vec3.x());
+        float f1 = (float) (Mth.lerp(partialTick, this.yo, this.y) - vec3.y());
+        float f2 = (float) (Mth.lerp(partialTick, this.zo, this.z) - vec3.z());
+        Vector3f[] vertices = new Vector3f[]{new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F)};
+        for (int i = 0; i < 4; i++) {
+            float x = (float) (forward.x * vertices[i].x +right.x * vertices[i].y);
+            float y = (float) (forward.y * vertices[i].x +right.y * vertices[i].y);
+            float z = (float) (forward.z * vertices[i].x +right.z * vertices[i].y);
+            vertices[i] = new Vector3f(x, y, z);
+            vertices[i].mul(this.getQuadSize(partialTick));
+            vertices[i].add(f, f1, f2);
+        }
+        int j = this.getLightColor(partialTick);
+        this.makeCornerVertex(buffer, vertices[0], this.getU1(), false/*mirror*/ ? this.getV0() : this.getV1(), j);
+        this.makeCornerVertex(buffer, vertices[1], this.getU1(), false/*mirror*/ ? this.getV1() : this.getV0(), j);
+        this.makeCornerVertex(buffer, vertices[2], this.getU0(), false/*mirror*/ ? this.getV1() : this.getV0(), j);
+        this.makeCornerVertex(buffer, vertices[3], this.getU0(), false/*mirror*/ ? this.getV0() : this.getV1(), j);
+//Vec3 orthoXY = new Vec3(-forward.z, forward.y, forward.x);
+//        if (mirrored) {
+//            orthoXY = orthoXY.multiply(-1, 1, -1);
+//        }
 //
-//        });
-//        this.renderRotatedParticle(buffer, camera, partialticks, mirrored, (p_234000_) -> {
-//            p_234000_.mul(Axis.XP.rotation(DEGREES_90));
-//            p_234000_.mul(Axis.YP.rotation(yrot));
-//            p_234000_.mul(Axis.XP.rotation(-xrot));
-//
-//        });
-        Quaternionf quaternionf = new Quaternionf();
-        quaternionf.rotationZYX(yrot, 0, -xrot);
-        this.renderRotatedQuad(buffer, camera, quaternionf, partialticks);
-        quaternionf.rotationZYX(yrot, -Mth.PI, xrot);
-        this.renderRotatedQuad(buffer, camera, quaternionf, partialticks);
+//        Vec3 vec3 = camera.getPosition();
+//        float f = (float) (Mth.lerp(partialTick, this.xo, this.x) - vec3.x());
+//        float f1 = (float) (Mth.lerp(partialTick, this.yo, this.y) - vec3.y());
+//        float f2 = (float) (Mth.lerp(partialTick, this.zo, this.z) - vec3.z());
+//        Vector3f[] vertices = new Vector3f[]{new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F)};
+//        for (int i = 0; i < 4; i++) {
+//            float x = (float) (orthoXY.x * vertices[i].x + forward.x * vertices[i].y);
+//            float y = (float) (orthoXY.y * vertices[i].x + forward.y * vertices[i].y);
+//            float z = (float) (orthoXY.z * vertices[i].x + forward.z * vertices[i].y);
+//            vertices[i] = new Vector3f(x, y, z);
+//            vertices[i].add(f, f1, f2);
+//        }
+//        int j = this.getLightColor(partialTick);
+//        this.makeCornerVertex(buffer, vertices[0], this.getU1(), false/*mirror*/ ? this.getV0() : this.getV1(), j);
+//        this.makeCornerVertex(buffer, vertices[1], this.getU1(), false/*mirror*/ ? this.getV1() : this.getV0(), j);
+//        this.makeCornerVertex(buffer, vertices[2], this.getU0(), false/*mirror*/ ? this.getV1() : this.getV0(), j);
+//        this.makeCornerVertex(buffer, vertices[3], this.getU0(), false/*mirror*/ ? this.getV0() : this.getV1(), j);
+//        Quaternionf quaternionf = new Quaternionf();
+//        quaternionf.rotationZYX(-Mth.PI, 0, 0);
+//        for (int i = 0; i < 4; i++) {
+//            float x = (float) (orthoXY.x * vertices[i].x + forward.x * vertices[i].y);
+//            float y = (float) (orthoXY.y * vertices[i].x + forward.y * vertices[i].y);
+//            float z = (float) (orthoXY.z * vertices[i].x + forward.z * vertices[i].y);
+//            vertices[i] = new Vector3f(x, y, z);
+//            vertices[i].rotate(quaternionf);
+//            vertices[i].add(f, f1, f2);
+//        }
+//        this.makeCornerVertex(buffer, vertices[0], this.getU1(), false/*mirror*/ ? this.getV0() : this.getV1(), j);
+//        this.makeCornerVertex(buffer, vertices[1], this.getU1(), false/*mirror*/ ? this.getV1() : this.getV0(), j);
+//        this.makeCornerVertex(buffer, vertices[2], this.getU0(), false/*mirror*/ ? this.getV1() : this.getV0(), j);
+//        this.makeCornerVertex(buffer, vertices[3], this.getU0(), false/*mirror*/ ? this.getV0() : this.getV1(), j);
     }
 
     private void renderRotatedParticle(VertexConsumer pConsumer, Camera camera, float partialTick, boolean mirror, Consumer<Quaternionf> pQuaternion) {
@@ -99,7 +153,7 @@ public class FlameStrikeParticle extends TextureSheetParticle {
     }
 
     private void makeCornerVertex(VertexConsumer pConsumer, Vector3f pVec3f, float p_233996_, float p_233997_, int p_233998_) {
-        pConsumer.addVertex(pVec3f.x(), pVec3f.y() + .08f, pVec3f.z()).setUv(p_233996_, p_233997_).setColor(this.rCol, this.gCol, this.bCol, this.alpha).setLight(p_233998_);
+        pConsumer.addVertex(pVec3f.x(), pVec3f.y(), pVec3f.z()).setUv(p_233996_, p_233997_).setColor(this.rCol, this.gCol, this.bCol, this.alpha).setLight(p_233998_);
     }
 
     @NotNull

@@ -12,35 +12,32 @@ import org.jetbrains.annotations.NotNull;
 
 public class FlameStrikeParticleOptions implements ParticleOptions {
     public final float scale;
-    public final float xrot;
-    public final float yrot;
+    public final float xn;
+    public final float yn;
+    public final float zn;
 
-    public FlameStrikeParticleOptions(float xrot, float yrot, float scale) {
+    public FlameStrikeParticleOptions(float xn, float yn, float zn, float scale) {
         this.scale = scale;
-        this.xrot = xrot;
-        this.yrot = yrot;
-    }
-
-    public float getScale() {
-        return this.scale;
+        this.xn = xn;
+        this.yn = yn;
+        this.zn = zn;
     }
 
     public static StreamCodec<? super ByteBuf, FlameStrikeParticleOptions> STREAM_CODEC = StreamCodec.of(
             (buf, option) -> {
-                buf.writeFloat(option.xrot);
-                buf.writeFloat(option.yrot);
+                buf.writeFloat(option.xn);
+                buf.writeFloat(option.yn);
+                buf.writeFloat(option.zn);
                 buf.writeFloat(option.scale);
             },
-            (buf) -> {
-                return new FlameStrikeParticleOptions(buf.readFloat(), buf.readFloat(), buf.readFloat());
-            }
+            (buf) -> new FlameStrikeParticleOptions(buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat())
     );
 
-    //For command only?
     public static MapCodec<FlameStrikeParticleOptions> MAP_CODEC = RecordCodecBuilder.mapCodec(object ->
             object.group(
-                    Codec.FLOAT.fieldOf("xrot").forGetter(p -> ((FlameStrikeParticleOptions) p).xrot),
-                    Codec.FLOAT.fieldOf("yrot").forGetter(p -> ((FlameStrikeParticleOptions) p).yrot),
+                    Codec.FLOAT.fieldOf("xn").forGetter(p -> ((FlameStrikeParticleOptions) p).xn),
+                    Codec.FLOAT.fieldOf("yn").forGetter(p -> ((FlameStrikeParticleOptions) p).yn),
+                    Codec.FLOAT.fieldOf("zn").forGetter(p -> ((FlameStrikeParticleOptions) p).zn),
                     Codec.FLOAT.fieldOf("scale").forGetter(p -> ((FlameStrikeParticleOptions) p).scale)
             ).apply(object, FlameStrikeParticleOptions::new
             ));
