@@ -4,6 +4,8 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.GenericAnimatedWarlockAttackGoal;
 import io.redspace.ironsspellbooks.particle.FlameStrikeParticleOptions;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
 public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBossEntity> {
@@ -22,5 +24,10 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
             MagicManager.spawnParticles(mob.level,
                     new FlameStrikeParticleOptions((float) forward.x, (float) forward.y, (float) forward.z, mirrored, vertical, 1f), hitLocation.x, hitLocation.y, hitLocation.z, 1, 0, 0, 0, 0, true);
         }
+    }
+
+    @Override
+    public void playSwingSound() {
+        mob.playSound(SoundRegistry.KEEPER_SWING.get(), 1, Mth.randomBetweenInclusive(mob.getRandom(), 9, 13) * .1f);
     }
 }

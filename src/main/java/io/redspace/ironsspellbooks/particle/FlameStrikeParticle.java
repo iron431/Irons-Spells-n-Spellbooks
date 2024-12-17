@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.particle;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.Util;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
@@ -11,15 +10,9 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-import java.util.function.Consumer;
-
 public class FlameStrikeParticle extends TextureSheetParticle {
-    private static final Vector3f ROTATION_VECTOR = Util.make(new Vector3f(0.5F, 0.5F, 0.5F), Vector3f::normalize);
-    private static final Vector3f TRANSFORM_VECTOR = new Vector3f(-1.0F, -1.0F, 0.0F);
-    private static final float DEGREES_90 = Mth.PI / 2f;
     private final SpriteSet sprites;
     private final Vec3 forward;
     private final boolean mirror, vertical;
@@ -62,6 +55,7 @@ public class FlameStrikeParticle extends TextureSheetParticle {
     @Override
     public void render(VertexConsumer buffer, Camera camera, float partialTick) {
         boolean mirrored = !this.mirror; // based on animation, we actually want the default to be mirrored
+        boolean vertical = this.vertical;
         Vec3 forward = this.forward;
         Vec3 up = new Vec3(0, 1, 0);
         if (forward.dot(up) > .999) {
@@ -73,7 +67,6 @@ public class FlameStrikeParticle extends TextureSheetParticle {
         up = up.subtract(proj(forward, up)).normalize();
         right = right.subtract(proj(forward, right)).subtract(proj(up, right)).normalize();
         Vec3 primary, secondary;
-        boolean vertical = this.vertical;
         if (!vertical) {
             primary = forward;
             secondary = right;
@@ -107,32 +100,6 @@ public class FlameStrikeParticle extends TextureSheetParticle {
         this.makeCornerVertex(buffer, vertices[1], this.getU1(), mirrored ? this.getV1() : this.getV0(), j);
         this.makeCornerVertex(buffer, vertices[0], this.getU1(), mirrored ? this.getV0() : this.getV1(), j);
 
-    }
-
-    private void renderRotatedParticle(VertexConsumer pConsumer, Camera camera, float partialTick, boolean mirror, Consumer<Quaternionf> pQuaternion) {
-        Vec3 vec3 = camera.getPosition();
-        float f = (float) (Mth.lerp(partialTick, this.xo, this.x) - vec3.x());
-        float f1 = (float) (Mth.lerp(partialTick, this.yo, this.y) - vec3.y());
-        float f2 = (float) (Mth.lerp(partialTick, this.zo, this.z) - vec3.z());
-        Quaternionf quaternion = (new Quaternionf()).setAngleAxis(0.0F, ROTATION_VECTOR.x(), ROTATION_VECTOR.y(), ROTATION_VECTOR.z());
-
-        pQuaternion.accept(quaternion);
-        quaternion.transform(TRANSFORM_VECTOR);
-        Vector3f[] avector3f = new Vector3f[]{new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F)};
-        float f3 = this.getQuadSize(partialTick);
-
-        for (int i = 0; i < 4; ++i) {
-            Vector3f vector3f = avector3f[i];
-            vector3f.rotate(quaternion);
-            vector3f.mul(f3);
-            vector3f.add(f, f1, f2);
-        }
-
-        int j = this.getLightColor(partialTick);
-        this.makeCornerVertex(pConsumer, avector3f[0], this.getU1(), mirror ? this.getV0() : this.getV1(), j);
-        this.makeCornerVertex(pConsumer, avector3f[1], this.getU1(), mirror ? this.getV1() : this.getV0(), j);
-        this.makeCornerVertex(pConsumer, avector3f[2], this.getU0(), mirror ? this.getV1() : this.getV0(), j);
-        this.makeCornerVertex(pConsumer, avector3f[3], this.getU0(), mirror ? this.getV0() : this.getV1(), j);
     }
 
     private void makeCornerVertex(VertexConsumer pConsumer, Vector3f pVec3f, float p_233996_, float p_233997_, int p_233998_) {

@@ -25,7 +25,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -84,8 +83,9 @@ public class ScorchSpell extends AbstractSpell {
     public boolean checkPreCastConditions(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         float radius = getRadius(entity);
         var hitResult = Utils.raycastForEntity(level, entity, 32, true, .2f);
-        var area = TargetedAreaEntity.createTargetAreaEntity(level, hitResult.getLocation(), radius, Utils.packRGB(this.getTargetingColor()));
-        playerMagicData.setAdditionalCastData(new TargetAreaCastData(hitResult instanceof  EntityHitResult entityHit ? entityHit.getEntity().position() : hitResult.getLocation(), area));
+        Vec3 location = Utils.moveToRelativeGroundLevel(level, hitResult.getLocation(), 3, 6);
+        var area = TargetedAreaEntity.createTargetAreaEntity(level, location, radius, Utils.packRGB(this.getTargetingColor()));
+        playerMagicData.setAdditionalCastData(new TargetAreaCastData(location, area));
         return true;
     }
 

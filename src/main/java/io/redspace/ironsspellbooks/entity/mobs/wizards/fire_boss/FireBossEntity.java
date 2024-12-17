@@ -350,7 +350,9 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         - the damage is caused within our rough field of vision (117 degrees)
         - the damage is not /kill
          */
-        boolean canParry = !level.isClientSide &&
+        boolean canParry = false &&
+                !level.isClientSide &&
+                this.isAggressive() &&
                 !isImmobile() &&
                 !attackGoal.isActing() &&
                 pSource.getEntity() != null &&

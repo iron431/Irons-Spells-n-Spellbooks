@@ -9,7 +9,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.WalkAnimationState;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import software.bernie.geckolib.animation.AnimationState;
@@ -20,7 +19,6 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
     public static final ResourceLocation MODEL = new ResourceLocation(IronsSpellbooks.MODID, "geo/tyros.geo.json");
     private static final float tilt = 15 * Mth.DEG_TO_RAD;
     private static final Vector3f forward = new Vector3f(0, 0, Mth.sin(tilt) * -12);
-    private static final Vector3f armPose = new Vector3f(44, 40, 30);
 
     @Override
     public ResourceLocation getTextureResource(AbstractSpellCastingMob object) {
@@ -41,6 +39,7 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
             return;
         }
         float partialTick = animationState.getPartialTick();
+        Vector2f limbSwing = getLimbSwing(entity, entity.walkAnimation, partialTick);
         if (entity.isAnimating()) {
             isAnimatingDampener = Mth.lerp(.3f * partialTick, isAnimatingDampener, 0);
         } else {
@@ -53,17 +52,19 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
             armPose.mul(Mth.DEG_TO_RAD * isAnimatingDampener);
             transformStack.pushRotation(rightArm, armPose);
 
-            Vector3f scythePos = new Vector3f(-5, 0, -40);
+            Vector3f scythePos = new Vector3f(-5, 0, -48);
             scythePos.mul(Mth.DEG_TO_RAD * isAnimatingDampener);
             transformStack.pushRotation(rightHand, scythePos);
+
+            if (!entity.isAnimating()) {
+                float walkDampener = (Mth.cos(limbSwing.y() * 0.6662F + (float) Math.PI) * 2.0F * limbSwing.x() * 0.5F) * -.75f;
+                transformStack.pushRotation(rightArm, walkDampener, 0, 0);
+            }
         }
+
         super.setCustomAnimations(entity, instanceId, animationState);
     }
 
-    @Override
-    protected Vector2f getLimbSwing(AbstractSpellCastingMob entity, WalkAnimationState walkAnimationState, float partialTick) {
-        return super.getLimbSwing(entity, walkAnimationState, partialTick);
-    }
     //    @Override
 //    protected Vector2f getLimbSwing(AbstractSpellCastingMob entity, WalkAnimationState walkAnimationState, float partialTick) {
 //        Vector2f swing = super.getLimbSwing(entity, walkAnimationState, partialTick);
