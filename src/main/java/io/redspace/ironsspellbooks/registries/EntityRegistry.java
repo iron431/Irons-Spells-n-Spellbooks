@@ -36,7 +36,6 @@ import io.redspace.ironsspellbooks.entity.spells.fireball.MagicFireball;
 import io.redspace.ironsspellbooks.entity.spells.fireball.SmallMagicFireball;
 import io.redspace.ironsspellbooks.entity.spells.firebolt.FireboltProjectile;
 import io.redspace.ironsspellbooks.entity.spells.firefly_swarm.FireflySwarmProjectile;
-import io.redspace.ironsspellbooks.entity.spells.flame_strike.FlameStrike;
 import io.redspace.ironsspellbooks.entity.spells.guiding_bolt.GuidingBoltProjectile;
 import io.redspace.ironsspellbooks.entity.spells.gust.GustCollider;
 import io.redspace.ironsspellbooks.entity.spells.ice_block.IceBlockProjectile;
@@ -466,12 +465,6 @@ public class EntityRegistry {
                     .sized(.9f, .9f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "firefly_swarm").toString()));
-
-    public static final DeferredHolder<EntityType<?>, EntityType<FlameStrike>> FLAME_STRIKE =
-            ENTITIES.register("flame_strike", () -> EntityType.Builder.<FlameStrike>of(FlameStrike::new, MobCategory.MISC)
-                    .sized(5f, 1f)
-                    .clientTrackingRange(64)
-                    .build(new ResourceLocation(IronsSpellbooks.MODID, "flame_strike").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<ArrowVolleyEntity>> ARROW_VOLLEY_ENTITY =
             ENTITIES.register("arrow_volley", () -> EntityType.Builder.<ArrowVolleyEntity>of(ArrowVolleyEntity::new, MobCategory.MISC)

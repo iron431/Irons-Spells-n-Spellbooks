@@ -46,7 +46,6 @@ import io.redspace.ironsspellbooks.entity.spells.electrocute.ElectrocuteRenderer
 import io.redspace.ironsspellbooks.entity.spells.fire_arrow.FireArrowRenderer;
 import io.redspace.ironsspellbooks.entity.spells.fireball.FireballRenderer;
 import io.redspace.ironsspellbooks.entity.spells.firebolt.FireboltRenderer;
-import io.redspace.ironsspellbooks.entity.spells.flame_strike.FlameStrikeRenderer;
 import io.redspace.ironsspellbooks.entity.spells.guiding_bolt.GuidingBoltRenderer;
 import io.redspace.ironsspellbooks.entity.spells.gust.GustRenderer;
 import io.redspace.ironsspellbooks.entity.spells.ice_block.IceBlockRenderer;
@@ -219,7 +218,6 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.MAGIC_MISSILE_PROJECTILE.get(), MagicMissileRenderer::new);
         event.registerEntityRenderer(EntityRegistry.CONE_OF_COLD_PROJECTILE.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.BLOOD_SLASH_PROJECTILE.get(), BloodSlashRenderer::new);
-        event.registerEntityRenderer(EntityRegistry.FLAME_STRIKE.get(), FlameStrikeRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ELECTROCUTE_PROJECTILE.get(), ElectrocuteRenderer::new);
         event.registerEntityRenderer(EntityRegistry.FIREBOLT_PROJECTILE.get(), FireboltRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ICICLE_PROJECTILE.get(), IcicleRenderer::new);
