@@ -38,7 +38,7 @@ public class FireField extends AoeEntity {
 
     @Override
     public float getParticleCount() {
-        return 1.2f * getRadius();
+        return 1.5f * getRadius();
     }
 
     @Override

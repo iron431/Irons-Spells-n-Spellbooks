@@ -92,6 +92,18 @@ public class ClientSpellCastHelper {
         }
     }
 
+    public static void handleClientboundFlamethrowerParticles(Vec3 pos, Vec3 dir) {
+        if (Minecraft.getInstance().player == null)
+            return;
+        var level = Minecraft.getInstance().player.level;
+        for (int i = 0; i < 5; i++) {
+            Vec3 random = Utils.getRandomVec3(0.08);
+            Vec3 traverse = dir.scale(Utils.random.nextFloat()).add(pos);
+            Vec3 motion = dir.scale(Utils.random.nextIntBetweenInclusive(8, 16) * .08f).add(random);
+            level.addParticle(ParticleHelper.FIRE, traverse.x, traverse.y, traverse.z, motion.x, motion.y, motion.z);
+        }
+    }
+
     public static void handleClientboundShockwaveParticle(Vec3 pos, float radius, ParticleType<?> particleType) {
         if (Minecraft.getInstance().player == null || !(particleType instanceof ParticleOptions)) {
             return;

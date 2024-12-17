@@ -292,8 +292,9 @@ public class EntityRegistry {
 
     public static final DeferredHolder<EntityType<?>, EntityType<FireBossEntity>> FIRE_BOSS =
             ENTITIES.register("fire_boss", () -> EntityType.Builder.<FireBossEntity>of(FireBossEntity::new, MobCategory.MONSTER)
-                    .sized(.85f, 2.3f)
+                    .sized(.85f, 2.1f)
                     .clientTrackingRange(64)
+                    .fireImmune()
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "fire_boss").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<VoidTentacle>> SCULK_TENTACLE =

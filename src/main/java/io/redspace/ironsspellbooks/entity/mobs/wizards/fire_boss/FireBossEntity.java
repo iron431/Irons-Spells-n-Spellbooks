@@ -159,7 +159,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 .setMeleeAttackInverval(0, 30)
                 .setMeleeBias(1f, 1f)
                 .setSpells(
-                        List.of(SpellRegistry.FIRE_ARROW_SPELL.get(), SpellRegistry.SCORCH_SPELL.get()),
+                        List.of(SpellRegistry.FIRE_ARROW_SPELL.get(), SpellRegistry.SCORCH_SPELL.get(), SpellRegistry.WIP_SPELL.get()),
                         List.of(),
                         List.of(),
                         List.of()
@@ -189,14 +189,6 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.castComplete();
         this.attackGoal.stop();
         this.serverTriggerAnimation("fire_boss_break_stance");
-//        FireField visualFire = new FireField(this.level);
-//        visualFire.setDamage(0);
-//        visualFire.setRadius(1);
-//        float f = (14 - 1) / 4f / ERUPTION_BEGIN_ANIM_TIME;
-//        visualFire.setRadiusPerTick(f);
-//        visualFire.setDuration(ERUPTION_BEGIN_ANIM_TIME);
-//        visualFire.moveTo(Utils.moveToRelativeGroundLevel(level, this.position(), 2));
-//        level.addFreshEntity(visualFire);
     }
 
     public boolean isStanceBroken() {
@@ -266,7 +258,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     @Override
     protected void updateWalkAnimation(float f) {
         //reduce walk animation swing if we are floating or meleeing
-        super.updateWalkAnimation(f * ((!this.onGround() || this.isAnimating()) ? .3f : .9f));
+        super.updateWalkAnimation(f * ((!this.onGround() || this.isAnimating()) ? .5f : .9f));
     }
 
     @Override

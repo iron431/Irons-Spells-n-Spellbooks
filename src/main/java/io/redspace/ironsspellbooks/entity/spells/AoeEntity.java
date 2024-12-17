@@ -93,12 +93,11 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
     @Override
     public void tick() {
         super.tick();
-        if (tickCount > duration) {
-            //IronsSpellbooks.LOGGER.debug("AOEProjectile.discarding ({}/{})", tickCount, duration);
-            discard();
-            return;
-        }
         if (!level.isClientSide) {
+            if (tickCount > duration) {
+                discard();
+                return;
+            }
             if (tickCount % reapplicationDelay == 1) {
                 checkHits();
             }
@@ -238,6 +237,10 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
         if (!this.level.isClientSide) {
             this.duration = duration;
         }
+    }
+
+    public int getDuration() {
+        return this.duration;
     }
 
     public void refreshDimensions() {
