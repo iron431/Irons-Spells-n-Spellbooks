@@ -16,8 +16,12 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.entity.spells.FireEruptionAoe;
 import io.redspace.ironsspellbooks.network.SyncAnimationPacket;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -50,12 +54,19 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker {
+    private static final EntityDataAccessor<Boolean> DATA_SOUL_MODE = SynchedEntityData.defineId(FireBossEntity.class, EntityDataSerializers.BOOLEAN);
 
     public FireBossEntity(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         xpReward = 25;
         this.lookControl = createLookControl();
         this.moveControl = createMoveControl();
+    }
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
+        super.defineSynchedData(pBuilder);
+        pBuilder.define(DATA_SOUL_MODE, false);
     }
 
     protected LookControl createLookControl() {
@@ -210,6 +221,18 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             if (isStanceBroken()) {
                 stanceBreakTimer--;
                 int tick = STANCE_BREAK_ANIM_TIME - stanceBreakTimer;
+                if (currentHealth < maxHealth / 2f) {
+                    // we will enter soul mode
+                    if (tick == 80) {
+                        this.setSoulMode(true);
+                        Vec3 vec3 = this.getBoundingBox().getCenter();
+                        MagicManager.spawnParticles(level, ParticleHelper.FIRE, vec3.x, vec3.y, vec3.z, 60, 0.3, 0.3, 0.3, 0.1, true);
+                        //todo:attributes
+                    } else if (tick < 80) {
+                        Vec3 vec3 = this.getBoundingBox().getCenter();
+                        MagicManager.spawnParticles(level, ParticleHelper.FIRE, vec3.x, vec3.y, vec3.z, 12, 0.3, 0.3, 0.3, 0.02, true);
+                    }
+                }
                 if (tick >= ERUPTION_BEGIN_ANIM_TIME) {
                     if (tick == ERUPTION_BEGIN_ANIM_TIME) {
                         createEruptionEntity(6, 15);
@@ -220,18 +243,10 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                     }
                 }
             }
+            if (isSoulMode()) {
+                soulParticles();
+            }
         }
-    }
-
-    private void createEruptionEntity(float radius, float damage) {
-        Vec3 forward = this.getForward().multiply(1, 0, 1).normalize().scale(3);
-        Vec3 pos = Utils.moveToRelativeGroundLevel(level, this.position().add(forward).add(0, 1, 0), 4);
-        FireEruptionAoe aoe = new FireEruptionAoe(level, radius);
-        aoe.setOwner(this);
-        aoe.setDamage(damage);
-        aoe.moveTo(pos);
-        level.addFreshEntity(aoe);
-        CameraShakeManager.addCameraShake(new CameraShakeData(10 + (int) radius, pos, radius * 2 + 5));
     }
 
     @Override
@@ -245,9 +260,25 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             triggerStanceBreak();
         }
 
-        if (this.tickCount % 30 == 0 && this.getTarget() == null && this.tickCount - this.getLastHurtByMobTimestamp() > 100) {
-            this.heal(10);
+        if (this.tickCount % 30 == 0 && this.getTarget() == null && this.tickCount - this.getLastHurtByMobTimestamp() > 200) {
+            this.heal(5);
         }
+    }
+
+    public void soulParticles() {
+        Vec3 vec3 = this.getBoundingBox().getCenter();
+        MagicManager.spawnParticles(level, ParticleHelper.FIRE, vec3.x, vec3.y, vec3.z, 6, 0.17, 0.7, 0.17, 0.01, true);
+    }
+
+    private void createEruptionEntity(float radius, float damage) {
+        Vec3 forward = this.getForward().multiply(1, 0, 1).normalize().scale(3);
+        Vec3 pos = Utils.moveToRelativeGroundLevel(level, this.position().add(forward).add(0, 1, 0), 4);
+        FireEruptionAoe aoe = new FireEruptionAoe(level, radius);
+        aoe.setOwner(this);
+        aoe.setDamage(damage);
+        aoe.moveTo(pos);
+        level.addFreshEntity(aoe);
+        CameraShakeManager.addCameraShake(new CameraShakeData(10 + (int) radius, pos, radius * 2 + 5));
     }
 
     @Override
@@ -361,6 +392,14 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         return super.hurt(pSource, pAmount);
     }
 
+    public boolean isSoulMode() {
+        return entityData.get(DATA_SOUL_MODE);
+    }
+
+    public void setSoulMode(boolean soulMode) {
+        entityData.set(DATA_SOUL_MODE, soulMode);
+    }
+
     @Override
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
@@ -368,6 +407,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         if (stanceBreakTimer > 0) {
             pCompound.putInt("stanceBreakTime", stanceBreakTimer);
         }
+        pCompound.putBoolean("soulMode", isSoulMode());
     }
 
     @Override
@@ -385,5 +425,6 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 this.animationToPlay = RawAnimation.begin().thenPlay("fire_boss_break_stance");
             }
         }
+        this.setSoulMode(pCompound.getBoolean("soulMode"));
     }
 }

@@ -8,6 +8,7 @@ public class FireBossRenderer extends AbstractSpellCastingMobRenderer {
 
     public FireBossRenderer(EntityRendererProvider.Context context) {
         super(context, new FireBossModel());
+        addRenderLayer(new FireBossSoulLayer(this));
     }
 
 }

@@ -16,12 +16,16 @@ import software.bernie.geckolib.cache.object.GeoBone;
 
 public class FireBossModel extends AbstractSpellCastingMobModel {
     public static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/tyros.png");
+    public static final ResourceLocation TEXTURE_SOUL_MODE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/tyros_soul_mode.png");
     public static final ResourceLocation MODEL = new ResourceLocation(IronsSpellbooks.MODID, "geo/tyros.geo.json");
     private static final float tilt = 15 * Mth.DEG_TO_RAD;
     private static final Vector3f forward = new Vector3f(0, 0, Mth.sin(tilt) * -12);
 
     @Override
     public ResourceLocation getTextureResource(AbstractSpellCastingMob object) {
+        if (object instanceof FireBossEntity fireBossEntity && fireBossEntity.isSoulMode()) {
+            return TEXTURE_SOUL_MODE;
+        }
         return TEXTURE;
     }
 
