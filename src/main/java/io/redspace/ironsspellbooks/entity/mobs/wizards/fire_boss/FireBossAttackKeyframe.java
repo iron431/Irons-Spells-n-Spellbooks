@@ -4,7 +4,7 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import net.minecraft.world.phys.Vec3;
 
 public class FireBossAttackKeyframe extends AttackKeyframe {
-    public record SwingData(float zrot, boolean mirrored) {
+    public record SwingData(boolean vertical, boolean mirrored) {
     }
 
     final SwingData swingData;

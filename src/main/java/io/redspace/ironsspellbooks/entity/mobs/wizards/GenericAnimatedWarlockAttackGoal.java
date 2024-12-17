@@ -58,7 +58,8 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
             forceFaceTarget();
             meleeAnimTimer--;
             if (currentAttack.isHitFrame(meleeAnimTimer)) {
-                onHitFrame(meleeRange);
+                AttackKeyframe attackData = currentAttack.getHitFrame(meleeAnimTimer);
+                onHitFrame(attackData, meleeRange);
             }
             if (currentAttack.canCancel) {
                 Vec3 delta = mob.position().subtract(target.position());
@@ -88,11 +89,10 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
         }
     }
 
-    protected void onHitFrame(float meleeRange) {
+    protected void onHitFrame(AttackKeyframe attackKeyframe, float meleeRange) {
         playSwingSound();
-        AttackKeyframe attackData = currentAttack.getHitFrame(meleeAnimTimer);
         float f = -Utils.getAngle(mob.getX(), mob.getZ(), target.getX(), target.getZ()) - Mth.HALF_PI;
-        Vec3 lunge = attackData.lungeVector().yRot(f);
+        Vec3 lunge = attackKeyframe.lungeVector().yRot(f);
         mob.push(lunge.x, lunge.y, lunge.z);
 
         var forward = mob.getForward();
@@ -104,7 +104,7 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
                 );
         for (LivingEntity target : targets) {
             if (target.distanceToSqr(mob) <= meleeRange * meleeRange) {
-                handleDamaging(target, attackData);
+                handleDamaging(target, attackKeyframe);
             }
         }
     }

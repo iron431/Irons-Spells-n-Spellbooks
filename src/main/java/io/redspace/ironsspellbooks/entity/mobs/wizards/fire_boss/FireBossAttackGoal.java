@@ -1,7 +1,9 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss;
 
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.GenericAnimatedWarlockAttackGoal;
-import io.redspace.ironsspellbooks.entity.spells.flame_strike.FlameStrike;
+import io.redspace.ironsspellbooks.particle.FlameStrikeParticleOptions;
 import net.minecraft.world.phys.Vec3;
 
 public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBossEntity> {
@@ -10,14 +12,15 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
     }
 
     @Override
-    protected void onHitFrame(float meleeRange) {
-        super.onHitFrame(meleeRange);
-        boolean mirrored = false;
-        FlameStrike flameStrike = new FlameStrike(mob.level, mirrored);
-        Vec3 hitLocation = mob.getEyePosition().add(mob.getForward().scale(meleeRange*.5f));
-        flameStrike.moveTo(hitLocation);
-        flameStrike.setYRot(mob.getYRot());
-        flameStrike.setXRot(mob.getXRot());
-        mob.level.addFreshEntity(flameStrike);
+    protected void onHitFrame(AttackKeyframe attackKeyframe, float meleeRange) {
+        super.onHitFrame(attackKeyframe, meleeRange);
+        if (attackKeyframe instanceof FireBossAttackKeyframe fireKeyframe) {
+            boolean mirrored = fireKeyframe.swingData.mirrored();
+            boolean vertical = fireKeyframe.swingData.vertical();
+            Vec3 forward = mob.getForward();
+            Vec3 hitLocation = mob.getBoundingBox().getCenter().add(mob.getForward().multiply(2.5, 0.5, 2.5));
+            MagicManager.spawnParticles(mob.level,
+                    new FlameStrikeParticleOptions((float) forward.x, (float) forward.y, (float) forward.z, mirrored, vertical, 1f), hitLocation.x, hitLocation.y, hitLocation.z, 1, 0, 0, 0, 0, true);
+        }
     }
 }

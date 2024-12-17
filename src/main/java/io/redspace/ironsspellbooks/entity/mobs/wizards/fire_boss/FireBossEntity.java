@@ -113,33 +113,35 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                         AttackAnimationData.builder("scythe_backpedal")
                                 .length(40)
                                 .attacks(
-                                        new AttackKeyframe(20, new Vec3(0, .3, -2))
+                                        new FireBossAttackKeyframe(20, new Vec3(0, .3, -2), new FireBossAttackKeyframe.SwingData(false, true))
                                 )
                                 .build(),
                         AttackAnimationData.builder("scythe_low_rightward_sweep")
                                 .length(40)
                                 .area(0.25f)
                                 .attacks(
-                                        new AttackKeyframe(20, new Vec3(0, .1, 0.8))
+                                        new FireBossAttackKeyframe(20, new Vec3(0, .1, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
                                 )
                                 .build(),
                         AttackAnimationData.builder("scythe_sideslash_downslash")
                                 .length(54)
-                                .attacks(18, 32)
+                                .attacks(
+                                        new FireBossAttackKeyframe(18, new Vec3(0, 0, .45), new FireBossAttackKeyframe.SwingData(false, true)),
+                                        new FireBossAttackKeyframe(32, new Vec3(0, 0, .45), new FireBossAttackKeyframe.SwingData(true, true)))
                                 .build(),
                         AttackAnimationData.builder("scythe_jump_combo")
                                 .length(45)
                                 .cancellable()
                                 .attacks(
-                                        new AttackKeyframe(20, new Vec3(0, 1, 0), new Vec3(0, 1.15, .1)),
-                                        new AttackKeyframe(35, new Vec3(0, 0, -.2), new Vec3(0, 0, 0.5))
+                                        new FireBossAttackKeyframe(20, new Vec3(0, 1, 0), new Vec3(0, 1.15, .1), new FireBossAttackKeyframe.SwingData(true, false)),
+                                        new FireBossAttackKeyframe(35, new Vec3(0, 0, -.2), new Vec3(0, 0, 0.5), new FireBossAttackKeyframe.SwingData(false, false))
                                 )
                                 .build(),
                         AttackAnimationData.builder("scythe_downslash_pull")
                                 .length(60)
                                 .cancellable()
                                 .attacks(
-                                        new AttackKeyframe(22, new Vec3(0, 0, .5f), new Vec3(0, -.2, 0)),
+                                        new FireBossAttackKeyframe(22, new Vec3(0, 0, .5f), new Vec3(0, -.2, 0), new FireBossAttackKeyframe.SwingData(true, true)),
                                         new AttackKeyframe(38, new Vec3(0, .2, -0.8), new Vec3(0, .3, -1.8))
                                 )
                                 .build(),
@@ -147,8 +149,8 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                                 .length(45)
                                 .area(0.25f)
                                 .attacks(
-                                        new AttackKeyframe(16, new Vec3(0, 0, -0.5), new Vec3(0, .1, -1)),
-                                        new AttackKeyframe(36, new Vec3(0, 0, 1), new Vec3(0, .3, 1))
+                                        new FireBossAttackKeyframe(16, new Vec3(0, 0, -0.5), new Vec3(0, .1, -1), new FireBossAttackKeyframe.SwingData(false, true)),
+                                        new FireBossAttackKeyframe(36, new Vec3(0, 0, 1), new Vec3(0, .3, 1), new FireBossAttackKeyframe.SwingData(false, false))
                                 )
                                 .build()
 
