@@ -16,7 +16,9 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.entity.spells.FireEruptionAoe;
 import io.redspace.ironsspellbooks.network.SyncAnimationPacket;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -24,6 +26,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
@@ -31,6 +34,7 @@ import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.LookControl;
@@ -39,12 +43,14 @@ import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import software.bernie.geckolib.animation.AnimationState;
@@ -55,6 +61,8 @@ import java.util.List;
 
 public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker {
     private static final EntityDataAccessor<Boolean> DATA_SOUL_MODE = SynchedEntityData.defineId(FireBossEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final AttributeModifier SOUL_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), .25, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    private static final AttributeModifier SOUL_SCALE_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.15D, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
     public FireBossEntity(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -200,6 +208,11 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.castComplete();
         this.attackGoal.stop();
         this.serverTriggerAnimation("fire_boss_break_stance");
+        this.playSound(SoundRegistry.BOSS_STANCE_BREAK.get(), 3, 1);
+    }
+
+    protected SoundEvent getHurtSound(DamageSource pDamageSource) {
+        return isSoulMode() ? SoundRegistry.FIRE_BOSS_HURT_SOUL.get() : SoundRegistry.FIRE_BOSS_HURT.get();
     }
 
     public boolean isStanceBroken() {
@@ -221,13 +234,17 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             if (isStanceBroken()) {
                 stanceBreakTimer--;
                 int tick = STANCE_BREAK_ANIM_TIME - stanceBreakTimer;
-                if (currentHealth < maxHealth / 2f) {
+                if (stanceBreakCounter == 2) {
                     // we will enter soul mode
                     if (tick == 80) {
                         this.setSoulMode(true);
                         Vec3 vec3 = this.getBoundingBox().getCenter();
-                        MagicManager.spawnParticles(level, ParticleHelper.FIRE, vec3.x, vec3.y, vec3.z, 60, 0.3, 0.3, 0.3, 0.1, true);
-                        //todo:attributes
+                        MagicManager.spawnParticles(level, ParticleHelper.FIRE, vec3.x, vec3.y, vec3.z, 120, 0.3, 0.3, 0.3, 0.25, true);
+                        var speed = this.getAttribute(Attributes.MOVEMENT_SPEED);
+                        var scale = this.getAttribute(Attributes.SCALE);
+                        speed.addTransientModifier(SOUL_SPEED_MODIFIER);
+                        scale.addTransientModifier(SOUL_SCALE_MODIFIER);
+                        this.playSound(SoundRegistry.FIRE_BOSS_TRANSITION_SOUL.get(), 3, 1);
                     } else if (tick < 80) {
                         Vec3 vec3 = this.getBoundingBox().getCenter();
                         MagicManager.spawnParticles(level, ParticleHelper.FIRE, vec3.x, vec3.y, vec3.z, 12, 0.3, 0.3, 0.3, 0.02, true);
@@ -236,10 +253,13 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 if (tick >= ERUPTION_BEGIN_ANIM_TIME) {
                     if (tick == ERUPTION_BEGIN_ANIM_TIME) {
                         createEruptionEntity(6, 15);
+                        playSound(SoundRegistry.FIRE_ERUPTION_SLAM.get(), 2, 1.2f);
                     } else if (tick == ERUPTION_BEGIN_ANIM_TIME + 25) {
                         createEruptionEntity(9, 25);
+                        playSound(SoundRegistry.FIRE_ERUPTION_SLAM.get(), 3, 1f);
                     } else if (tick == ERUPTION_BEGIN_ANIM_TIME + 50) {
                         createEruptionEntity(14, 40);
+                        playSound(SoundRegistry.FIRE_ERUPTION_SLAM.get(), 4, 0.8f);
                     }
                 }
             }
@@ -267,7 +287,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     public void soulParticles() {
         Vec3 vec3 = this.getBoundingBox().getCenter();
-        MagicManager.spawnParticles(level, ParticleHelper.FIRE, vec3.x, vec3.y, vec3.z, 6, 0.17, 0.7, 0.17, 0.01, true);
+        MagicManager.spawnParticles(level, ParticleHelper.FIRE, vec3.x, vec3.y, vec3.z, 5, 0.2, 0.6, 0.2, 0.01, true);
     }
 
     private void createEruptionEntity(float radius, float damage) {
@@ -290,6 +310,11 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     protected void updateWalkAnimation(float f) {
         //reduce walk animation swing if we are floating or meleeing
         super.updateWalkAnimation(f * ((!this.onGround() || this.isAnimating()) ? .5f : .9f));
+    }
+
+    @Override
+    protected void playStepSound(BlockPos pPos, BlockState pState) {
+        this.playSound(SoundRegistry.KEEPER_STEP.get(), .25f, 1f);
     }
 
     @Override
@@ -316,7 +341,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 .add(AttributeRegistry.SPELL_POWER, 1.15)
                 .add(Attributes.ARMOR, 15)
                 .add(AttributeRegistry.SPELL_RESIST, 1)
-                .add(Attributes.MAX_HEALTH, 400.0)
+                .add(Attributes.MAX_HEALTH, 200.0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
                 .add(Attributes.ATTACK_KNOCKBACK, .6)
                 .add(Attributes.FOLLOW_RANGE, 32.0)
@@ -324,6 +349,14 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 .add(Attributes.GRAVITY, 0.03)
                 .add(Attributes.ENTITY_INTERACTION_RANGE, 3.5)
                 .add(Attributes.MOVEMENT_SPEED, .195);
+    }
+
+    @Override
+    public void knockback(double pStrength, double pX, double pZ) {
+        if (isStanceBroken()) {
+            return;
+        }
+        super.knockback(pStrength, pX, pZ);
     }
 
     RawAnimation animationToPlay = null;
@@ -368,6 +401,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         /*
         can parry:
         - serverside
+        - in combat
         - we aren't in melee attack anim or spell cast
         - the damage source is caused by an entity (ie not fall damage)
         - the damage is caused within our rough field of vision (117 degrees)
@@ -388,6 +422,9 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         }
         if (isStanceBroken()) {
             pAmount *= 0.5f;
+        }
+        if (isSoulMode()) {
+            pAmount *= 0.75f;
         }
         return super.hurt(pSource, pAmount);
     }
@@ -426,5 +463,10 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             }
         }
         this.setSoulMode(pCompound.getBoolean("soulMode"));
+    }
+
+    @Override
+    protected PathNavigation createNavigation(Level pLevel) {
+        return new NotIdioticNavigation(this, pLevel);
     }
 }

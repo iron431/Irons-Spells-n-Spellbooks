@@ -20,9 +20,10 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
             boolean mirrored = fireKeyframe.swingData.mirrored();
             boolean vertical = fireKeyframe.swingData.vertical();
             Vec3 forward = mob.getForward();
-            Vec3 hitLocation = mob.getBoundingBox().getCenter().add(mob.getForward().multiply(2.5, 0.5, 2.5));
+            float reach = 2 * mob.getScale();
+            Vec3 hitLocation = mob.getBoundingBox().getCenter().add(mob.getForward().multiply(reach, 0.5, reach));
             MagicManager.spawnParticles(mob.level,
-                    new FlameStrikeParticleOptions((float) forward.x, (float) forward.y, (float) forward.z, mirrored, vertical, 1f), hitLocation.x, hitLocation.y, hitLocation.z, 1, 0, 0, 0, 0, true);
+                    new FlameStrikeParticleOptions((float) forward.x, (float) forward.y, (float) forward.z, mirrored, vertical, mob.getScale()), hitLocation.x, hitLocation.y, hitLocation.z, 1, 0, 0, 0, 0, true);
         }
     }
 

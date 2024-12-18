@@ -36,12 +36,29 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
 
     float leglerp = 1f;
     float isAnimatingDampener;
+    int lastTick;
 
     @Override
     public void setCustomAnimations(AbstractSpellCastingMob entity, long instanceId, AnimationState<AbstractSpellCastingMob> animationState) {
         if (Minecraft.getInstance().isPaused()) {
             return;
         }
+//        if (entity instanceof FireBossEntity fireBossEntity) {
+//            GeoBone particleEmitter = this.getAnimationProcessor().getBone("particle_emitter");
+//            if (fireBossEntity.isSoulMode()) {
+//                particleEmitter.setTrackingMatrices(true);
+//                if (lastTick != entity.tickCount) {
+//                    lastTick = entity.tickCount;
+//                    Vector3d headPos = particleEmitter.getWorldPosition();
+//                    for (int i = 0; i < 3; i++) {
+//                        Vec3 random = Utils.getRandomVec3(0.25);
+//                        entity.level.addParticle(ParticleHelper.FIRE, headPos.x + random.x, headPos.y + random.y, headPos.z + random.z, 0, 0, 0);
+//                    }
+//                }
+//            } else {
+//                particleEmitter.setTrackingMatrices(false);
+//            }
+//        }
         float partialTick = animationState.getPartialTick();
         Vector2f limbSwing = getLimbSwing(entity, entity.walkAnimation, partialTick);
         if (entity.isAnimating()) {

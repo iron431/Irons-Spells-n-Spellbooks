@@ -653,5 +653,25 @@
     "sounds": [
       "irons_spellbooks:fire_arrow_cast"
     ]
+  },
+  "entity.fire_boss.stance_break": {
+    "sounds": [
+      "irons_spellbooks:boss_stance_break"
+    ]
+  },
+  "entity.fire_eruption.slam": {
+    "sounds": [
+      "irons_spellbooks:fire_eruption_slam"
+    ]
+  },
+  "entity.fire_boss.hurt": {
+    "sounds": [
+      "irons_spellbooks:fire_boss_hurt"
+    ]
+  },
+  "entity.fire_boss.enter_soul": {
+    "sounds": [
+      "irons_spellbooks:fire_boss_enter_soul"
+    ]
   }
 }
