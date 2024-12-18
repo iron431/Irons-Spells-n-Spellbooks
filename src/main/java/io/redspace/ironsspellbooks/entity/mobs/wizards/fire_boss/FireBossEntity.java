@@ -62,8 +62,8 @@ import java.util.List;
 
 public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker {
     private static final EntityDataAccessor<Boolean> DATA_SOUL_MODE = SynchedEntityData.defineId(FireBossEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final AttributeModifier SOUL_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.25, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-    private static final AttributeModifier SOUL_SCALE_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.10, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    private static final AttributeModifier SOUL_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.35, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    private static final AttributeModifier SOUL_SCALE_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.125, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
     public FireBossEntity(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -352,6 +352,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 .add(Attributes.SCALE, 1.4)
                 .add(Attributes.GRAVITY, 0.03)
                 .add(Attributes.ENTITY_INTERACTION_RANGE, 3.5)
+                .add(Attributes.STEP_HEIGHT, 1)
                 .add(Attributes.MOVEMENT_SPEED, .195);
     }
 

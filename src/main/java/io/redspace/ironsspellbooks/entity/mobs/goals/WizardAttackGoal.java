@@ -269,6 +269,7 @@ public class WizardAttackGoal extends Goal {
     }
 
     protected double movementSpeed() {
+        //fixme: move control already reads speed attribute, we should not be basing speed modifier based on it as well
         return speedModifier * mob.getAttributeValue(Attributes.MOVEMENT_SPEED) * 2;
     }
 

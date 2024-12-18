@@ -28,6 +28,11 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
     }
 
     @Override
+    protected double movementSpeed() {
+        return this.meleeMoveSpeedModifier;
+    }
+
+    @Override
     public void playSwingSound() {
         mob.playSound(SoundRegistry.HELLRAZOR_SWING.get(), 1, Mth.randomBetweenInclusive(mob.getRandom(), 9, 11) * .1f);
     }
