@@ -29,6 +29,6 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
 
     @Override
     public void playSwingSound() {
-        mob.playSound(SoundRegistry.KEEPER_SWING.get(), 1, Mth.randomBetweenInclusive(mob.getRandom(), 9, 13) * .1f);
+        mob.playSound(SoundRegistry.HELLRAZOR_SWING.get(), 1, Mth.randomBetweenInclusive(mob.getRandom(), 9, 11) * .1f);
     }
 }

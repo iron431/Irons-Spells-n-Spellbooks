@@ -673,5 +673,12 @@
     "sounds": [
       "irons_spellbooks:fire_boss_enter_soul"
     ]
+  },
+  "item.hellrazor.swing": {
+    "sounds": [
+      "irons_spellbooks:hellrazor_swing_1",
+      "irons_spellbooks:hellrazor_swing_2",
+      "irons_spellbooks:hellrazor_swing_3"
+    ]
   }
 }
