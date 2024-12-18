@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.keeper;
 
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WarlockAttackGoal;
 import io.redspace.ironsspellbooks.network.SyncAnimationPacket;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -55,7 +56,7 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
                     //mob.lookAt(target, 300, 300);
                     Vec3 lunge = target.position().subtract(mob.position()).normalize().scale(.55f)/*.add(0, 0.2, 0)*/;
                     mob.push(lunge.x, lunge.y, lunge.z);
-                    if (distance <= meleeRange) {
+                    if (distance <= meleeRange && Utils.hasLineOfSight(mob.level, mob, target, true)) {
                         boolean flag = this.mob.doHurtTarget(target);
                         target.invulnerableTime = 0;
                         if (flag) {

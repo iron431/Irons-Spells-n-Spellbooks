@@ -7,7 +7,6 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.WarlockAttackGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.network.SyncAnimationPacket;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -104,7 +103,7 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
                         (entity -> forward.dot(entity.position().subtract(mob.position()).normalize()) >= currentAttack.areaAttackThreshold.get())
                 );
         for (LivingEntity target : targets) {
-            if (target.distanceToSqr(mob) <= meleeRange * meleeRange) {
+            if (target.distanceToSqr(mob) <= meleeRange * meleeRange && Utils.hasLineOfSight(mob.level, mob, target, true)) {
                 handleDamaging(target, attackKeyframe);
             }
         }

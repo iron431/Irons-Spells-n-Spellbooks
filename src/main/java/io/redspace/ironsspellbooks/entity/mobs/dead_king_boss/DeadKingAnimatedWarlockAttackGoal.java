@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WarlockAttackGoal;
 import io.redspace.ironsspellbooks.network.SyncAnimationPacket;
@@ -72,7 +73,7 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
                         }
                     });
                 } else {
-                    if (distanceSquared <= meleeRange * meleeRange) {
+                    if (distanceSquared <= meleeRange * meleeRange && Utils.hasLineOfSight(mob.level, mob, target, true)) {
                         boolean flag = this.mob.doHurtTarget(target);
                         target.invulnerableTime = 0;
                         if (flag) {
