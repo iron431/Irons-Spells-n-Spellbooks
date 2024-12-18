@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.spells;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
@@ -64,6 +65,10 @@ public class FireEruptionAoe extends AoeEntity {
         var level = this.level;
         if (waveAnim++ < radius) {
             if (!level.isClientSide) {
+                if (waveAnim % 2 == 0) {
+                    float volume = (waveAnim + 8) / 16f;
+                    this.playSound(SoundRegistry.EARTHQUAKE_IMPACT.get(), volume, Utils.random.nextIntBetweenInclusive(90, 110) * .01f);
+                }
                 var circumferenceMin = waveAnim * 2 * 3.14f;
                 var circumferenceMax = (waveAnim + 1) * 2 * 3.14f;
                 int minBlocks = Mth.clamp((int) circumferenceMin, 0, 80);
@@ -111,7 +116,7 @@ public class FireEruptionAoe extends AoeEntity {
                             0,
                             Mth.sin(anglePerParticle * i)
                     );
-                    float r = Mth.lerp(Utils.random.nextFloat(),waveAnim,waveAnim+1);
+                    float r = Mth.lerp(Utils.random.nextFloat(), waveAnim, waveAnim + 1);
                     Vec3 pos = trig.scale(r).add(Utils.getRandomVec3(0.4)).add(this.position()).add(0, 0.5, 0);
                     Vec3 motion = trig.add(Utils.getRandomVec3(0.5)).scale(0.1);
                     level.addParticle(ParticleHelper.FIRE, pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);

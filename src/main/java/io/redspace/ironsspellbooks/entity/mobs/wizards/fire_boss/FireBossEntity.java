@@ -29,6 +29,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
@@ -61,8 +62,8 @@ import java.util.List;
 
 public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker {
     private static final EntityDataAccessor<Boolean> DATA_SOUL_MODE = SynchedEntityData.defineId(FireBossEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final AttributeModifier SOUL_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), .25, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-    private static final AttributeModifier SOUL_SCALE_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.15D, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    private static final AttributeModifier SOUL_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.25, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    private static final AttributeModifier SOUL_SCALE_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.10, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
     public FireBossEntity(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -198,7 +199,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     private final ServerBossEvent bossEvent = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true);
     int stanceBreakCounter;
     int stanceBreakTimer;
-    static final int STANCE_BREAK_ANIM_TIME = (int) (10.5 * 20);
+    static final int STANCE_BREAK_ANIM_TIME = (int) (9 * 20);
     static final int ERUPTION_BEGIN_ANIM_TIME = (int) (6.5 * 20);
     static final int STANCE_BREAK_COUNT = 2;
 
@@ -212,7 +213,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     protected SoundEvent getHurtSound(DamageSource pDamageSource) {
-        return isSoulMode() ? SoundRegistry.FIRE_BOSS_HURT_SOUL.get() : SoundRegistry.FIRE_BOSS_HURT.get();
+        return SoundRegistry.FIRE_BOSS_HURT.get();
     }
 
     public boolean isStanceBroken() {
@@ -239,15 +240,18 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                     if (tick == 80) {
                         this.setSoulMode(true);
                         Vec3 vec3 = this.getBoundingBox().getCenter();
-                        MagicManager.spawnParticles(level, ParticleHelper.FIRE, vec3.x, vec3.y, vec3.z, 120, 0.3, 0.3, 0.3, 0.25, true);
+                        MagicManager.spawnParticles(level, ParticleHelper.FIRE, vec3.x, vec3.y, vec3.z, 120, 0.3, 0.3, 0.3, 0.3, true);
                         var speed = this.getAttribute(Attributes.MOVEMENT_SPEED);
-                        var scale = this.getAttribute(Attributes.SCALE);
+                        speed.removeModifier(SOUL_SPEED_MODIFIER);
                         speed.addTransientModifier(SOUL_SPEED_MODIFIER);
+                        var scale = this.getAttribute(Attributes.SCALE);
+                        scale.removeModifier(SOUL_SCALE_MODIFIER);
                         scale.addTransientModifier(SOUL_SCALE_MODIFIER);
                         this.playSound(SoundRegistry.FIRE_BOSS_TRANSITION_SOUL.get(), 3, 1);
                     } else if (tick < 80) {
+                        var f = Mth.lerp(tick / 80f, 0.2, 0.4);
                         Vec3 vec3 = this.getBoundingBox().getCenter();
-                        MagicManager.spawnParticles(level, ParticleHelper.FIRE, vec3.x, vec3.y, vec3.z, 12, 0.3, 0.3, 0.3, 0.02, true);
+                        MagicManager.spawnParticles(level, ParticleHelper.FIRE, vec3.x, vec3.y, vec3.z, 12 + (int) (f * 10), f, f, f, 0.02, true);
                     }
                 }
                 if (tick >= ERUPTION_BEGIN_ANIM_TIME) {
@@ -259,7 +263,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                         playSound(SoundRegistry.FIRE_ERUPTION_SLAM.get(), 3, 1f);
                     } else if (tick == ERUPTION_BEGIN_ANIM_TIME + 50) {
                         createEruptionEntity(14, 40);
-                        playSound(SoundRegistry.FIRE_ERUPTION_SLAM.get(), 4, 0.8f);
+                        playSound(SoundRegistry.FIRE_ERUPTION_SLAM.get(), 4, 0.9f);
                     }
                 }
             }

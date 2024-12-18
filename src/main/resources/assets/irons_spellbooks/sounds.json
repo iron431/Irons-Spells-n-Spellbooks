@@ -656,7 +656,7 @@
   },
   "entity.fire_boss.stance_break": {
     "sounds": [
-      "irons_spellbooks:boss_stance_break"
+      "irons_spellbooks:fire_boss_stance_break"
     ]
   },
   "entity.fire_eruption.slam": {
