@@ -1,15 +1,19 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobModel;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.DefaultBipedBoneIdents;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Vector2f;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
@@ -43,22 +47,23 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
         if (Minecraft.getInstance().isPaused()) {
             return;
         }
-//        if (entity instanceof FireBossEntity fireBossEntity) {
-//            GeoBone particleEmitter = this.getAnimationProcessor().getBone("particle_emitter");
-//            if (fireBossEntity.isSoulMode()) {
-//                particleEmitter.setTrackingMatrices(true);
-//                if (lastTick != entity.tickCount) {
-//                    lastTick = entity.tickCount;
-//                    Vector3d headPos = particleEmitter.getWorldPosition();
-//                    for (int i = 0; i < 3; i++) {
-//                        Vec3 random = Utils.getRandomVec3(0.25);
-//                        entity.level.addParticle(ParticleHelper.FIRE, headPos.x + random.x, headPos.y + random.y, headPos.z + random.z, 0, 0, 0);
-//                    }
-//                }
-//            } else {
-//                particleEmitter.setTrackingMatrices(false);
-//            }
-//        }
+        if (entity instanceof FireBossEntity fireBossEntity) {
+            GeoBone particleEmitter = this.getAnimationProcessor().getBone("particle_emitter");
+            if (fireBossEntity.isSoulMode()) {
+                particleEmitter.setTrackingMatrices(true);
+                if (lastTick != entity.tickCount) {
+                    lastTick = entity.tickCount;
+                    Vec3 movement = entity.getDeltaMovement().multiply(2, 0.125, 2).add(0, 0.1, 0);
+                    Vector3d headPos = particleEmitter.getWorldPosition().add(movement.x, movement.y, movement.z);
+                    for (int i = 0; i < 3; i++) {
+                        Vec3 random = Utils.getRandomVec3(0.25).add(movement.multiply(2, 1, 2));
+                        entity.level.addParticle(ParticleHelper.FIRE, headPos.x + random.x, headPos.y + random.y, headPos.z + random.z, 0, 0, 0);
+                    }
+                }
+            } else {
+                particleEmitter.setTrackingMatrices(false);
+            }
+        }
         float partialTick = animationState.getPartialTick();
         Vector2f limbSwing = getLimbSwing(entity, entity.walkAnimation, partialTick);
         if (entity.isAnimating()) {

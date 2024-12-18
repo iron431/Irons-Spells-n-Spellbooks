@@ -291,7 +291,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     public void soulParticles() {
         Vec3 vec3 = this.getBoundingBox().getCenter();
-        MagicManager.spawnParticles(level, ParticleHelper.FIRE, vec3.x, vec3.y, vec3.z, 5, 0.2, 0.6, 0.2, 0.01, true);
+        MagicManager.spawnParticles(level, ParticleHelper.FIRE, vec3.x, vec3.y, vec3.z, 2, 0.2, 0.6, 0.2, 0.01, true);
     }
 
     private void createEruptionEntity(float radius, float damage) {

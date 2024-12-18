@@ -29,26 +29,35 @@ public class NotIdioticNavigation extends GroundPathNavigation {
 
         ArrayList<Node> dumbNodes = new ArrayList<Node>();
 
-        var lastImportantNode = path.getNextNode().asVec3();
-        var finalNode = path.getEndNode().asVec3();
-        if (level.clip(new ClipContext(lastImportantNode.add(0, 0.75, 0), finalNode.add(0, 0.75, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty())).getType() == HitResult.Type.MISS) {
-            for (int i = path.getNextNodeIndex() + 1; i < path.nodes.size() - 1; i++) {
-                dumbNodes.add(path.getNode(i));
-            }
-        } else {
-            for (int i = path.getNextNodeIndex() + 2; i < path.nodes.size(); i++) {
-                var node1 = path.getNode(i - 1).asVec3();
-                var node2 = path.getNode(i).asVec3();
-                var delta1 = node1.subtract(lastImportantNode).normalize();
-                var delta2 = node2.subtract(node1).normalize();
-                if (delta1.dot(delta2) > .75) {
-                    dumbNodes.add(path.getNode(i - 1));
-                } else {
-                    lastImportantNode = delta1;
+        if (path == null || path.getNextNodeIndex() >= path.nodes.size()) {
+            return;
+        }
+        try {
+            var lastImportantNode = path.getNextNode().asVec3();
+            var finalNode = path.getEndNode().asVec3();
+            if (level.clip(new ClipContext(lastImportantNode.add(0, 0.75, 0), finalNode.add(0, 0.75, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty())).getType() == HitResult.Type.MISS) {
+                for (int i = path.getNextNodeIndex() + 1; i < path.nodes.size() - 1; i++) {
+                    dumbNodes.add(path.getNode(i));
+                }
+            } else {
+                for (int i = path.getNextNodeIndex() + 2; i < path.nodes.size(); i++) {
+                    var node1 = path.getNode(i - 1).asVec3();
+                    var node2 = path.getNode(i).asVec3();
+                    var delta1 = node1.subtract(lastImportantNode).normalize();
+                    var delta2 = node2.subtract(node1).normalize();
+                    if (delta1.dot(delta2) > .75) {
+                        dumbNodes.add(path.getNode(i - 1));
+                    } else {
+                        lastImportantNode = delta1;
+                    }
                 }
             }
+            path.nodes.removeAll(dumbNodes);
+        } catch (Exception e) {
+            //cancel navigation
+            IronsSpellbooks.LOGGER.error(e.getMessage());
+            this.path = null;
         }
-        path.nodes.removeAll(dumbNodes);
     }
 
     @Override
