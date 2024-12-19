@@ -98,7 +98,7 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
         } else {
             //Handling attack delay
             if (distance < meleeRange * (nextAttack == KeeperEntity.AttackType.Lunge ? 3 : 1)) {
-                if (--this.attackTime == 0) {
+                if (hasLineOfSight && --this.attackTime == 0) {
                     doMeleeAction();
                 } else if (this.attackTime < 0) {
                     resetAttackTimer(distanceSquared);

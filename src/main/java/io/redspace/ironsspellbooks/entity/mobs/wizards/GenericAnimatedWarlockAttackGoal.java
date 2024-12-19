@@ -80,7 +80,7 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
         } else {
             //Handling attack delay
             if (distanceSquared < meleeRange * meleeRange * 1.2 * 1.2) {
-                if (--this.attackTime == 0) {
+                if (hasLineOfSight && --this.attackTime == 0) {
                     doMeleeAction();
                 } else if (this.attackTime < 0) {
                     resetAttackTimer(distanceSquared);
