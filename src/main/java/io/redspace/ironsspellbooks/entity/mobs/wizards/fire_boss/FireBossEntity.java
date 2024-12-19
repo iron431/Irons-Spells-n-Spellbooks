@@ -291,6 +291,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     public void die(DamageSource pDamageSource) {
         super.die(pDamageSource);
         if (this.isDeadOrDying() && !this.level.isClientSide) {
+            this.stanceBreakTimer = 0;
             this.castComplete();
             this.attackGoal.stop();
             this.serverTriggerAnimation("fire_boss_death");
@@ -360,6 +361,11 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     protected void updateWalkAnimation(float f) {
         //reduce walk animation swing if we are floating or meleeing
         super.updateWalkAnimation(f * ((!this.onGround() || this.isAnimating()) ? .5f : .9f));
+    }
+
+    @Override
+    public boolean bobBodyWhileWalking() {
+        return !isAnimating();
     }
 
     @Override
