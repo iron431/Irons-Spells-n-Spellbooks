@@ -22,4 +22,9 @@ public class FireBossRenderer extends AbstractSpellCastingMobRenderer {
             return OverlayTexture.NO_OVERLAY;
         }
     }
+
+    @Override
+    protected float getDeathMaxRotation(AbstractSpellCastingMob animatable) {
+        return 0;
+    }
 }

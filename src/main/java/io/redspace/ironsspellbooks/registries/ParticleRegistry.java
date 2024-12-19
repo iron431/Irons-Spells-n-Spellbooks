@@ -99,4 +99,6 @@ public class ParticleRegistry {
             return FlameStrikeParticleOptions.STREAM_CODEC;
         }
     });
+    public static final Supplier<SimpleParticleType> EMBEROUS_ASH_PARTICLE = PARTICLE_TYPES.register("emberous_ash", () -> new SimpleParticleType(false));
+
 }

@@ -30,11 +30,12 @@ public class FireBossSoulLayer extends GeoRenderLayer<AbstractSpellCastingMob> {
     @Override
     public void render(PoseStack poseStack, AbstractSpellCastingMob animatable, BakedGeoModel bakedModel, RenderType renderType2, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
 
-        int hurtTime = animatable.hurtTime;
-        if (hurtTime <= 0) {
+        int i = animatable.hurtTime + animatable.deathTime;
+        if (i <= 0) {
             return;
         }
-        float alpha = (float) hurtTime / animatable.hurtDuration * 2;
+        float alpha = animatable.isDeadOrDying() ? i / 120f : i / (float) animatable.hurtDuration * 2;
+
         if (!(animatable instanceof FireBossEntity fireBossEntity) || !fireBossEntity.isSoulMode()) {
             return;
         }

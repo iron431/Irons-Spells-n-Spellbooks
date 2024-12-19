@@ -16,15 +16,16 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.entity.spells.FireEruptionAoe;
 import io.redspace.ironsspellbooks.network.SyncAnimationPacket;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerBossEvent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -210,6 +211,8 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.attackGoal.stop();
         this.serverTriggerAnimation("fire_boss_break_stance");
         this.playSound(SoundRegistry.BOSS_STANCE_BREAK.get(), 3, 1);
+        Vec3 vec3 = this.getBoundingBox().getCenter();
+        MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), vec3.x, vec3.y, vec3.z, 25, 0.2, 0.2, 0.2, 0.12, false);
     }
 
     protected SoundEvent getHurtSound(DamageSource pDamageSource) {
@@ -267,8 +270,52 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                     }
                 }
             }
-            if (isSoulMode()) {
+            if (isSoulMode() && !dead) {
                 soulParticles();
+            }
+        }
+    }
+
+    DamageSource deathsource;
+
+    @Override
+    protected void dropAllDeathLoot(ServerLevel pLevel, DamageSource pDamageSource) {
+        this.deathsource = pDamageSource;
+        if (deathTime < 160) {
+            return; // prevent loot from dropping before death animation completes
+        }
+        super.dropAllDeathLoot(pLevel, pDamageSource);
+    }
+
+    @Override
+    public void die(DamageSource pDamageSource) {
+        super.die(pDamageSource);
+        if (this.isDeadOrDying() && !this.level.isClientSide) {
+            this.castComplete();
+            this.attackGoal.stop();
+            this.serverTriggerAnimation("fire_boss_death");
+            this.playSound(SoundRegistry.FIRE_BOSS_DEATH.get(), 5, 1);
+            Vec3 vec3 = this.getBoundingBox().getCenter();
+            MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), vec3.x, vec3.y, vec3.z, 25, 0.2, 0.2, 0.2, 0.12, false);
+        }
+    }
+
+    @Override
+    protected void tickDeath() {
+        this.deathTime++;
+        if (!level.isClientSide) {
+            Vec3 vec3 = this.position();
+            int particles = (int) Mth.lerp(Math.clamp((deathTime - 20) / 60f, 0, 1), 0, 5);
+            float range = Mth.lerp(Math.clamp((deathTime - 20) / 80f, 0, 1), 0, 0.6f);
+            if (particles > 0) {
+                MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), vec3.x, vec3.y + 1, vec3.z, particles, range, range, range, 100, false);
+            }
+            if (this.deathTime >= 160 && !this.level().isClientSide() && !this.isRemoved()) {
+                if (this.level instanceof ServerLevel serverLevel && deathsource != null) {
+                    this.dropAllDeathLoot(serverLevel, deathsource);
+                }
+                this.remove(Entity.RemovalReason.KILLED);
+                MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), vec3.x, vec3.y + 1, vec3.z, 50, 0.3, 0.3, 0.3, 0.2, true);
             }
         }
     }
@@ -280,7 +327,6 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         float currentHealth = this.getHealth();
         float eruptionHealthStep = maxHealth / (STANCE_BREAK_COUNT + 1);
         if (currentHealth < maxHealth - eruptionHealthStep * (stanceBreakCounter + 1)) {
-            MagicManager.spawnParticles(level, ParticleTypes.LAVA, getX(), getY(), getZ(), 100, 1, 1, 1, 1, true);
             triggerStanceBreak();
         }
 
@@ -323,9 +369,11 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData) {
+        super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData);
         RandomSource randomsource = Utils.random;
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
-        return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData);
+        this.setLeftHanded(false);
+        return pSpawnData;
     }
 
     @Override
@@ -469,6 +517,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         }
         this.setSoulMode(pCompound.getBoolean("soulMode"));
     }
+
 
     @Override
     protected PathNavigation createNavigation(Level pLevel) {

@@ -680,5 +680,10 @@
       "irons_spellbooks:hellrazor_swing_2",
       "irons_spellbooks:hellrazor_swing_3"
     ]
+  },
+  "entity.fire_boss.death": {
+    "sounds": [
+      "irons_spellbooks:fire_boss_death"
+    ]
   }
 }
