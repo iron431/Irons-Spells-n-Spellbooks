@@ -42,11 +42,10 @@ public class EmberousAshParticle extends TextureSheetParticle {
     }
 
     private float function(float x) {
-        return 0.2f * 0.03f * (
-                0.25f * f(2 * x) +
-                        0.5f * f(x) +
-                        1f * f(.25f * x) +
-                        2f * f(.125f * x));
+        return 0.2f *
+                0.25f * (f(2 * x) +
+                1f * f(.25f * x) +
+                2f * f(.125f * x));
     }
 
     @Override
@@ -57,13 +56,14 @@ public class EmberousAshParticle extends TextureSheetParticle {
     @Override
     public void tick() {
         super.tick();
-        if (speed > 10) {
-            this.xd += Mth.abs(function(this.age));
-        } else {
-            this.xd += function(this.age);
+
+        float f = Math.abs(seed) < .2 ? 1 : seed;
+        this.xd = 0.3 * seed * (.05f * Mth.sin((this.age + 700 * seed) * 0.2f / f) + function(this.age * 0.2f + 700 * seed));
+        this.yd = 0.3 * seed * (.05f * Mth.sin((this.age + 500 * seed) * 0.2f / f) + function(this.age * 0.2f + 500 * seed));
+        this.zd = 0.3 * seed * (.05f * Mth.cos((this.age + 100 * seed) * 0.2f / f) + function(this.age * 0.2f + 100 * seed));
+        if (speed > 4) {
+            xd = Math.abs(xd) * 3;
         }
-        this.yd += function(this.age + 500);
-        this.zd += function(this.age + 100);
         if (random.nextFloat() < 0.5) {
             this.level.addParticle(ParticleTypes.SMOKE, this.x, this.y, this.z, this.xd, this.yd, this.zd);
         }
