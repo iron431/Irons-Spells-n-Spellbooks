@@ -19,11 +19,13 @@ import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -34,6 +36,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -53,6 +56,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import software.bernie.geckolib.animation.AnimationState;
@@ -276,15 +283,33 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         }
     }
 
-    DamageSource deathsource;
+    SimpleContainer deathLoot = null;
 
     @Override
     protected void dropAllDeathLoot(ServerLevel pLevel, DamageSource pDamageSource) {
-        this.deathsource = pDamageSource;
-        if (deathTime < 160) {
-            return; // prevent loot from dropping before death animation completes
+        // prevent drops from appearing before death animation, just store them
+        this.dropEquipment();
+        this.dropExperience(pDamageSource.getEntity());
+        boolean playerDeath = this.lastHurtByPlayerTime > 0;
+        this.dropCustomDeathLoot(pLevel, pDamageSource, playerDeath);
+        ResourceKey<LootTable> resourcekey = this.getLootTable();
+        LootTable loottable = this.level.getServer().reloadableRegistries().getLootTable(resourcekey);
+        LootParams.Builder lootparams$builder = new LootParams.Builder(pLevel)
+                .withParameter(LootContextParams.THIS_ENTITY, this)
+                .withParameter(LootContextParams.ORIGIN, this.position())
+                .withParameter(LootContextParams.DAMAGE_SOURCE, pDamageSource)
+                .withOptionalParameter(LootContextParams.ATTACKING_ENTITY, pDamageSource.getEntity())
+                .withOptionalParameter(LootContextParams.DIRECT_ATTACKING_ENTITY, pDamageSource.getDirectEntity());
+        if (playerDeath && this.lastHurtByPlayer != null) {
+            lootparams$builder = lootparams$builder.withParameter(LootContextParams.LAST_DAMAGE_PLAYER, this.lastHurtByPlayer)
+                    .withLuck(this.lastHurtByPlayer.getLuck());
         }
-        super.dropAllDeathLoot(pLevel, pDamageSource);
+
+        LootParams lootparams = lootparams$builder.create(LootContextParamSets.ENTITY);
+        ObjectArrayList<ItemStack> objectarraylist = new ObjectArrayList<>();
+        loottable.getRandomItems(lootparams, this.getLootTableSeed(), objectarraylist::add);
+        this.deathLoot = new SimpleContainer(objectarraylist.size());
+        objectarraylist.forEach(deathLoot::addItem);
     }
 
     @Override
@@ -312,11 +337,12 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), vec3.x, vec3.y + 1, vec3.z, particles, range, range, range, 100, false);
             }
             if (this.deathTime >= 160 && !this.level().isClientSide() && !this.isRemoved()) {
-                if (this.level instanceof ServerLevel serverLevel && deathsource != null) {
-                    this.dropAllDeathLoot(serverLevel, deathsource);
+                if (this.deathLoot != null) {
+                    deathLoot.getItems().forEach(this::spawnAtLocation);
                 }
                 this.remove(Entity.RemovalReason.KILLED);
                 MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), vec3.x, vec3.y + 1, vec3.z, 50, 0.3, 0.3, 0.3, 0.2, true);
+                this.playSound(SoundRegistry.FIRE_BOSS_DEATH_FINAL.get(), 4, .9f);
             }
         }
     }
@@ -504,6 +530,9 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             pCompound.putInt("stanceBreakTime", stanceBreakTimer);
         }
         pCompound.putBoolean("soulMode", isSoulMode());
+        if (deathLoot != null) {
+            pCompound.put("deathLootItems", deathLoot.createTag(this.registryAccess()));
+        }
     }
 
     @Override
@@ -521,7 +550,13 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 this.animationToPlay = RawAnimation.begin().thenPlay("fire_boss_break_stance");
             }
         }
+
         this.setSoulMode(pCompound.getBoolean("soulMode"));
+        if (pCompound.contains("deathLootItems", 9)) { // 9 for list tag
+            var tag = pCompound.getList("deathLootItems", 10);
+            this.deathLoot = new SimpleContainer(tag.size());
+            this.deathLoot.fromTag(tag, this.registryAccess());
+        }
     }
 
 

@@ -3,8 +3,15 @@ package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss;
 
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobRenderer;
+import io.redspace.ironsspellbooks.render.RenderHelper;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.util.Color;
 
 public class FireBossRenderer extends AbstractSpellCastingMobRenderer {
 
@@ -22,6 +29,26 @@ public class FireBossRenderer extends AbstractSpellCastingMobRenderer {
         } else {
             return OverlayTexture.NO_OVERLAY;
         }
+    }
+
+    int fadeTime = 80;
+
+    @Override
+    public Color getRenderColor(AbstractSpellCastingMob animatable, float partialTick, int packedLight) {
+        Color color = super.getRenderColor(animatable, partialTick, packedLight);
+        if (!animatable.isInvisible() && animatable.deathTime > 160 - fadeTime) {
+            color = new Color(RenderHelper.colorf(1f, 1f, 1f, Mth.clamp((160 - animatable.deathTime) / (float) fadeTime, 0, 1f)));
+        }
+
+        return color;
+    }
+
+    @Override
+    public RenderType getRenderType(AbstractSpellCastingMob animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
+        if (animatable.deathTime > 160 - fadeTime) {
+            return RenderType.entityTranslucent(texture);
+        }
+        return super.getRenderType(animatable, texture, bufferSource, partialTick);
     }
 
     @Override

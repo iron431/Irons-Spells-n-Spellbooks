@@ -685,5 +685,10 @@
     "sounds": [
       "irons_spellbooks:fire_boss_death"
     ]
+  },
+  "entity.fire_boss.death_final": {
+    "sounds": [
+      "irons_spellbooks:fire_boss_death_final"
+    ]
   }
 }
