@@ -13,6 +13,7 @@ import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
+import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
 import io.redspace.ironsspellbooks.entity.spells.FireEruptionAoe;
 import io.redspace.ironsspellbooks.network.SyncAnimationPacket;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -53,6 +54,7 @@ import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
@@ -266,13 +268,13 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 }
                 if (tick >= ERUPTION_BEGIN_ANIM_TIME) {
                     if (tick == ERUPTION_BEGIN_ANIM_TIME) {
-                        createEruptionEntity(6, 15);
+                        createEruptionEntity(8, (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE));
                         playSound(SoundRegistry.FIRE_ERUPTION_SLAM.get(), 2, 1.2f);
                     } else if (tick == ERUPTION_BEGIN_ANIM_TIME + 25) {
-                        createEruptionEntity(9, 25);
+                        createEruptionEntity(11, (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 2);
                         playSound(SoundRegistry.FIRE_ERUPTION_SLAM.get(), 3, 1f);
                     } else if (tick == ERUPTION_BEGIN_ANIM_TIME + 50) {
-                        createEruptionEntity(14, 40);
+                        createEruptionEntity(15, (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 3);
                         playSound(SoundRegistry.FIRE_ERUPTION_SLAM.get(), 4, 0.9f);
                     }
                 }
@@ -359,6 +361,28 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
         if (this.tickCount % 30 == 0 && this.getTarget() == null && this.tickCount - this.getLastHurtByMobTimestamp() > 200) {
             this.heal(5);
+        }
+        if (this.tickCount % 160 == 0) {
+            int knightCount = level.getEntitiesOfClass(KeeperEntity.class, this.getBoundingBox().inflate(32, 16, 32)).size();
+            if (knightCount < 2) {
+                spawnKnight();
+            }
+        }
+    }
+
+    public void spawnKnight() {
+        if (level instanceof ServerLevel serverLevel) {
+            KeeperEntity knight = new KeeperEntity(level);
+            int angle = Utils.random.nextInt(90, 270);
+            Vec3 offset = this.getForward().multiply(3, 0, 3).yRot(angle * Mth.DEG_TO_RAD);
+            Vec3 spawn = Utils.moveToRelativeGroundLevel(level, Utils.raycastForBlock(level, this.getEyePosition(), this.position().add(offset), ClipContext.Fluid.NONE).getLocation(), 4);
+            knight.moveTo(spawn.add(0, 0.1, 0));
+            knight.triggerRise();
+            knight.setYRot(this.getYRot());
+            knight.finalizeSpawn(serverLevel, level.getCurrentDifficultyAt(this.blockPosition()), MobSpawnType.MOB_SUMMONED, null);
+            level.addFreshEntity(knight);
+            level.playSound(null,spawn.x, spawn.y, spawn.z,  SoundRegistry.FIRE_BOSS_DEATH_FINAL.get(), this.getSoundSource(), 2, .9f);
+
         }
     }
 

@@ -71,8 +71,8 @@ public class FireEruptionAoe extends AoeEntity {
                 }
                 var circumferenceMin = waveAnim * 2 * 3.14f;
                 var circumferenceMax = (waveAnim + 1) * 2 * 3.14f;
-                int minBlocks = Mth.clamp((int) circumferenceMin, 0, 80);
-                int maxBlocks = Mth.clamp((int) circumferenceMax, 0, 80);
+                int minBlocks = Mth.clamp((int) circumferenceMin, 0, 60);
+                int maxBlocks = Mth.clamp((int) circumferenceMax, 0, 60);
                 float anglePerBlockMin = 360f / minBlocks;
                 float anglePerBlockMax = 360f / maxBlocks;
                 //block trail
@@ -108,7 +108,7 @@ public class FireEruptionAoe extends AoeEntity {
                 }
             } else {
                 // fire particles
-                int particles = (int) ((waveAnim + 1) * 2 * 3.14f * 3);
+                int particles = (int) ((waveAnim + 1) * 2 * 3.14f * 2.5f);
                 float anglePerParticle = Mth.TWO_PI / particles;
                 for (int i = 0; i < particles; i++) {
                     Vec3 trig = new Vec3(

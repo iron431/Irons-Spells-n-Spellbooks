@@ -138,7 +138,7 @@ public class WizardAttackGoal extends Goal {
      * Returns whether an in-progress EntityAIBase should continue executing
      */
     public boolean canContinueToUse() {
-        return this.canUse() || this.target.isAlive() && !this.mob.getNavigation().isDone();
+        return this.canUse() || (target != null && target.isAlive()) && !this.mob.getNavigation().isDone();
     }
 
     /**

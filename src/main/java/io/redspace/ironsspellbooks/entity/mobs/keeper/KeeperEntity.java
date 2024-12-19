@@ -2,14 +2,17 @@ package io.redspace.ironsspellbooks.entity.mobs.keeper;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.NotIdioticNavigation;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
@@ -36,12 +39,26 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.animation.*;
 
 import javax.annotation.Nullable;
 
-public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker {
+public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker, IEntityWithComplexSpawn {
+    @Override
+    public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
+        buffer.writeInt(this.riseAnimTick);
+    }
+
+    @Override
+    public void readSpawnData(RegistryFriendlyByteBuf additionalData) {
+        this.riseAnimTick = additionalData.readInt();
+        if (riseAnimTick > 0) {
+            animationToPlay = RawAnimation.begin().thenPlay("keeper_kneeling_rise");
+        }
+    }
 
     //private static final EntityDataAccessor<Integer> DATA_ATTACK_TYPE = SynchedEntityData.defineId(KeeperEntity.class, EntityDataSerializers.INT);
 
@@ -64,12 +81,40 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
 
     }
 
+    public static final int RISE_ANIM_TIME = 25;
+    public int riseAnimTick;
+
+    public void triggerRise() {
+        this.riseAnimTick = RISE_ANIM_TIME;
+    }
+
     public KeeperEntity(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         xpReward = 25;
         this.lookControl = createLookControl();
         this.moveControl = createMoveControl();
 
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (riseAnimTick > 0) {
+            riseAnimTick--;
+            if (!level.isClientSide) {
+                Vec3 vec3 = this.getBoundingBox().getCenter();
+                MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), vec3.x, vec3.y, vec3.z, 5, 0.2, 0.2, 0.2, 0.05, false);
+            }
+        }
+    }
+
+    public boolean isRising() {
+        return riseAnimTick > 0;
+    }
+
+    @Override
+    protected boolean isImmobile() {
+        return super.isImmobile() || isRising();
     }
 
     public KeeperEntity(Level pLevel) {
@@ -198,7 +243,6 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
         try {
             var attackType = AttackType.valueOf(animationId);
             animationToPlay = RawAnimation.begin().thenPlay(attackType.data.animationId);
-
         } catch (Exception ignored) {
             IronsSpellbooks.LOGGER.error("Entity {} Failed to play animation: {}", this, animationId);
         }

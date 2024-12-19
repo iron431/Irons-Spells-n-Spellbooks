@@ -31,7 +31,7 @@ public class FireBossRenderer extends AbstractSpellCastingMobRenderer {
         }
     }
 
-    int fadeTime = 80;
+    static final int fadeTime = 80;
 
     @Override
     public Color getRenderColor(AbstractSpellCastingMob animatable, float partialTick, int packedLight) {

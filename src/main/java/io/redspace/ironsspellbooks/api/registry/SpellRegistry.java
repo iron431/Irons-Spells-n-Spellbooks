@@ -141,6 +141,7 @@ public class SpellRegistry {
     public static final Supplier<AbstractSpell> FLAMING_BARRAGE_SPELL = registerSpell(new FlamingBarrageSpell());
     public static final Supplier<AbstractSpell> FIRE_ARROW_SPELL = registerSpell(new FireArrowSpell());
     public static final Supplier<AbstractSpell> WIP_SPELL = registerSpell(new FlamethrowerSpell());
+    public static final Supplier<AbstractSpell> RAISE_HELL_SPELL = registerSpell(new RaiseHellSpell());
 
 
     // HOLY
