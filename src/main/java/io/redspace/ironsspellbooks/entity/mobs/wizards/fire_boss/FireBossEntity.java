@@ -382,7 +382,6 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             knight.finalizeSpawn(serverLevel, level.getCurrentDifficultyAt(this.blockPosition()), MobSpawnType.MOB_SUMMONED, null);
             level.addFreshEntity(knight);
             level.playSound(null,spawn.x, spawn.y, spawn.z,  SoundRegistry.FIRE_BOSS_DEATH_FINAL.get(), this.getSoundSource(), 2, .9f);
-
         }
     }
 

@@ -58,6 +58,12 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
         if (riseAnimTick > 0) {
             animationToPlay = RawAnimation.begin().thenPlay("keeper_kneeling_rise");
         }
+        float y = this.getYRot();
+        this.yBodyRot = y;
+        this.yBodyRotO = y;
+        this.yHeadRot = y;
+        this.yHeadRotO = y;
+        this.yRotO = y;
     }
 
     //private static final EntityDataAccessor<Integer> DATA_ATTACK_TYPE = SynchedEntityData.defineId(KeeperEntity.class, EntityDataSerializers.INT);
