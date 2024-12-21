@@ -31,13 +31,19 @@ public class FireBossRenderer extends AbstractSpellCastingMobRenderer {
         }
     }
 
-    static final int fadeTime = 80;
+    static final int deathFadeTime = 80;
 
     @Override
     public Color getRenderColor(AbstractSpellCastingMob animatable, float partialTick, int packedLight) {
         Color color = super.getRenderColor(animatable, partialTick, packedLight);
-        if (!animatable.isInvisible() && animatable.deathTime > 160 - fadeTime) {
-            color = new Color(RenderHelper.colorf(1f, 1f, 1f, Mth.clamp((160 - animatable.deathTime) / (float) fadeTime, 0, 1f)));
+        float f = 1f;
+        if (animatable.deathTime > 160 - deathFadeTime) {
+            f = Mth.clamp((160 - animatable.deathTime) / (float) deathFadeTime, 0, 1f);
+        } else if (animatable instanceof FireBossEntity fireBoss && fireBoss.isSpawning()) {
+            f = Mth.clamp((FireBossEntity.SPAWN_ANIM_TIME - fireBoss.spawnTimer) / (float) FireBossEntity.SPAWN_ANIM_TIME, 0, 1f);
+        }
+        if (!animatable.isInvisible() && f != 1) {
+            color = new Color(RenderHelper.colorf(1f, 1f, 1f, f));
         }
 
         return color;
@@ -45,7 +51,7 @@ public class FireBossRenderer extends AbstractSpellCastingMobRenderer {
 
     @Override
     public RenderType getRenderType(AbstractSpellCastingMob animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
-        if (animatable.deathTime > 160 - fadeTime) {
+        if (animatable.isDeadOrDying() || animatable instanceof FireBossEntity fireBoss && fireBoss.isSpawning()) {
             return RenderType.entityTranslucent(texture);
         }
         return super.getRenderType(animatable, texture, bufferSource, partialTick);

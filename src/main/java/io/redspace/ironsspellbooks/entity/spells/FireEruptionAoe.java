@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -38,11 +39,11 @@ public class FireEruptionAoe extends AoeEntity {
     @Override
     public void applyEffect(LivingEntity target) {
         //todo: real damage source
-        var damageSource = target.level.damageSources().onFire();
+        var damageSource = SpellRegistry.RAISE_HELL_SPELL.get().getDamageSource(this.getOwner() == null ? this : this.getOwner());
         DamageSources.ignoreNextKnockback(target);
         if (target.hurt(damageSource, getDamage())) {
             target.igniteForSeconds(5);
-            target.setDeltaMovement(target.getDeltaMovement().add(0, .5, 0));
+            target.setDeltaMovement(target.getDeltaMovement().add(0, .65, 0));
             target.hurtMarked = true;
         }
     }
@@ -82,7 +83,7 @@ public class FireEruptionAoe extends AoeEntity {
                             0,
                             waveAnim * Mth.sin(anglePerBlockMin * i)
                     );
-                    BlockPos blockPos = BlockPos.containing(Utils.moveToRelativeGroundLevel(level, position().add(vec3), 4)).below();
+                    BlockPos blockPos = BlockPos.containing(Utils.moveToRelativeGroundLevel(level, position().add(vec3), 8)).below();
                     Utils.createTremorBlock(level, blockPos, .1f + random.nextFloat() * .2f);
                 }
                 //fire trail
@@ -92,7 +93,7 @@ public class FireEruptionAoe extends AoeEntity {
                             0,
                             (waveAnim + 1) * Mth.sin(anglePerBlockMax * i)
                     );
-                    BlockPos blockPos = BlockPos.containing(Utils.moveToRelativeGroundLevel(level, position().add(vec3), 4)).above();
+                    BlockPos blockPos = BlockPos.containing(Utils.moveToRelativeGroundLevel(level, position().add(vec3), 8)).above();
                     Utils.createTremorBlockWithState(level, Blocks.FIRE.defaultBlockState(), blockPos, .1f + random.nextFloat() * .2f);
                 }
                 List<LivingEntity> targets = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(this.getInflation().x, this.getInflation().y, this.getInflation().z));

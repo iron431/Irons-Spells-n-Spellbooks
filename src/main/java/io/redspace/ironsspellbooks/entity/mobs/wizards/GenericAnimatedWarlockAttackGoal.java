@@ -142,7 +142,7 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
         mob.setYRot(yRot);
     }
 
-    protected void stopMeleeAction() {
+    public void stopMeleeAction() {
         if (currentAttack != null) {
             meleeAnimTimer = 0;
             PacketDistributor.sendToPlayersTrackingEntity(mob, new SyncAnimationPacket<>("", mob));

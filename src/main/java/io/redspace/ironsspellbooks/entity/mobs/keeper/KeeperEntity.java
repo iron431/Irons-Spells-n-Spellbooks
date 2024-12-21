@@ -12,6 +12,7 @@ import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.DamageTypeTags;
@@ -89,6 +90,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
 
     public static final int RISE_ANIM_TIME = 25;
     public int riseAnimTick;
+    public boolean summoned;
 
     public void triggerRise() {
         this.riseAnimTick = RISE_ANIM_TIME;
@@ -100,6 +102,16 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
         this.lookControl = createLookControl();
         this.moveControl = createMoveControl();
 
+    }
+
+    @Override
+    protected boolean shouldDropLoot() {
+        return super.shouldDropLoot() && !summoned;
+    }
+
+    @Override
+    public boolean shouldDropExperience() {
+        return super.shouldDropExperience() && !summoned;
     }
 
     @Override
@@ -280,5 +292,19 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
     @Override
     protected PathNavigation createNavigation(Level pLevel) {
         return new NotIdioticNavigation(this, pLevel);
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag pCompound) {
+        super.addAdditionalSaveData(pCompound);
+        if (summoned) {
+            pCompound.putBoolean("summoned", true);
+        }
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag pCompound) {
+        super.readAdditionalSaveData(pCompound);
+        this.summoned = pCompound.getBoolean("summoned");
     }
 }
