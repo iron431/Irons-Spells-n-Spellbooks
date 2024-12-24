@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=true": {
+      "model": "irons_spellbooks:block/brazier"
+    },
+    "lit=false": {
+      "model": "irons_spellbooks:block/brazier_off"
+    }
+  }
+}
