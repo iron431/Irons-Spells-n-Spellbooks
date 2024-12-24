@@ -1,13 +1,13 @@
 {
   "variants": {
     "hanging=false,lit=true": {
-      "model": "irons_spellbooks:block/brazier"
+      "model": "irons_spellbooks:block/brazier_soul"
     },
     "hanging=false,lit=false": {
       "model": "irons_spellbooks:block/brazier_off"
     },
     "hanging=true,lit=true": {
-      "model": "irons_spellbooks:block/hanging_brazier"
+      "model": "irons_spellbooks:block/hanging_brazier_soul"
     },
     "hanging=true,lit=false": {
       "model": "irons_spellbooks:block/hanging_brazier_off"

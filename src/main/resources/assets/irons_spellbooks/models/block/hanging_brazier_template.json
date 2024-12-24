@@ -1,0 +1,111 @@
+{
+	"credit": "Made with Blockbench",
+	"ambientocclusion": false,
+	"render_type": "minecraft:cutout",
+	"textures": {
+		"0": "irons_spellbooks:block/brazier",
+		"3": "minecraft:block/campfire_log",
+		"particle": "minecraft:block/campfire_log"
+	},
+	"elements": [
+		{
+			"name": "braziermain",
+			"from": [0.99, 1.99, 0.99],
+			"to": [15.01, 14.01, 15.01],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 2, 0]},
+			"faces": {
+				"north": {"uv": [7, 0, 14, 6], "texture": "#0"},
+				"east": {"uv": [0, 0, 7, 6], "texture": "#0"},
+				"south": {"uv": [7, 0, 14, 6], "texture": "#0"},
+				"west": {"uv": [0, 0, 7, 6], "texture": "#0"},
+				"down": {"uv": [0, 6.5, 8, 14.5], "texture": "#0"}
+			}
+		},
+		{
+			"name": "braziermainbackface",
+			"from": [15, 2, 1],
+			"to": [1, 14, 15],
+			"rotation": {"angle": 0, "axis": "y", "origin": [14, 2, 0]},
+			"faces": {
+				"north": {"uv": [7, 0, 14, 6], "texture": "#0"},
+				"east": {"uv": [0, 0, 7, 6], "texture": "#0"},
+				"south": {"uv": [7, 0, 14, 6], "texture": "#0"},
+				"west": {"uv": [0, 0, 7, 6], "texture": "#0"},
+				"down": {"uv": [0, 6.5, 8, 14.5], "texture": "#0"}
+			}
+		},
+		{
+			"name": "belly",
+			"from": [3, 0, 3],
+			"to": [13, 2, 13],
+			"rotation": {"angle": 0, "axis": "y", "origin": [2, -1, 2]},
+			"faces": {
+				"north": {"uv": [8.5, 8.5, 13.5, 9.5], "rotation": 180, "texture": "#0"},
+				"east": {"uv": [8.5, 6.5, 13.5, 7.5], "rotation": 180, "texture": "#0"},
+				"south": {"uv": [8.5, 8.5, 13.5, 9.5], "rotation": 180, "texture": "#0"},
+				"west": {"uv": [8.5, 6.5, 13.5, 7.5], "rotation": 180, "texture": "#0"},
+				"up": {"uv": [8.5, 6, 9.5, 11], "rotation": 90, "texture": "#0"},
+				"down": {"uv": [1.5, 8, 6.5, 13], "rotation": 90, "texture": "#0"}
+			}
+		},
+		{
+			"name": "flame1",
+			"from": [0.8, 2, 8],
+			"to": [15.2, 18, 8],
+			"shade": false,
+			"rotation": {"angle": 45, "axis": "y", "origin": [8, 9, 8], "rescale": true},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#fire"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#fire"}
+			}
+		},
+		{
+			"name": "flame2",
+			"from": [8, 2, 0.8],
+			"to": [8, 18, 15.2],
+			"shade": false,
+			"rotation": {"angle": 45, "axis": "y", "origin": [8, 9, 8], "rescale": true},
+			"faces": {
+				"east": {"uv": [0, 0, 16, 16], "texture": "#fire"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#fire"}
+			}
+		},
+		{
+			"name": "embers",
+			"from": [1.5, 2, 5.5],
+			"to": [14.5, 3, 10.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [-1.5, 2, 15.5]},
+			"faces": {
+				"east": {"uv": [11, 15, 16, 16], "texture": "#3", "cullface": "north"},
+				"west": {"uv": [0, 15, 5, 16], "texture": "#3", "cullface": "north"},
+				"up": {"uv": [1, 9, 14, 14], "texture": "#log"}
+			}
+		},
+		{
+			"name": "log",
+			"from": [1.5, 2, 10.5],
+			"to": [14.5, 6, 14.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [1.5, -1, -0.5]},
+			"faces": {
+				"north": {"uv": [1, 0, 14, 4], "texture": "#log"},
+				"east": {"uv": [0, 4, 4, 8], "texture": "#3", "cullface": "east"},
+				"south": {"uv": [1, 0, 14, 4], "texture": "#log"},
+				"west": {"uv": [0, 4, 4, 8], "texture": "#3", "cullface": "west"},
+				"up": {"uv": [1, 0, 14, 4], "rotation": 180, "texture": "#3"}
+			}
+		},
+		{
+			"name": "log2",
+			"from": [1.5, 2, 1.5],
+			"to": [14.5, 6, 5.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [1.5, -1, -9.5]},
+			"faces": {
+				"north": {"uv": [1, 0, 14, 4], "texture": "#log"},
+				"east": {"uv": [0, 4, 4, 8], "texture": "#3", "cullface": "east"},
+				"south": {"uv": [1, 0, 14, 4], "texture": "#log"},
+				"west": {"uv": [0, 4, 4, 8], "texture": "#3", "cullface": "west"},
+				"up": {"uv": [1, 0, 14, 4], "rotation": 180, "texture": "#3"}
+			}
+		}
+	]
+}

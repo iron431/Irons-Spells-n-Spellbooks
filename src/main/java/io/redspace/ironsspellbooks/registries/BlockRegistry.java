@@ -47,7 +47,8 @@ public class BlockRegistry {
     public static final DeferredHolder<Block, Block> ALCHEMIST_CAULDRON = BLOCKS.register("alchemist_cauldron", AlchemistCauldronBlock::new);
     public static final DeferredHolder<Block, Block> FIREFLY_JAR = BLOCKS.register("firefly_jar", FireflyJar::new);
     public static final DeferredHolder<Block, Block> PORTAL_FRAME = BLOCKS.register("portal_frame", PortalFrameBlock::new);
-    public static final DeferredHolder<Block, Block> BRAZIER_FIRE = BLOCKS.register("brazier", BrazierBlock::new);
+    public static final DeferredHolder<Block, Block> BRAZIER_FIRE = BLOCKS.register("brazier", () -> new BrazierBlock(false));
+    public static final DeferredHolder<Block, Block> BRAZIER_SOUL = BLOCKS.register("brazier_soul", () -> new BrazierBlock(true));
 
     public static final DeferredHolder<Block, Block> MITHRIL_ORE = BLOCKS.register("mithril_ore", () -> new Block(BlockBehaviour.Properties.of().lightLevel(state -> 9).mapColor(DyeColor.GRAY).requiresCorrectToolForDrops().strength(20.0F, 1200.0F).sound(SoundType.ANCIENT_DEBRIS)));
     public static final DeferredHolder<Block, Block> MITHRIL_ORE_DEEPSLATE = BLOCKS.register("deepslate_mithril_ore", () -> new Block(BlockBehaviour.Properties.of().lightLevel(state -> 9).mapColor(DyeColor.GRAY).requiresCorrectToolForDrops().strength(20.0F, 1200.0F).sound(SoundType.ANCIENT_DEBRIS)));

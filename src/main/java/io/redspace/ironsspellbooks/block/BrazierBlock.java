@@ -1,9 +1,11 @@
 package io.redspace.ironsspellbooks.block;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -14,10 +16,13 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -30,9 +35,18 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED;
 
 public class BrazierBlock extends Block implements SimpleWaterloggedBlock {
-    public BrazierBlock() {
+    public static final BooleanProperty HANGING = BooleanProperty.create("hanging");
+
+    private final boolean soul;
+
+    public BrazierBlock(boolean soul) {
         super(Properties.ofFullCopy(Blocks.CAULDRON).lightLevel((blockState) -> blockState.getValue(LIT) ? 15 : 0));
-        this.registerDefaultState(this.defaultBlockState().setValue(WATERLOGGED, false).setValue(LIT, true));
+        this.registerDefaultState(this.defaultBlockState().setValue(WATERLOGGED, false).setValue(LIT, true).setValue(HANGING, false));
+        this.soul = soul;
+    }
+
+    public BrazierBlock() {
+        this(false);
     }
 
     public static final VoxelShape COLLISION_SHAPE = Block.box(1, 0, 1, 15, 10, 15);
@@ -60,10 +74,17 @@ public class BrazierBlock extends Block implements SimpleWaterloggedBlock {
 
     @Override
     protected BlockState updateShape(BlockState pState, Direction pDirection, BlockState pNeighborState, LevelAccessor pLevel, BlockPos pPos, BlockPos pNeighborPos) {
+        var newState = super.updateShape(pState, pDirection, pNeighborState, pLevel, pPos, pNeighborPos);
         if (pState.getValue(WATERLOGGED)) {
             pLevel.scheduleTick(pPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
         }
-        return super.updateShape(pState, pDirection, pNeighborState, pLevel, pPos, pNeighborPos);
+        if (pDirection == Direction.UP) {
+            boolean chain = pNeighborState.is(Blocks.CHAIN);
+            if (chain != pState.getValue(HANGING)) {
+                newState = newState.setValue(HANGING, chain);
+            }
+        }
+        return newState;
     }
 
     @Override
@@ -77,7 +98,7 @@ public class BrazierBlock extends Block implements SimpleWaterloggedBlock {
             }
         } else if (ItemAbilities.FIRESTARTER_LIGHT == itemAbility) {
             if (state.getBlock() instanceof BrazierBlock && !state.getValue(LIT) && !state.getValue(WATERLOGGED)) {
-                return state.setValue(BlockStateProperties.LIT, true);
+                return state.setValue(LIT, true);
             }
         }
         return super.getToolModifiedState(state, context, itemAbility, simulate);
@@ -105,7 +126,8 @@ public class BrazierBlock extends Block implements SimpleWaterloggedBlock {
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext pContext) {
         boolean water = pContext.getLevel().getFluidState(pContext.getClickedPos()).getType() == Fluids.WATER;
-        return this.defaultBlockState().setValue(WATERLOGGED, water).setValue(LIT, !water);
+        boolean hanging = pContext.getLevel().getBlockState(pContext.getClickedPos().above()).is(Blocks.CHAIN);
+        return this.defaultBlockState().setValue(WATERLOGGED, water).setValue(LIT, !water).setValue(HANGING, hanging);
     }
 
     @Override
@@ -115,12 +137,12 @@ public class BrazierBlock extends Block implements SimpleWaterloggedBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        pBuilder.add(WATERLOGGED, LIT);
+        pBuilder.add(WATERLOGGED, LIT, HANGING);
     }
 
     @Override
     public void animateTick(BlockState pState, Level pLevel, BlockPos pPos, RandomSource pRandom) {
-        if (pState.getValue(LIT)) {
+        if (pState.getValue(LIT) && (!soul || pRandom.nextFloat() < 0.085f)) {
             float scale = 0.25f;
             double d0 = pPos.getX() + 0.5D;
             double d1 = pPos.getY() + 0.7 + scale;
@@ -128,9 +150,9 @@ public class BrazierBlock extends Block implements SimpleWaterloggedBlock {
             double d3 = Utils.getRandomScaled(scale);
             double d4 = Utils.getRandomScaled(scale);
             double d6 = Utils.getRandomScaled(scale);
-            double d7 = pRandom.nextDouble() * 0.12;
+            double d7 = pRandom.nextDouble() * 0.17;
 
-            pLevel.addParticle(ParticleHelper.EMBERS, d0 + d3, d1 + d4, d2 + d6, 0.0D, d7, 0.0D);
+            pLevel.addParticle(soul ? ParticleTypes.SOUL : ParticleHelper.EMBERS, d0 + d3, d1 + d4, d2 + d6, 0.0D, d7, 0.0D);
         }
     }
 }
