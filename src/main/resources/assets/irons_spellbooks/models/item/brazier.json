@@ -1,7 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "minecraft:block/campfire_fire",
-    "layer1": "irons_spellbooks:item/brazier"
+    "layer0": "irons_spellbooks:item/brazier"
   }
 }
