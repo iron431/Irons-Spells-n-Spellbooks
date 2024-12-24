@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss;
 
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobRenderer;
 import io.redspace.ironsspellbooks.render.RenderHelper;
@@ -19,6 +20,19 @@ public class FireBossRenderer extends AbstractSpellCastingMobRenderer {
         super(context, new FireBossModel());
         this.shadowRadius = 0.65f;
         addRenderLayer(new FireBossSoulLayer(this));
+    }
+
+    @Override
+    public void render(AbstractSpellCastingMob entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+        if (entity instanceof FireBossEntity fireBossEntity && fireBossEntity.isSpawning()) {
+            float f = (fireBossEntity.spawnTimer + partialTick) / FireBossEntity.SPAWN_ANIM_TIME;
+            shadowRadius = Mth.lerp(f,.65f,2);
+            shadowStrength = Mth.lerp(f,1,0);
+        } else {
+            shadowStrength = 1;
+            shadowRadius = .65f;
+        }
+        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 
     @Override

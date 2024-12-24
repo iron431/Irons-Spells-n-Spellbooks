@@ -236,6 +236,10 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     int spawnTimer;
     static final int SPAWN_ANIM_TIME = (int) (6.75 * 20);
 
+    public void triggerSpawnAnim() {
+        this.spawnTimer = SPAWN_ANIM_TIME;
+    }
+
     public void triggerStanceBreak() {
         stanceBreakCounter++;
         stanceBreakTimer = STANCE_BREAK_ANIM_TIME;
@@ -277,6 +281,18 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.bossEvent.setProgress(currentHealth / maxHealth);
         if (isSpawning()) {
             spawnTimer--;
+            float z = Mth.lerp((float) spawnTimer / SPAWN_ANIM_TIME, -40 / 16f, 0);
+            Vec3 position = this.position().add(0, 0, z);
+            if (spawnTimer == SPAWN_ANIM_TIME - 1 || spawnTimer == SPAWN_ANIM_TIME - 20 || spawnTimer == SPAWN_ANIM_TIME - 40 || spawnTimer == SPAWN_ANIM_TIME - 60 || spawnTimer == SPAWN_ANIM_TIME - 74 || spawnTimer == SPAWN_ANIM_TIME - 88) {
+                level.playSound(null, position.x, position.y, position.z, SoundRegistry.KEEPER_STEP, this.getSoundSource(), 0.5f, 1f);
+            }
+            if (spawnTimer == SPAWN_ANIM_TIME - 1) {
+                level.playSound(null, position.x, position.y, position.z, SoundRegistry.FIRE_BOSS_DEATH_FINAL, this.getSoundSource(), 3f, 1f);
+            } else if (spawnTimer == SPAWN_ANIM_TIME - 88) {
+                level.playSound(null, position.x, position.y, position.z, SoundRegistry.FIRE_BOSS_DEATH_FINAL, this.getSoundSource(), 3f, 2f);
+            } else if (spawnTimer == SPAWN_ANIM_TIME - 92) {
+                level.playSound(null, position.x, position.y, position.z, SoundRegistry.FIRE_CAST, this.getSoundSource(), 3f, 2f);
+            }
         }
         if (!level.isClientSide) {
             if (isStanceBroken()) {
@@ -540,7 +556,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     @Override
     public boolean isAnimating() {
-        return meleeController.getAnimationState() != AnimationController.State.STOPPED || super.isAnimating();
+        return (meleeController.getAnimationState() == AnimationController.State.RUNNING && !isSpawning()) || super.isAnimating();
     }
 
     @Override
