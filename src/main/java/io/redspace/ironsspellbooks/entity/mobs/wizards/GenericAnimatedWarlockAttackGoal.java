@@ -29,7 +29,7 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
 
     List<AttackAnimationData> moveList = new ArrayList<>();
     protected final T mob;
-    int meleeAnimTimer = -1;
+    protected int meleeAnimTimer = -1;
     public @Nullable AttackAnimationData currentAttack;
     public @Nullable AttackAnimationData nextAttack;
     public @Nullable AttackAnimationData queueCombo;

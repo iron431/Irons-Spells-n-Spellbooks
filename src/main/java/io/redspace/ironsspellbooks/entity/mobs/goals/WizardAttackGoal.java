@@ -226,7 +226,7 @@ public class WizardAttackGoal extends Goal {
 
     protected void resetAttackTimer(double distanceSquared) {
         float f = (float) Math.sqrt(distanceSquared) / this.attackRadius;
-        this.attackTime = Mth.floor(f * (float) (this.attackIntervalMax - this.attackIntervalMin) + (float) this.attackIntervalMin);
+        this.attackTime = Math.max(1, Mth.floor(f * (float) (this.attackIntervalMax - this.attackIntervalMin) + (float) this.attackIntervalMin));
     }
 
     protected void doMovement(double distanceSquared) {

@@ -94,7 +94,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     private static final EntityDataAccessor<Boolean> DATA_SOUL_MODE = SynchedEntityData.defineId(FireBossEntity.class, EntityDataSerializers.BOOLEAN);
     private static final AttributeModifier SOUL_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.35, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-    private static final AttributeModifier SOUL_SCALE_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.125, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    private static final AttributeModifier SOUL_SCALE_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.20, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
     public FireBossEntity(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -216,6 +216,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                         List.of()
                 );
         this.goalSelector.addGoal(3, attackGoal);
+        this.goalSelector.addGoal(4, new BossAbilitiesGoal<>(this));
 
         this.goalSelector.addGoal(4, new PatrolNearLocationGoal(this, 30, .75f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
@@ -429,6 +430,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             this.playSound(SoundRegistry.FIRE_BOSS_DEATH.get(), 5, 1);
             Vec3 vec3 = this.getBoundingBox().getCenter();
             MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), vec3.x, vec3.y, vec3.z, 25, 0.2, 0.2, 0.2, 0.12, false);
+            level.getEntitiesOfClass(KeeperEntity.class, this.getBoundingBox().inflate(32, 16, 32)).stream().filter(keeper -> keeper.summoned).forEach(LivingEntity::kill);
         }
     }
 
@@ -501,15 +503,16 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 .add(AttributeRegistry.SPELL_POWER, 1.15)
                 .add(Attributes.ARMOR, 15)
                 .add(AttributeRegistry.SPELL_RESIST, 1)
+                .add(AttributeRegistry.FIRE_MAGIC_RESIST, 1.5)
                 .add(Attributes.MAX_HEALTH, 1000)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
                 .add(Attributes.ATTACK_KNOCKBACK, .6)
                 .add(Attributes.FOLLOW_RANGE, 32.0)
-                .add(Attributes.SCALE, 1.4)
+                .add(Attributes.SCALE, 1.5)
                 .add(Attributes.GRAVITY, 0.03)
                 .add(Attributes.ENTITY_INTERACTION_RANGE, 3.5)
                 .add(Attributes.STEP_HEIGHT, 1)
-                .add(Attributes.MOVEMENT_SPEED, .205);
+                .add(Attributes.MOVEMENT_SPEED, .21);
     }
 
     @Override

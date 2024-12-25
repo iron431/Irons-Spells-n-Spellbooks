@@ -18,6 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
@@ -130,7 +131,9 @@ public class FlamethrowerSpell extends AbstractSpell {
     public void onServerCastTick(Level level, int spellLevel, LivingEntity entity, @Nullable MagicData playerMagicData) {
         super.onServerCastTick(level, spellLevel, entity, playerMagicData);
         Vec3 forward = entity.getForward();
-        PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new FlamethrowerParticlesPacket(entity.position().add(0, entity.getEyeHeight() * .8, 0).add(forward), forward));
+        Vec3 start = entity.getEyePosition();
+        var range = Utils.raycastForBlock(level, start, start.add(forward.scale(getRange(spellLevel))), ClipContext.Fluid.NONE).getLocation().distanceTo(start);
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new FlamethrowerParticlesPacket(entity.position().add(0, entity.getEyeHeight() * .8, 0).add(forward), forward.scale(range / 12f)));
     }
 
     public static float getRange(int level) {

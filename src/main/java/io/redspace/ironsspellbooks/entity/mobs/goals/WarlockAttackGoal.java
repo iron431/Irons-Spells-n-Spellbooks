@@ -90,7 +90,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
         var meleeRange = meleeRange();
         if (!wantsToMelee || distanceSquared > meleeRange * meleeRange || spellCastingMob.isCasting()) {
             super.handleAttackLogic(distanceSquared);
-        } else if (--this.attackTime == 0) {
+        } else if (--this.attackTime <= 0) {
             this.mob.swing(InteractionHand.MAIN_HAND);
             doMeleeAction();
         }
@@ -149,11 +149,11 @@ public class WarlockAttackGoal extends WizardAttackGoal {
     @Override
     protected void resetAttackTimer(double distanceSquared) {
         var meleeRange = meleeRange();
-        if (!wantsToMelee || distanceSquared > meleeRange * meleeRange || spellCastingMob.isCasting()) {
+        if (!wantsToMelee || distanceSquared > meleeRange * meleeRange * 2 * 2 || spellCastingMob.isCasting()) {
             super.resetAttackTimer(distanceSquared);
         } else {
             float f = (float) Math.sqrt(distanceSquared) / this.attackRadius;
-            this.attackTime = Mth.floor(f * (float) (this.meleeAttackIntervalMax - this.meleeAttackIntervalMin) + (float) this.meleeAttackIntervalMin);
+            this.attackTime = Math.max(1, Mth.floor(f * (float) (this.meleeAttackIntervalMax - this.meleeAttackIntervalMin) + (float) this.meleeAttackIntervalMin));
         }
     }
 }
