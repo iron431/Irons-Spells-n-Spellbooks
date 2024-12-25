@@ -15,7 +15,6 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
 import io.redspace.ironsspellbooks.entity.spells.FireEruptionAoe;
-import io.redspace.ironsspellbooks.network.SyncAnimationPacket;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -65,7 +64,6 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
-import net.neoforged.neoforge.network.PacketDistributor;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.animation.*;
 
@@ -210,7 +208,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 .setMeleeAttackInverval(0, 20)
                 .setMeleeBias(1f, 1f)
                 .setSpells(
-                        List.of(SpellRegistry.FIRE_ARROW_SPELL.get(), SpellRegistry.SCORCH_SPELL.get(), SpellRegistry.WIP_SPELL.get()),
+                        List.of(SpellRegistry.FIRE_ARROW_SPELL.get(), SpellRegistry.SCORCH_SPELL.get()),
                         List.of(),
                         List.of(),
                         List.of()
@@ -464,7 +462,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     @Override
     protected void updateWalkAnimation(float f) {
         //reduce walk animation swing if we are floating or meleeing
-        super.updateWalkAnimation(f * ((!this.onGround() || this.isAnimating()) ? .5f : .9f));
+        super.updateWalkAnimation(f * ((!this.onGround() || this.isAnimating()) ? .5f : (this.isSoulMode() ? .7f : .9f)));
     }
 
     @Override
@@ -510,7 +508,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 .add(Attributes.FOLLOW_RANGE, 32.0)
                 .add(Attributes.SCALE, 1.5)
                 .add(Attributes.GRAVITY, 0.03)
-                .add(Attributes.ENTITY_INTERACTION_RANGE, 3.5)
+                .add(Attributes.ENTITY_INTERACTION_RANGE, 3)
                 .add(Attributes.STEP_HEIGHT, 1)
                 .add(Attributes.MOVEMENT_SPEED, .21);
     }
@@ -585,7 +583,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 pSource.getSourcePosition() != null && pSource.getSourcePosition().subtract(this.position()).normalize().dot(this.getForward()) >= 0.35
                 && !pSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY);
         if (canParry && this.random.nextFloat() < 0.5) {
-            PacketDistributor.sendToPlayersTrackingEntity(this, new SyncAnimationPacket<>("instant_self", this));
+            serverTriggerAnimation("instant_self");
             this.playSound(SoundEvents.SHIELD_BLOCK);
             return false;
         }
