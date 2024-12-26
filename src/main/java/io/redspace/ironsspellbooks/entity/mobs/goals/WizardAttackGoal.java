@@ -62,7 +62,7 @@ public class WizardAttackGoal extends Goal {
     }
 
     public WizardAttackGoal(IMagicEntity abstractSpellCastingMob, double pSpeedModifier, int pAttackIntervalMin, int pAttackIntervalMax) {
-        this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+        this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK, Flag.TARGET));
         this.spellCastingMob = abstractSpellCastingMob;
         if (abstractSpellCastingMob instanceof PathfinderMob m) {
             this.mob = m;
@@ -444,5 +444,10 @@ public class WizardAttackGoal extends Goal {
         int distanceWeight = (int) ((1 - distancePercent) * -75);
 
         return baseWeight + healthWeight + distanceWeight;
+    }
+
+    @Override
+    public boolean isInterruptable() {
+        return !isActing();
     }
 }

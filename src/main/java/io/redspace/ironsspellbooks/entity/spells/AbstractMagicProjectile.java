@@ -110,8 +110,13 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         ProjectileUtil.rotateTowardsMovement(this, 1);
         if (!this.isNoGravity()) {
             Vec3 vec34 = this.getDeltaMovement();
-            this.setDeltaMovement(vec34.x, vec34.y - (double) 0.05F, vec34.z);
+            this.setDeltaMovement(vec34.x, vec34.y - getDefaultGravity(), vec34.z);
         }
+    }
+
+    @Override
+    protected double getDefaultGravity() {
+        return 0.05;
     }
 
     @Override

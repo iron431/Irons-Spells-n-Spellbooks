@@ -213,8 +213,8 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                         List.of(),
                         List.of()
                 );
+        this.goalSelector.addGoal(2, new MagmaThrowBossAbilityGoal<>(this));
         this.goalSelector.addGoal(3, attackGoal);
-        this.goalSelector.addGoal(4, new BossAbilitiesGoal<>(this));
 
         this.goalSelector.addGoal(4, new PatrolNearLocationGoal(this, 30, .75f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
@@ -505,7 +505,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 .add(Attributes.MAX_HEALTH, 1000)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
                 .add(Attributes.ATTACK_KNOCKBACK, .6)
-                .add(Attributes.FOLLOW_RANGE, 32.0)
+                .add(Attributes.FOLLOW_RANGE, 48.0)
                 .add(Attributes.SCALE, 1.5)
                 .add(Attributes.GRAVITY, 0.03)
                 .add(Attributes.ENTITY_INTERACTION_RANGE, 3)
