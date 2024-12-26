@@ -4,7 +4,6 @@ import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.spells.magma_ball.FireBomb;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -60,40 +59,17 @@ public class MagmaThrowBossAbilityGoal<T extends Mob & IMagicEntity & IAnimatedA
                 for (LivingEntity entity : targets) {
                     if (Utils.hasLineOfSight(mob.level, mob, entity, false)) {
                         FireBomb fireBomb = fireBomb();
-//                        double v0 = 0.9;
-                        double v0 = Mth.lerp(Math.clamp((mob.distanceToSqr(entity) - 3) * .083, 0, 1), .3, 1.2);
+                        double horizontalSpeed = 0.5;
                         Vec3 horizontal = entity.position().subtract(mob.position()).multiply(1, 0, 1);
-                        Vec3 trajectory;
-                        if (horizontal.lengthSqr() < 0.1 * 0.1) {
-                            //super-close shot, just lob it up
-                            trajectory = new Vec3(0, v0 * .5, 0);
-
-                        } else {
-                            double y1 = entity.getY() - mob.getY();
-                            double gravity = fireBomb.getGravity();
-                            // y(t) = -1/2(g)(t^2) + v0*t
-                            // => 0 = -0.5g(t1^2) + v0(t1) - y1
-                            // => t1 = positive solution of quadratic formula
-                            double ticksInAir;
-                            if (Math.abs(y1) < 0.25) {
-                                // approx. c = 0 (=> x = -b/a)
-                                ticksInAir = -v0 / (-0.5 * gravity);
-                            } else {
-                                //quadratic formula
-                                var discriminant = v0 * v0 - (4 * -0.5 * gravity * -y1);
-                                if (discriminant < 0) {
-                                    //non-real solution
-                                    continue;
-                                }
-                                ticksInAir = (-v0 + Math.sqrt(discriminant)) / (2 * gravity);
-                            }
-                            if (ticksInAir < 1) {
-                                // nonsensical trajectory
-                                continue;
-                            }
-                            var estMotion = entity.getDeltaMovement().multiply(1, 0, 1).scale(ticksInAir * 0.5);
-                            trajectory = horizontal.add(estMotion).scale(1 / ticksInAir).add(0, v0, 0);
-                        }
+                        double distance = horizontal.length();
+                        double ticks = distance / horizontalSpeed;
+                        // y(t) = -1/2(g)(t^2) + v0*t
+                        // => v0 = [y1 + 1/2(g)(t1^2)]/t1
+                        double y1 = entity.getY() - mob.getY();
+                        double g = fireBomb.getGravity();
+                        double verticalSpeed = (y1 + 0.5 * g * ticks * ticks) / ticks;
+                        Vec3 estMovement = entity.getDeltaMovement().multiply(1, 0, 1).scale(ticks);
+                        Vec3 trajectory = horizontal.normalize().scale(horizontalSpeed).add(0, verticalSpeed, 0).add(estMovement);
                         fireBomb.setDeltaMovement(trajectory);
                         mob.level.addFreshEntity(fireBomb);
                     }
