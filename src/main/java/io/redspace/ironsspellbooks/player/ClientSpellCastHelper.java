@@ -317,10 +317,18 @@ public class ClientSpellCastHelper {
             var playerAnimationData = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(SpellAnimations.ANIMATION_RESOURCE);
             if (playerAnimationData != null) {
                 var animation = new KeyframeAnimationPlayer(keyframeAnimation) {
+//                    @Override
+//                    public void stop() {
+//                        playerAnimationData.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(2, Ease.INOUTSINE), null, false);
+//                        IronsAdjustmentModifier.INSTANCE.fadeOut(3);
+//                    }
+
                     @Override
-                    public void stop() {
-                        playerAnimationData.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(2, Ease.INOUTSINE), null, false);
-                        IronsAdjustmentModifier.INSTANCE.fadeOut(3);
+                    public void tick() {
+                        if (getCurrentTick() == getStopTick() - 2) {
+                            IronsAdjustmentModifier.INSTANCE.fadeOut(3);
+                        }
+                        super.tick();
                     }
                 };
                 var armsFlag = SHOW_FIRST_PERSON_ARMS.get();

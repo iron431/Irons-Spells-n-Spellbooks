@@ -197,7 +197,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                                 )
                                 .build(),
                         AttackAnimationData.builder("scythe_horizontal_slash_spin")
-                                .length(45)
+                                .length(53)
                                 .area(0.25f)
                                 .attacks(
                                         new FireBossAttackKeyframe(16, new Vec3(0, 0, -0.5), new Vec3(0, .1, -1), new FireBossAttackKeyframe.SwingData(false, true)),
@@ -295,6 +295,10 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             } else if (spawnTimer == SPAWN_ANIM_TIME - 92) {
                 level.playSound(null, position.x, position.y, position.z, SoundRegistry.FIRE_CAST, this.getSoundSource(), 3f, 2f);
             }
+            if(spawnTimer == 0 && !level.isClientSide){
+                spawnKnight(true);
+                spawnKnight(false);
+            }
         }
         if (!level.isClientSide) {
             if (isStanceBroken()) {
@@ -351,18 +355,18 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         if (this.tickCount % 30 == 0 && this.getTarget() == null && this.tickCount - this.getLastHurtByMobTimestamp() > 200) {
             this.heal(5);
         }
-        if (this.isAggressive() && this.tickCount % 160 == 0) {
+        if (this.isAggressive() && this.tickCount % (12 * 20) == 0) {
             int knightCount = level.getEntitiesOfClass(KeeperEntity.class, this.getBoundingBox().inflate(32, 16, 32)).size();
             if (knightCount < 2) {
-                spawnKnight();
+                spawnKnight(this.random.nextBoolean());
             }
         }
     }
 
-    public void spawnKnight() {
+    public void spawnKnight(boolean left) {
         if (level instanceof ServerLevel serverLevel) {
             KeeperEntity knight = new KeeperEntity(level);
-            int angle = Utils.random.nextInt(90, 270);
+            int angle = Utils.random.nextIntBetweenInclusive(-45, 45) + (left ? 180 : 0);
             Vec3 offset = this.getForward().multiply(3, 0, 3).yRot(angle * Mth.DEG_TO_RAD);
             Vec3 spawn = Utils.moveToRelativeGroundLevel(level, Utils.raycastForBlock(level, this.getEyePosition(), this.position().add(offset), ClipContext.Fluid.NONE).getLocation(), 4);
             knight.moveTo(spawn.add(0, 0.1, 0));

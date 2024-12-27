@@ -690,5 +690,10 @@
     "sounds": [
       "irons_spellbooks:fire_boss_death_final"
     ]
+  },
+  "spell.raise_hell.prepare": {
+    "sounds": [
+      "irons_spellbooks:raise_hell_prepare"
+    ]
   }
 }

@@ -113,6 +113,7 @@ public class SoundRegistry {
     public static DeferredHolder<SoundEvent, SoundEvent> ICE_SPIKE_EMERGE = registerSoundEvent("entity.ice_spike.emerge");
     public static DeferredHolder<SoundEvent, SoundEvent> FIRE_ARROW_CHARGE = registerSoundEvent("spell.fire_arrow.charge");
     public static DeferredHolder<SoundEvent, SoundEvent> FIRE_ARROW_CAST = registerSoundEvent("spell.fire_arrow.cast");
+    public static DeferredHolder<SoundEvent, SoundEvent> RAISE_HELL_PREPARE = registerSoundEvent("spell.raise_hell.prepare");
 
     public static DeferredHolder<SoundEvent, SoundEvent> HELLRAZOR_SWING = registerSoundEvent("item.hellrazor.swing");
     public static DeferredHolder<SoundEvent, SoundEvent> FIRE_ERUPTION_SLAM = registerSoundEvent("entity.fire_eruption.slam");

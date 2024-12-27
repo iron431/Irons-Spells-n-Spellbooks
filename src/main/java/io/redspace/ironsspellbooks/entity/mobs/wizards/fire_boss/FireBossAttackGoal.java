@@ -48,7 +48,7 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
             }
         }
         if (meleeAnimTimer > 0 && currentAttack != null) {
-            int shortcut = 20;
+            int shortcut = 5;
             if (meleeAnimTimer < shortcut) {
                 if (currentAttack.attacks.keySet().intStream().noneMatch(i -> i > currentAttack.lengthInTicks - shortcut)) {
                     meleeAnimTimer = 0;
