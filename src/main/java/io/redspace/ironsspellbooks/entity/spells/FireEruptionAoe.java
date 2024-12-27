@@ -93,7 +93,7 @@ public class FireEruptionAoe extends AoeEntity {
                             0,
                             (waveAnim + 1) * Mth.sin(anglePerBlockMax * i)
                     );
-                    BlockPos blockPos = BlockPos.containing(Utils.moveToRelativeGroundLevel(level, position().add(vec3), 8)).above();
+                    BlockPos blockPos = BlockPos.containing(Utils.moveToRelativeGroundLevel(level, position().add(vec3), 8).add(0, 0.1, 0));
                     Utils.createTremorBlockWithState(level, Blocks.FIRE.defaultBlockState(), blockPos, .1f + random.nextFloat() * .2f);
                 }
                 List<LivingEntity> targets = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(this.getInflation().x, this.getInflation().y, this.getInflation().z));

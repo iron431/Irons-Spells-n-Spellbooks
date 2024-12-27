@@ -308,4 +308,9 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
         super.readAdditionalSaveData(pCompound);
         this.summoned = pCompound.getBoolean("summoned");
     }
+
+    @Override
+    public boolean isAlliedTo(Entity pEntity) {
+        return super.isAlliedTo(pEntity) || pEntity.getType().is(ModTags.INFERNAL_ALLIES);
+    }
 }

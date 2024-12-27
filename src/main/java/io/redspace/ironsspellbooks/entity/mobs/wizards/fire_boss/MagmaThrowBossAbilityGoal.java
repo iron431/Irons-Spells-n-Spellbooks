@@ -33,8 +33,8 @@ public class MagmaThrowBossAbilityGoal<T extends Mob & IMagicEntity & IAnimatedA
         return isUsing;
     }
 
-    public static final int ANIM_DURATION = (int) (1.67 * 20);
-    public static final int ACTION_TIMESTAMP = (int) (1.38 * 20);
+    public static final int ANIM_DURATION = (int) (2.0 * 20);
+    public static final int ACTION_TIMESTAMP = (int) (1.63 * 20);
 
     @Override
     public boolean requiresUpdateEveryTick() {
@@ -102,7 +102,8 @@ public class MagmaThrowBossAbilityGoal<T extends Mob & IMagicEntity & IAnimatedA
     public void start() {
         isUsing = true;
         abilityTimer = 0;
-        delay = Utils.random.nextIntBetweenInclusive(12, 23) * 20;
+        //todo: remove debug cooldown
+        delay = 20 * 4; //Utils.random.nextIntBetweenInclusive(12, 23) * 20;
         mob.serverTriggerAnimation("magma_throw");
         mob.getNavigation().stop();
     }

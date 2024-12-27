@@ -11,6 +11,7 @@ import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
+import io.redspace.ironsspellbooks.entity.mobs.goals.SpellBarrageGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
@@ -18,6 +19,7 @@ import io.redspace.ironsspellbooks.entity.spells.FireEruptionAoe;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
@@ -208,12 +210,13 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 .setMeleeAttackInverval(0, 20)
                 .setMeleeBias(1f, 1f)
                 .setSpells(
-                        List.of(SpellRegistry.FIRE_ARROW_SPELL.get(), SpellRegistry.SCORCH_SPELL.get()),
+                        List.of(SpellRegistry.FIRE_ARROW_SPELL.get(), SpellRegistry.FIRE_ARROW_SPELL.get(), SpellRegistry.SCORCH_SPELL.get()),
                         List.of(),
                         List.of(),
                         List.of()
                 );
-        this.goalSelector.addGoal(2, new MagmaThrowBossAbilityGoal<>(this));
+//        this.goalSelector.addGoal(2, new MagmaThrowBossAbilityGoal<>(this));
+        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.RAISE_HELL_SPELL.get(), 5, 5, 100, 300, 1));
         this.goalSelector.addGoal(3, attackGoal);
 
         this.goalSelector.addGoal(4, new PatrolNearLocationGoal(this, 30, .75f));
@@ -476,6 +479,11 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     @Override
+    protected float nextStep() {
+        return moveDist + .8f;
+    }
+
+    @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData) {
         super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData);
         RandomSource randomsource = Utils.random;
@@ -641,6 +649,10 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         }
     }
 
+    @Override
+    public boolean isAlliedTo(Entity pEntity) {
+        return super.isAlliedTo(pEntity) || pEntity.getType().is(ModTags.INFERNAL_ALLIES);
+    }
 
     @Override
     protected PathNavigation createNavigation(Level pLevel) {
