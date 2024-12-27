@@ -88,8 +88,6 @@ public class PedestalTile extends BlockEntity {
 
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        //var packet = ClientboundBlockEntityDataPacket.create(this);
-        //irons_spellbooks.LOGGER.debug("getUpdatePacket: packet.getTag:{}", packet.getTag());
         CompoundTag nbt = writeNBT(new CompoundTag());
         return ClientboundBlockEntityDataPacket.create(this, (block) -> nbt);
     }
