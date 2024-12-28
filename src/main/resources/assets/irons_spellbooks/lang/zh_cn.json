@@ -351,7 +351,7 @@
   "ui.irons_spellbooks.spell_target_warning": "%s对你释放了%s！",
   "ui.irons_spellbooks.spell_target_success": "%s被%s选定",
   "ui.irons_spellbooks.spell_target_success_self": "%s以自身为目标",
-  "ui.irons_spellbooks.research_warning": "按住以学习（需要1张远古知识手稿）",
+  "ui.irons_spellbooks.research_warning": "按住以学习（需要1张远古巫术手稿）",
   "ui.irons_spellbooks.research_already_learned": "此法术已学会。",
   "ui.irons_spellbooks.wandering_trader_scroll": "任何%s卷轴",
   "ui.irons_spellbooks.sacrifice_target_failure": "你必须选择你的召唤物之一。",
