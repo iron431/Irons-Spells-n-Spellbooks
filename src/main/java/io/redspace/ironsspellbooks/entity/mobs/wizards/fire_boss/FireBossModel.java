@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.WalkAnimationState;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector2f;
 import org.joml.Vector3d;
@@ -79,7 +80,7 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
         super.setCustomAnimations(entity, instanceId, animationState);
     }
 
-    public void handleParticles(FireBossEntity entity){
+    public void handleParticles(FireBossEntity entity) {
         GeoBone particleEmitter = this.getAnimationProcessor().getBone("particle_emitter");
         GeoBone body = this.getAnimationProcessor().getBone("body");
         if (entity.isSpawning()) {
@@ -90,7 +91,7 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
                 Vector3d pos = body.getWorldPosition();
                 for (int i = 0; i < particles; i++) {
                     Vec3 random = Utils.getRandomVec3(0.5);
-                    entity.level.addParticle(ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), pos.x + random.x, pos.y + 1 + random.y * 2, pos.z + random.z, 200,0,0);
+                    entity.level.addParticle(ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), pos.x + random.x, pos.y + 1 + random.y * 2, pos.z + random.z, 200, 0, 0);
                 }
             }
         } else {
@@ -112,6 +113,11 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
         }
     }
 
+    @Override
+    protected Vector2f getLimbSwing(AbstractSpellCastingMob entity, WalkAnimationState walkAnimationState, float partialTick) {
+        Vector2f swing = super.getLimbSwing(entity, walkAnimationState, partialTick);
+        swing.mul(0.6f, 1f); return swing;
+    }
     //    @Override
 //    protected Vector2f getLimbSwing(AbstractSpellCastingMob entity, WalkAnimationState walkAnimationState, float partialTick) {
 //        Vector2f swing = super.getLimbSwing(entity, walkAnimationState, partialTick);

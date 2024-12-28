@@ -180,4 +180,6 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
         }
         return new Vector2f(limbSwingAmount, limbSwingSpeed);
     }
+
+
 }

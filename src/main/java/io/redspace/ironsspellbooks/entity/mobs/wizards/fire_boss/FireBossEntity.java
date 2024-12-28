@@ -93,7 +93,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     private static final EntityDataAccessor<Boolean> DATA_SOUL_MODE = SynchedEntityData.defineId(FireBossEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final AttributeModifier SOUL_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.35, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    private static final AttributeModifier SOUL_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.05, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     private static final AttributeModifier SOUL_SCALE_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.20, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
     public FireBossEntity(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
@@ -159,7 +159,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.attackGoal = (FireBossAttackGoal) new FireBossAttackGoal(this, 1.25f, 50, 75)
+        this.attackGoal = (FireBossAttackGoal) new FireBossAttackGoal(this, 1.4f, 50, 75)
                 .setMoveset(List.of(
                         AttackAnimationData.builder("scythe_backpedal")
                                 .length(40)
@@ -206,7 +206,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                                 .build()
 
                 ))
-                .setComboChance(.7f)
+                .setComboChance(1f)
                 .setMeleeAttackInverval(0, 20)
                 .setMeleeBias(1f, 1f)
                 .setSpells(
@@ -216,7 +216,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                         List.of()
                 );
 //        this.goalSelector.addGoal(2, new MagmaThrowBossAbilityGoal<>(this));
-        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.RAISE_HELL_SPELL.get(), 5, 5, 100, 300, 1));
+        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.RAISE_HELL_SPELL.get(), 5, 5, 80, 240, 1));
         this.goalSelector.addGoal(3, attackGoal);
 
         this.goalSelector.addGoal(4, new PatrolNearLocationGoal(this, 30, .75f));
@@ -295,7 +295,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             } else if (spawnTimer == SPAWN_ANIM_TIME - 92) {
                 level.playSound(null, position.x, position.y, position.z, SoundRegistry.FIRE_CAST, this.getSoundSource(), 3f, 2f);
             }
-            if(spawnTimer == 0 && !level.isClientSide){
+            if (spawnTimer == 0 && !level.isClientSide) {
                 spawnKnight(true);
                 spawnKnight(false);
             }
@@ -366,8 +366,8 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     public void spawnKnight(boolean left) {
         if (level instanceof ServerLevel serverLevel) {
             KeeperEntity knight = new KeeperEntity(level);
-            int angle = Utils.random.nextIntBetweenInclusive(-45, 45) + (left ? 180 : 0);
-            Vec3 offset = this.getForward().multiply(3, 0, 3).yRot(angle * Mth.DEG_TO_RAD);
+            float angle = (left ? -90 : 90) * Mth.DEG_TO_RAD;
+            Vec3 offset = this.getForward().multiply(3, 0, 3).scale(this.getScale()).yRot(angle);
             Vec3 spawn = Utils.moveToRelativeGroundLevel(level, Utils.raycastForBlock(level, this.getEyePosition(), this.position().add(offset), ClipContext.Fluid.NONE).getLocation(), 4);
             knight.moveTo(spawn.add(0, 0.1, 0));
             knight.triggerRise();
@@ -444,8 +444,9 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.deathTime++;
         if (!level.isClientSide) {
             Vec3 vec3 = this.position();
-            int particles = (int) Mth.lerp(Math.clamp((deathTime - 20) / 60f, 0, 1), 0, 5);
-            float range = Mth.lerp(Math.clamp((deathTime - 20) / 80f, 0, 1), 0, 0.6f);
+            float scale = getScale();
+            int particles = (int) Mth.lerp(Math.clamp((deathTime - 20) / 60f, 0, 1), 0, 5 * scale);
+            float range = Mth.lerp(Math.clamp((deathTime - 20) / 80f, 0, 1), 0, 0.4f * scale);
             if (particles > 0) {
                 MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), vec3.x, vec3.y + 1, vec3.z, particles, range, range, range, 100, false);
             }
@@ -454,7 +455,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                     deathLoot.getItems().forEach(this::spawnAtLocation);
                 }
                 this.remove(Entity.RemovalReason.KILLED);
-                MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), vec3.x, vec3.y + 1, vec3.z, 50, 0.3, 0.3, 0.3, 0.2, true);
+                MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), vec3.x, vec3.y + 1, vec3.z, 50, 0.3, 0.3, 0.3, 0.2 * scale, true);
                 this.playSound(SoundRegistry.FIRE_BOSS_DEATH_FINAL.get(), 4, .9f);
             }
         }
@@ -518,7 +519,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
                 .add(Attributes.ATTACK_KNOCKBACK, .6)
                 .add(Attributes.FOLLOW_RANGE, 48.0)
-                .add(Attributes.SCALE, 1.5)
+                .add(Attributes.SCALE, 1.6)
                 .add(Attributes.GRAVITY, 0.03)
                 .add(Attributes.ENTITY_INTERACTION_RANGE, 3)
                 .add(Attributes.STEP_HEIGHT, 1)
