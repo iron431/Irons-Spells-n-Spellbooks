@@ -1,0 +1,188 @@
+{
+  "variants": {
+    "facing=north": [
+      {
+        "model": "irons_spellbooks:block/book_stack_01",
+        "y": 0
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_02",
+        "y": 0
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_03",
+        "y": 0
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_04",
+        "y": 0
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_05",
+        "y": 0
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_06",
+        "y": 0
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_07",
+        "y": 0
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_08",
+        "y": 0
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_09",
+        "y": 0
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_10",
+        "y": 0
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_11",
+        "y": 0
+      }
+    ],
+    "facing=east": [
+      {
+        "model": "irons_spellbooks:block/book_stack_01",
+        "y": 90
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_02",
+        "y": 90
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_03",
+        "y": 90
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_04",
+        "y": 90
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_05",
+        "y": 90
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_06",
+        "y": 90
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_07",
+        "y": 90
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_08",
+        "y": 90
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_09",
+        "y": 90
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_10",
+        "y": 90
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_11",
+        "y": 90
+      }
+    ],
+    "facing=south": [
+      {
+        "model": "irons_spellbooks:block/book_stack_01",
+        "y": 180
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_02",
+        "y": 180
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_03",
+        "y": 180
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_04",
+        "y": 180
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_05",
+        "y": 180
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_06",
+        "y": 180
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_07",
+        "y": 180
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_08",
+        "y": 180
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_09",
+        "y": 180
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_10",
+        "y": 180
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_11",
+        "y": 180
+      }
+    ],
+    "facing=west": [
+      {
+        "model": "irons_spellbooks:block/book_stack_01",
+        "y": 270
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_02",
+        "y": 270
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_03",
+        "y": 270
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_04",
+        "y": 270
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_05",
+        "y": 270
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_06",
+        "y": 270
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_07",
+        "y": 270
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_08",
+        "y": 270
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_09",
+        "y": 270
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_10",
+        "y": 270
+      },
+      {
+        "model": "irons_spellbooks:block/book_stack_11",
+        "y": 270
+      }
+    ]
+  }
+}

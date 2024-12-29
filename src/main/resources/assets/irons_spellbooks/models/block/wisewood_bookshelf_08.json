@@ -1,0 +1,1 @@
+{    "parent": "block/cube_column",    "textures": {        "end": "irons_spellbooks:block/wisewood_planks",        "side": "irons_spellbooks:block/wisewood_bookshelf_08"    }}

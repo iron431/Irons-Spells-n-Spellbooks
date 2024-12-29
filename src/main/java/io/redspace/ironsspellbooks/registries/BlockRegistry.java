@@ -2,10 +2,7 @@ package io.redspace.ironsspellbooks.registries;
 
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.block.ArmorPileBlock;
-import io.redspace.ironsspellbooks.block.BloodCauldronBlock;
-import io.redspace.ironsspellbooks.block.BrazierBlock;
-import io.redspace.ironsspellbooks.block.FireflyJar;
+import io.redspace.ironsspellbooks.block.*;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronBlock;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronTile;
 import io.redspace.ironsspellbooks.block.arcane_anvil.ArcaneAnvilBlock;
@@ -19,6 +16,7 @@ import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeTile;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -52,6 +50,12 @@ public class BlockRegistry {
 
     public static final DeferredHolder<Block, Block> MITHRIL_ORE = BLOCKS.register("mithril_ore", () -> new Block(BlockBehaviour.Properties.of().lightLevel(state -> 9).mapColor(DyeColor.GRAY).requiresCorrectToolForDrops().strength(20.0F, 1200.0F).sound(SoundType.ANCIENT_DEBRIS)));
     public static final DeferredHolder<Block, Block> MITHRIL_ORE_DEEPSLATE = BLOCKS.register("deepslate_mithril_ore", () -> new Block(BlockBehaviour.Properties.of().lightLevel(state -> 9).mapColor(DyeColor.GRAY).requiresCorrectToolForDrops().strength(20.0F, 1200.0F).sound(SoundType.ANCIENT_DEBRIS)));
+
+    public static final DeferredHolder<Block, Block> BOOK_STACK = BLOCKS.register("book_stack", BookStackBlock::new);
+    public static final DeferredHolder<Block, Block> WISEWOOD_PLANKS = BLOCKS.register("wisewood_planks", () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)));
+    public static final DeferredHolder<Block, Block> WISEWOOD_BOOKSHELF = BLOCKS.register("wisewood_bookshelf", () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.CHISELED_BOOKSHELF)));
+    public static final DeferredHolder<Block, Block> GRIMY_TILES = BLOCKS.register("grimy_tiles", () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE)));
+
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ScrollForgeTile>> SCROLL_FORGE_TILE = BLOCK_ENTITIES.register("scroll_forge", () -> BlockEntityType.Builder.of(ScrollForgeTile::new, SCROLL_FORGE_BLOCK.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PedestalTile>> PEDESTAL_TILE = BLOCK_ENTITIES.register("pedestal", () -> BlockEntityType.Builder.of(PedestalTile::new, PEDESTAL_BLOCK.get()).build(null));

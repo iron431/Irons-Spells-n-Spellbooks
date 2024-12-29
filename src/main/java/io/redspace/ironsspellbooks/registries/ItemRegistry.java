@@ -197,6 +197,10 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> BRAZIER_ITEM = ITEMS.register("brazier", () -> new BlockItem(BlockRegistry.BRAZIER_FIRE.get(), new Item.Properties()));
     public static final DeferredHolder<Item, Item> SOUL_BRAZIER_ITEM = ITEMS.register("brazier_soul", () -> new BlockItem(BlockRegistry.BRAZIER_SOUL.get(), new Item.Properties()));
 
+    public static final DeferredHolder<Item, Item> BOOK_STACK_BLOCK_ITEM = ITEMS.register("book_stack", () -> new BlockItem(BlockRegistry.BOOK_STACK.get(), new Item.Properties()));
+    public static final DeferredHolder<Item, Item> WISEWOOD_PLANKS_BLOCK_ITEM = ITEMS.register("wisewood_planks", () -> new BlockItem(BlockRegistry.WISEWOOD_PLANKS.get(), new Item.Properties()));
+    public static final DeferredHolder<Item, Item> WISEWOOD_BOOKSHELF_BLOCK_ITEM = ITEMS.register("wisewood_bookshelf", () -> new BlockItem(BlockRegistry.WISEWOOD_BOOKSHELF.get(), new Item.Properties()));
+
     /**
      * Armor
      */
