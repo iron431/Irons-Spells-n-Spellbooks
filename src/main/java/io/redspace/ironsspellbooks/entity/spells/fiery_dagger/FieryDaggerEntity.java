@@ -1,8 +1,10 @@
 package io.redspace.ironsspellbooks.entity.spells.fiery_dagger;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.NBT;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -57,10 +59,11 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
     private @Nullable UUID targetEntity = null;
     private @Nullable Entity cachedTarget = null;
 
-    public void setTarget(Entity target){
+    public void setTarget(Entity target) {
         this.cachedTarget = target;
         this.targetEntity = target.getUUID();
     }
+
     public FieryDaggerEntity(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         setNoGravity(true);
@@ -88,8 +91,11 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
 
     @Override
     public void tick() {
-
+        //todo: not this shitty client syncing
         if (age++ < delay) {
+            if (level.isClientSide) {
+                level.addParticle(ParticleHelper.ELECTRIC_SPARKS, getX(), getY(), getZ(), 0, 0, 0);
+            }
 //            if (hasTarget()) {
 //                var target = getTargetEntity();
 //                if (target != null) {
@@ -112,22 +118,26 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
             float strength = .5f;
 
             if (owner != null && isTrackingOwner()) {
-                Vec3 currentPos = this.position();
-                setPos(owner.position().add(ownerTrack));
+                //use client delta motion instead of jittery server information
+                Vec3 ownerMotion = owner.position().subtract(owner.xOld, owner.yOld, owner.zOld);
+                setPos(this.position().add(ownerMotion));
             }
             var target = getTargetEntity();
             if (target != null) {
                 var pos = target.getBoundingBox().getCenter();
                 Vec3 targetMotion = pos.subtract(this.position()).normalize().scale(this.getSpeed());
                 Vec3 currentMotion = getDeltaMovement();
+                deltaMovementOld = currentMotion;
                 this.setDeltaMovement(currentMotion.add(targetMotion.subtract(currentMotion).scale(strength)));
 //                this.xRotO = getXRot();
 //                this.yRotO = getYRot();
-                Vec3 motion = this.getDeltaMovement();
-                float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
-                float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
+//                Vec3 motion = this.getDeltaMovement();
+//                float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
+//                float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
 //                this.setXRot(Mth.wrapDegrees(xRot));
 //                this.setYRot(Mth.wrapDegrees(yRot));
+            } else if (level.isClientSide) {
+                IronsSpellbooks.LOGGER.debug("CLIENT DESYNC");
             }
         } else {
             super.tick();
