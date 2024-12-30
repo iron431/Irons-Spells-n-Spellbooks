@@ -16,6 +16,7 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
 import io.redspace.ironsspellbooks.entity.spells.FireEruptionAoe;
+import io.redspace.ironsspellbooks.entity.spells.fiery_dagger.FieryDaggerEntity;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -359,6 +360,21 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             int knightCount = level.getEntitiesOfClass(KeeperEntity.class, this.getBoundingBox().inflate(32, 16, 32)).size();
             if (knightCount < 2) {
                 spawnKnight(this.random.nextBoolean());
+            }
+        }
+        if (tickCount % 100 == 0 && this.getTarget() != null) {
+            Vec3 pos = this.position();
+            int count = 3;
+            int delay = Utils.random.nextIntBetweenInclusive(50, 90);
+            for (int i = 0; i < count; i++) {
+                Vec3 offset = new Vec3(2 * getScale(), 0, 0).zRot(Mth.lerp(i / (count - 1f), 0, -Mth.PI)).add(0, this.getEyeHeight(), 0);
+                FieryDaggerEntity dagger = new FieryDaggerEntity(level);
+                dagger.setOwner(this);
+                dagger.ownerTrack = offset;
+                dagger.targetEntity = this.getTarget().getUUID();
+                dagger.setPos(pos.add(offset.yRot(this.getYRot())));
+                dagger.delay = delay + i * 5;
+                level.addFreshEntity(dagger);
             }
         }
     }

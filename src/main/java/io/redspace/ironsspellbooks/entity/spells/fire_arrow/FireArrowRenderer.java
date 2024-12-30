@@ -13,11 +13,11 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.entity.projectile.Projectile;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
-public class FireArrowRenderer extends EntityRenderer<FireArrowProjectile> {
+public class FireArrowRenderer extends EntityRenderer<Projectile> {
     private static final ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/fire_arrow.png");
 
     public FireArrowRenderer(Context context) {
@@ -25,13 +25,13 @@ public class FireArrowRenderer extends EntityRenderer<FireArrowProjectile> {
     }
 
     @Override
-    public void render(FireArrowProjectile entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
+    public void render(Projectile entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
         poseStack.pushPose();
-        Vec3 motion = entity.getDeltaMovement();
-        float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
-        float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
-        poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
-        poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
+//        Vec3 motion = entity.getDeltaMovement();
+//        float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
+//        float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
+        poseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot())));
+        poseStack.mulPose(Axis.XP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
         renderModel(poseStack, bufferSource);
         poseStack.popPose();
 
@@ -66,7 +66,7 @@ public class FireArrowRenderer extends EntityRenderer<FireArrowProjectile> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(FireArrowProjectile entity) {
+    public ResourceLocation getTextureLocation(Projectile entity) {
         return getTextureLocation();
     }
 
