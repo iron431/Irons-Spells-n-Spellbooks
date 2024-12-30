@@ -15,11 +15,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.Optional;
 import java.util.UUID;
 
-public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntityWithComplexSpawn {
+public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntityWithComplexSpawn, GeoAnimatable {
     @Override
     public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
         buffer.writeInt(this.delay);
@@ -84,6 +88,9 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
         }
     }
 
+    /**
+     * client-synced tick count
+     */
     int age;
 
     @Override
@@ -99,8 +106,8 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
             }
             var target = getTargetEntity();
             if (target != null) {
-                var pos = target.getBoundingBox().getCenter();
-                Vec3 targetMotion = pos.subtract(this.position()).normalize().scale(this.getSpeed());
+                var targetPos = target.getBoundingBox().getCenter();
+                Vec3 targetMotion = targetPos.subtract(this.position()).normalize().scale(this.getSpeed());
                 Vec3 currentMotion = getDeltaMovement();
                 deltaMovementOld = currentMotion;
                 this.setDeltaMovement(currentMotion.add(targetMotion.subtract(currentMotion).scale(strength)));
@@ -143,6 +150,7 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
         if (targetEntity != null) {
             tag.putUUID("target", targetEntity);
         }
+        tag.putInt("Age", age);
     }
 
     public boolean isTrackingOwner() {
@@ -163,5 +171,26 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
         if (tag.hasUUID("target")) {
             this.targetEntity = tag.getUUID("target");
         }
+        this.age = tag.getInt("Age");
+    }
+
+    /*
+    Geckolib
+     */
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return this.cache;
+    }
+
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+
+    @Override
+    public double getTick(Object object) {
+        return tickCount;
     }
 }

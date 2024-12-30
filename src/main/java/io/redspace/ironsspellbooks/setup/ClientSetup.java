@@ -43,6 +43,7 @@ import io.redspace.ironsspellbooks.entity.spells.comet.CometRenderer;
 import io.redspace.ironsspellbooks.entity.spells.devour_jaw.DevourJawRenderer;
 import io.redspace.ironsspellbooks.entity.spells.eldritch_blast.EldritchBlastRenderer;
 import io.redspace.ironsspellbooks.entity.spells.electrocute.ElectrocuteRenderer;
+import io.redspace.ironsspellbooks.entity.spells.fiery_dagger.FieryDaggerRenderer;
 import io.redspace.ironsspellbooks.entity.spells.fire_arrow.FireArrowRenderer;
 import io.redspace.ironsspellbooks.entity.spells.fireball.FireballRenderer;
 import io.redspace.ironsspellbooks.entity.spells.firebolt.FireboltRenderer;
@@ -241,7 +242,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.CREEPER_HEAD_PROJECTILE.get(), (context) -> new SkullProjectileRenderer(context, IronsSpellbooks.id("textures/entity/creeper_head.png")));
         event.registerEntityRenderer(EntityRegistry.MAGIC_ARROW_PROJECTILE.get(), MagicArrowRenderer::new);
         event.registerEntityRenderer(EntityRegistry.FIRE_ARROW_PROJECTILE.get(), FireArrowRenderer::new);
-        event.registerEntityRenderer(EntityRegistry.FIERY_DAGGER_PROJECTILE.get(), FireArrowRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.FIERY_DAGGER_PROJECTILE.get(), FieryDaggerRenderer::new);
         event.registerEntityRenderer(EntityRegistry.FIRE_ERUPTION_AOE.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.FROZEN_HUMANOID.get(), FrozenHumanoidRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SMALL_FIREBALL_PROJECTILE.get(), (context) -> new FireballRenderer(context, 0.75f));
