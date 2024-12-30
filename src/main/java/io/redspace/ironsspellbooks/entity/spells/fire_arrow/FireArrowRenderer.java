@@ -30,14 +30,23 @@ public class FireArrowRenderer extends EntityRenderer<Projectile> {
 //        Vec3 motion = entity.getDeltaMovement();
 //        float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
 //        float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
+        if(lastTick != entity.tickCount){
+            tick = true;
+            lastTick = entity.tickCount;
+        }else{
+            tick = false;
+        }
         poseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot())));
         poseStack.mulPose(Axis.XP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
+        staticTick = this.tick;
         renderModel(poseStack, bufferSource);
         poseStack.popPose();
 
         super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
     }
-
+    int lastTick;
+    boolean tick;
+    static boolean staticTick;
     public static void renderModel(PoseStack poseStack, MultiBufferSource bufferSource) {
         poseStack.scale(0.13f, 0.13f, 0.13f);
 
@@ -62,7 +71,7 @@ public class FireArrowRenderer extends EntityRenderer<Projectile> {
     }
 
     public static void vertex(Matrix4f pMatrix, Matrix3f pNormals, VertexConsumer pVertexBuilder, int pOffsetX, int pOffsetY, int pOffsetZ, float pTextureX, float pTextureY, int pNormalX, int p_113835_, int p_113836_, int pPackedLight) {
-        pVertexBuilder.addVertex(pMatrix, (float) pOffsetX, (float) pOffsetY, (float) pOffsetZ).setColor(200, 200, 200, 255).setUv(pTextureX, pTextureY).setOverlay(OverlayTexture.NO_OVERLAY).setLight(pPackedLight).setNormal((float) pNormalX, (float) p_113836_, (float) p_113835_);
+        pVertexBuilder.addVertex(pMatrix, (float) pOffsetX, (float) pOffsetY, (float) pOffsetZ).setColor(staticTick ? 0 :200, 200, 200, 255).setUv(pTextureX, pTextureY).setOverlay(OverlayTexture.NO_OVERLAY).setLight(pPackedLight).setNormal((float) pNormalX, (float) p_113836_, (float) p_113835_);
     }
 
     @Override

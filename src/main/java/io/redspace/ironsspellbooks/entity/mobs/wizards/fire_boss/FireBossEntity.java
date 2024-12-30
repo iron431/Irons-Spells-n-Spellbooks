@@ -371,7 +371,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 FieryDaggerEntity dagger = new FieryDaggerEntity(level);
                 dagger.setOwner(this);
                 dagger.ownerTrack = offset;
-                dagger.targetEntity = this.getTarget().getUUID();
+                dagger.setTarget(this.getTarget());
                 dagger.setPos(pos.add(offset.yRot(this.getYRot())));
                 dagger.delay = delay + i * 5;
                 level.addFreshEntity(dagger);

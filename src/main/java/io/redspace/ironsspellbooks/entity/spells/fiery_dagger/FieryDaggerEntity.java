@@ -54,9 +54,13 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
 
     public int delay;
     public @Nullable Vec3 ownerTrack = null;
-    public @Nullable UUID targetEntity = null;
+    private @Nullable UUID targetEntity = null;
     private @Nullable Entity cachedTarget = null;
 
+    public void setTarget(Entity target){
+        this.cachedTarget = target;
+        this.targetEntity = target.getUUID();
+    }
     public FieryDaggerEntity(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         setNoGravity(true);
@@ -81,6 +85,7 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
     }
 
     int age;
+
     @Override
     public void tick() {
 
@@ -100,15 +105,15 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
 //                    ownerTrack = null;
 //                }
 //            }
-            this.xOld = getX();
-            this.yOld = getY();
-            this.zOld = getZ();
+//            this.xOld = getX();
+//            this.yOld = getY();
+//            this.zOld = getZ();
             var owner = getOwner();
             float strength = .5f;
 
             if (owner != null && isTrackingOwner()) {
                 Vec3 currentPos = this.position();
-                setPos(currentPos.add(owner.getDeltaMovement()));
+                setPos(owner.position().add(ownerTrack));
             }
             var target = getTargetEntity();
             if (target != null) {
@@ -116,13 +121,13 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
                 Vec3 targetMotion = pos.subtract(this.position()).normalize().scale(this.getSpeed());
                 Vec3 currentMotion = getDeltaMovement();
                 this.setDeltaMovement(currentMotion.add(targetMotion.subtract(currentMotion).scale(strength)));
-                this.xRotO = getXRot();
-                this.yRotO = getYRot();
+//                this.xRotO = getXRot();
+//                this.yRotO = getYRot();
                 Vec3 motion = this.getDeltaMovement();
                 float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
                 float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
-                this.setXRot(Mth.wrapDegrees(xRot));
-                this.setYRot(Mth.wrapDegrees(yRot));
+//                this.setXRot(Mth.wrapDegrees(xRot));
+//                this.setYRot(Mth.wrapDegrees(yRot));
             }
         } else {
             super.tick();
