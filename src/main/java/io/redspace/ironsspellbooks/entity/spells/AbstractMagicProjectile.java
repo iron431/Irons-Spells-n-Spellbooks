@@ -95,7 +95,9 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         deltaMovementOld = getDeltaMovement();
         travel();
     }
-public Vec3 deltaMovementOld = Vec3.ZERO;
+
+    public Vec3 deltaMovementOld = Vec3.ZERO;
+
     public void handleHitDetection() {
         HitResult hitresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
         if (hitresult.getType() != HitResult.Type.MISS && !NeoForge.EVENT_BUS.post(new ProjectileImpactEvent(this, hitresult)).isCanceled()) {
@@ -104,12 +106,7 @@ public Vec3 deltaMovementOld = Vec3.ZERO;
     }
 
     public void travel() {
-//        this.xOld = getX();
-//        this.yOld = getY();
-//        this.zOld = getZ();
         setPos(position().add(getDeltaMovement()));
-//        this.xRotO = getXRot();
-//        this.yRotO = getYRot();
         Vec3 motion = this.getDeltaMovement();
         float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
         float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);

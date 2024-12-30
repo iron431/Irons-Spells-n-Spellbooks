@@ -364,16 +364,16 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         }
         if (tickCount % 100 == 0 && this.getTarget() != null) {
             Vec3 pos = this.position();
-            int count = 3;
+            int count = 7;
             int delay = Utils.random.nextIntBetweenInclusive(50, 90);
             for (int i = 0; i < count; i++) {
-                Vec3 offset = new Vec3(2 * getScale(), 0, 0).zRot(Mth.lerp(i / (count - 1f), 0, -Mth.PI)).add(0, this.getEyeHeight(), 0);
+                Vec3 offset = new Vec3(1.5 * getScale(), 0, 0).zRot(Mth.lerp(i / (count - 1f), 0, -Mth.PI)).add(0, this.getEyeHeight(), 0).yRot(-Mth.DEG_TO_RAD * this.getYRot());
                 FieryDaggerEntity dagger = new FieryDaggerEntity(level);
                 dagger.setOwner(this);
                 dagger.ownerTrack = offset;
                 dagger.setTarget(this.getTarget());
                 dagger.setPos(pos.add(offset.yRot(this.getYRot())));
-                dagger.delay = delay + i * 5;
+                dagger.delay = delay + i * 2;
                 level.addFreshEntity(dagger);
             }
         }

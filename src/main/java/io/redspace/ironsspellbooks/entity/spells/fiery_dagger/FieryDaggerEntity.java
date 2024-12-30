@@ -1,16 +1,13 @@
 package io.redspace.ironsspellbooks.entity.spells.fiery_dagger;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.NBT;
-import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -91,29 +88,7 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
 
     @Override
     public void tick() {
-        //todo: not this shitty client syncing
         if (age++ < delay) {
-            if (level.isClientSide) {
-                level.addParticle(ParticleHelper.ELECTRIC_SPARKS, getX(), getY(), getZ(), 0, 0, 0);
-            }
-//            if (hasTarget()) {
-//                var target = getTargetEntity();
-//                if (target != null) {
-//                    var pos = target.getBoundingBox().getCenter();
-//                    this.setDeltaMovement(pos.subtract(this.position()).normalize().scale(this.getSpeed()));
-//                }
-//            }
-//            if (isTrackingOwner()) {
-//                var owner = getOwner();
-//                if (owner != null) {
-//                    this.moveTo(owner.position().add(ownerTrack.yRot(owner.getYRot() * Mth.DEG_TO_RAD)));
-//                } else {
-//                    ownerTrack = null;
-//                }
-//            }
-//            this.xOld = getX();
-//            this.yOld = getY();
-//            this.zOld = getZ();
             var owner = getOwner();
             float strength = .5f;
 
@@ -129,15 +104,9 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
                 Vec3 currentMotion = getDeltaMovement();
                 deltaMovementOld = currentMotion;
                 this.setDeltaMovement(currentMotion.add(targetMotion.subtract(currentMotion).scale(strength)));
-//                this.xRotO = getXRot();
-//                this.yRotO = getYRot();
-//                Vec3 motion = this.getDeltaMovement();
-//                float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
-//                float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
-//                this.setXRot(Mth.wrapDegrees(xRot));
-//                this.setYRot(Mth.wrapDegrees(yRot));
-            } else if (level.isClientSide) {
-                IronsSpellbooks.LOGGER.debug("CLIENT DESYNC");
+                if (tickCount == 1) {
+                    deltaMovementOld = getDeltaMovement();
+                }
             }
         } else {
             super.tick();
@@ -162,22 +131,6 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
     @Override
     public Optional<Holder<SoundEvent>> getImpactSound() {
         return Optional.empty();
-    }
-
-    protected float getXRotD(Vec3 lookat) {
-        double d0 = lookat.x - this.getX();
-        double d1 = lookat.y - this.getY();
-        double d2 = lookat.z - this.getZ();
-        double d3 = Math.sqrt(d0 * d0 + d2 * d2);
-        return !(Math.abs(d1) > 1.0E-5F) && !(Math.abs(d3) > 1.0E-5F) ? 0 : (float) (-(Mth.atan2(d1, d3) * 180.0F / (float) Math.PI));
-    }
-
-    protected float getYRotD(Vec3 lookat) {
-        double d0 = lookat.x - this.getX();
-        double d1 = lookat.z - this.getZ();
-        return !(Math.abs(d1) > 1.0E-5F) && !(Math.abs(d0) > 1.0E-5F)
-                ? 0
-                : (float) (Mth.atan2(d1, d0) * 180.0F / (float) Math.PI) - 90.0F;
     }
 
     @Override
