@@ -221,6 +221,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                         List.of()
                 );
         this.goalSelector.addGoal(2, new FieryDaggerSwarmAbilityGoal<>(this));
+        this.goalSelector.addGoal(2, new FieryDaggerZoneAbilityGoal<>(this));
         this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.RAISE_HELL_SPELL.get(), 5, 5, 80, 240, 1));
         this.goalSelector.addGoal(3, attackGoal);
 

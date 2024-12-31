@@ -16,8 +16,6 @@ import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.util.Color;
 
 public class FieryDaggerRenderer extends GeoEntityRenderer<FieryDaggerEntity> {
-    private static final Color COLOR = Color.ofRGB(255, 120, 40);
-
     public FieryDaggerRenderer(EntityRendererProvider.Context renderManager) {
         super(renderManager, new FieryDaggerModel());
     }
@@ -28,9 +26,9 @@ public class FieryDaggerRenderer extends GeoEntityRenderer<FieryDaggerEntity> {
         Vec3 motion = entity.deltaMovementOld.add(entity.getDeltaMovement().subtract(entity.deltaMovementOld).scale(partialTicks));
         float xRot = ((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
         float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) - 90.0F);
+        poseStack.translate(0, entity.getBbHeight() * .5f, 0);
         poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
         poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
-        poseStack.translate(0, entity.getBbHeight() * .5f, 0);
     }
 
     @Override
@@ -40,6 +38,6 @@ public class FieryDaggerRenderer extends GeoEntityRenderer<FieryDaggerEntity> {
 
     @Override
     public Color getRenderColor(FieryDaggerEntity animatable, float partialTick, int packedLight) {
-        return COLOR;
+        return Color.LIGHT_GRAY;
     }
 }

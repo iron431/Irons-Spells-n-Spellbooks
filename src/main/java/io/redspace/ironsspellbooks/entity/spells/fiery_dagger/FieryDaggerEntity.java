@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.fiery_dagger;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
@@ -34,6 +35,9 @@ import java.util.UUID;
 public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntityWithComplexSpawn, GeoAnimatable {
 
 
+    /**
+     * Negative delay indicates a delay to pass on to summoned daggers
+     */
     public int delay;
     public @Nullable Vec3 ownerTrack = null;
     private @Nullable UUID targetEntity = null;
@@ -65,6 +69,11 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
         return targetEntity != null;
     }
 
+    public boolean isSpawnDagger() {
+        //repurpose explosion radius as summon radius; if present, we summon on impact
+        return explosionRadius > 0;
+    }
+
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
@@ -76,12 +85,40 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
     @Override
     protected void onHit(HitResult hitresult) {
         super.onHit(hitresult);
+        if (isSpawnDagger() && level instanceof ServerLevel) {
+            createDaggerZone(Utils.moveToRelativeGroundLevel(level, hitresult.getLocation(), 3));
+        }
         discard();
+    }
+
+    public void createDaggerZone(Vec3 center) {
+        float spawnRadius = this.explosionRadius;
+        float density = 1f;
+        int rings = (int) (spawnRadius * density);
+        float ringSpacing = 1 / density;
+        for (int i = 1; i < rings; i++) {
+            float ringRadius = ringSpacing * i;
+            int daggerCount = (int) (ringRadius * Mth.TWO_PI);
+            float angle = 360f / daggerCount * Mth.DEG_TO_RAD;
+            for (int j = 0; j < daggerCount; j++) {
+                Vec3 jitter = Utils.getRandomVec3(ringSpacing * .4f);
+                Vec3 pos = Utils.moveToRelativeGroundLevel(level, center.add(ringRadius * Mth.sin(angle * j), 0, ringRadius * Mth.cos(angle * j)).add(jitter), 8);
+                FieryDaggerEntity dagger = new FieryDaggerEntity(level);
+                dagger.setOwner(this.getOwner());
+                dagger.setDamage(this.getDamage());
+                //encode negative delay as child delay
+                dagger.delay = -this.delay + Utils.random.nextInt(20);
+                dagger.setDeltaMovement(0, getSpeed(), 0);
+                dagger.deltaMovementOld = dagger.getDeltaMovement();
+                dagger.moveTo(pos);
+                level.addFreshEntity(dagger);
+            }
+        }
     }
 
     @Override
     public void tick() {
-        if (age++ < delay) {
+        if (delay > 0 && age++ < delay) {
             var owner = getOwner();
             float strength = .5f;
             if (owner != null && isTrackingOwner()) {
@@ -106,6 +143,11 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
         } else {
             super.tick();
         }
+    }
+
+    @Override
+    protected boolean canHitEntity(Entity pTarget) {
+        return !isSpawnDagger() && super.canHitEntity(pTarget);
     }
 
     @Override
