@@ -16,7 +16,8 @@ import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.util.Color;
 
 public class FieryDaggerRenderer extends GeoEntityRenderer<FieryDaggerEntity> {
-    private static final Color COLOR = Color.ofRGB(220,130,50);
+    private static final Color COLOR = Color.ofRGB(255, 120, 40);
+
     public FieryDaggerRenderer(EntityRendererProvider.Context renderManager) {
         super(renderManager, new FieryDaggerModel());
     }
@@ -29,6 +30,7 @@ public class FieryDaggerRenderer extends GeoEntityRenderer<FieryDaggerEntity> {
         float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) - 90.0F);
         poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
         poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
+        poseStack.translate(0, entity.getBbHeight() * .5f, 0);
     }
 
     @Override

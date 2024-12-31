@@ -16,7 +16,6 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
 import io.redspace.ironsspellbooks.entity.spells.FireEruptionAoe;
-import io.redspace.ironsspellbooks.entity.spells.fiery_dagger.FieryDaggerEntity;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -96,6 +95,11 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     private static final EntityDataAccessor<Boolean> DATA_SOUL_MODE = SynchedEntityData.defineId(FireBossEntity.class, EntityDataSerializers.BOOLEAN);
     private static final AttributeModifier SOUL_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.05, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     private static final AttributeModifier SOUL_SCALE_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.20, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+
+    /**
+     * Client flag for whether code animations should pause over current animation
+     */
+    private boolean canAnimateOver;
 
     public FireBossEntity(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -216,7 +220,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                         List.of(),
                         List.of()
                 );
-//        this.goalSelector.addGoal(2, new MagmaThrowBossAbilityGoal<>(this));
+        this.goalSelector.addGoal(2, new FieryDaggerSwarmAbilityGoal<>(this));
         this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.RAISE_HELL_SPELL.get(), 5, 5, 80, 240, 1));
         this.goalSelector.addGoal(3, attackGoal);
 
@@ -360,21 +364,6 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             int knightCount = level.getEntitiesOfClass(KeeperEntity.class, this.getBoundingBox().inflate(32, 16, 32)).size();
             if (knightCount < 2) {
                 spawnKnight(this.random.nextBoolean());
-            }
-        }
-        if (tickCount % 100 == 0 && this.getTarget() != null) {
-            Vec3 pos = this.position();
-            int count = 7;
-            int delay = Utils.random.nextIntBetweenInclusive(50, 90);
-            for (int i = 0; i < count; i++) {
-                Vec3 offset = new Vec3(1.5 * getScale(), 0, 0).zRot(Mth.lerp(i / (count - 1f), 0, -Mth.PI)).add(0, this.getEyeHeight(), 0).yRot(-Mth.DEG_TO_RAD * this.getYRot());
-                FieryDaggerEntity dagger = new FieryDaggerEntity(level);
-                dagger.setOwner(this);
-                dagger.ownerTrack = offset;
-                dagger.setTarget(this.getTarget());
-                dagger.setPos(pos.add(offset.yRot(this.getYRot())));
-                dagger.delay = delay + i * 2;
-                level.addFreshEntity(dagger);
             }
         }
     }
@@ -560,11 +549,8 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     @Override
     public void playAnimation(String animationId) {
-        try {
-            animationToPlay = RawAnimation.begin().thenPlay(animationId);
-        } catch (Exception ignored) {
-            IronsSpellbooks.LOGGER.error("Entity {} Failed to play animation: {}", this, animationId);
-        }
+        animationToPlay = RawAnimation.begin().thenPlay(animationId);
+        canAnimateOver = animationId.equals("fire_boss_spawn") || animationId.equals("summon_fiery_daggers");
     }
 
     private PlayState predicate(AnimationState<FireBossEntity> animationEvent) {
@@ -586,7 +572,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     @Override
     public boolean isAnimating() {
-        return (meleeController.getAnimationState() == AnimationController.State.RUNNING && !isSpawning()) || super.isAnimating();
+        return (meleeController.getAnimationState() == AnimationController.State.RUNNING && !canAnimateOver) || super.isAnimating();
     }
 
     @Override
