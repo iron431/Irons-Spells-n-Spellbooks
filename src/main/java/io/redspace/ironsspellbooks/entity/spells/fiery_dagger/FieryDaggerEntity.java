@@ -5,7 +5,9 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
+import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.NBT;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.Holder;
@@ -24,6 +26,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
@@ -35,9 +38,6 @@ import java.util.UUID;
 public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntityWithComplexSpawn, GeoAnimatable {
 
 
-    /**
-     * Negative delay indicates a delay to pass on to summoned daggers
-     */
     public int delay;
     public @Nullable Vec3 ownerTrack = null;
     private @Nullable UUID targetEntity = null;
@@ -46,6 +46,10 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
      * client-synced tick count
      */
     int age;
+    /**
+     * flag for the special behavior when we are formed as a circle of daggers in the ground
+     */
+    boolean isGrounded;
 
     public FieryDaggerEntity(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -92,6 +96,9 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
     }
 
     public void createDaggerZone(Vec3 center) {
+        MagicManager.spawnParticles(level, new BlastwaveParticleOptions(new Vector3f(1, .6f, 0.3f), explosionRadius + 1), center.x, center.y + .15, center.z, 1, 0, 0, 0, 0, false);
+        playSound(SoundRegistry.FIRE_CAST.get(), 2f, Utils.random.nextIntBetweenInclusive(80, 110) * .01f);
+
         float spawnRadius = this.explosionRadius;
         float density = 1f;
         int rings = (int) (spawnRadius * density);
@@ -106,11 +113,11 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
                 FieryDaggerEntity dagger = new FieryDaggerEntity(level);
                 dagger.setOwner(this.getOwner());
                 dagger.setDamage(this.getDamage());
-                //encode negative delay as child delay
-                dagger.delay = -this.delay + Utils.random.nextInt(20);
+                dagger.delay = this.delay + Utils.random.nextInt(20);
                 dagger.setDeltaMovement(0, getSpeed(), 0);
                 dagger.deltaMovementOld = dagger.getDeltaMovement();
                 dagger.moveTo(pos);
+                dagger.isGrounded = true;
                 level.addFreshEntity(dagger);
             }
         }
@@ -118,7 +125,7 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
 
     @Override
     public void tick() {
-        if (delay > 0 && age++ < delay) {
+        if (!isSpawnDagger() && age++ < delay) {
             var owner = getOwner();
             float strength = .5f;
             if (owner != null && isTrackingOwner()) {
@@ -133,12 +140,28 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
                 Vec3 currentMotion = getDeltaMovement();
                 deltaMovementOld = currentMotion;
                 this.setDeltaMovement(currentMotion.add(targetMotion.subtract(currentMotion).scale(strength)));
+                // prevent first-tick flicker due to deltaMoveOld being "uninitialized" on our first tick
                 if (tickCount == 1) {
                     deltaMovementOld = getDeltaMovement();
                 }
             }
+            if (age == delay) {
+                if (isGrounded) {
+                    if (Utils.random.nextFloat() < 0.5f) {
+                        playSound(SoundRegistry.FIERY_DAGGER_THROW.get(), 0.75f, Utils.random.nextIntBetweenInclusive(80, 110) * .01f);
+                    }
+                } else {
+                    playSound(SoundRegistry.FIERY_DAGGER_THROW.get(), 2f, Utils.random.nextIntBetweenInclusive(80, 110) * .01f);
+                }
+                // do an initial near-collision check since we cannot organically hit things if we originate inside their hitbox (such as if they are standing on a dagger)
+                var hits = level.getEntities(this, this.getBoundingBox().inflate(0.4f), this::canHitEntity);
+                EntityHitResult hitResult = hits.isEmpty() ? null : new EntityHitResult(hits.getFirst());
+                if (hitResult != null) {
+                    onHit(hitResult);
+                }
+            }
             if (level.isClientSide) {
-                level.addParticle(ParticleHelper.EMBERS, getX(), getY(), getZ(), 0, 0, 0);
+                level.addParticle(ParticleHelper.EMBERS, getX(), getY() + getBbHeight() * .5f, getZ(), 0, 0, 0);
             }
         } else {
             super.tick();
@@ -186,7 +209,7 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
 
     @Override
     public Optional<Holder<SoundEvent>> getImpactSound() {
-        return Optional.empty();
+        return isGrounded ? Optional.empty() : Optional.of(SoundRegistry.FIRE_IMPACT);
     }
 
     public Entity getTargetEntity() {
@@ -235,6 +258,8 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
     @Override
     public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
         buffer.writeInt(this.delay);
+        buffer.writeFloat(this.explosionRadius);
+        buffer.writeBoolean(this.isGrounded);
         var tracking = ownerTrack != null;
         buffer.writeBoolean(tracking);
         if (tracking) {
@@ -252,6 +277,8 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
     @Override
     public void readSpawnData(RegistryFriendlyByteBuf buffer) {
         this.delay = buffer.readInt();
+        this.explosionRadius = buffer.readFloat();
+        this.isGrounded = buffer.readBoolean();
         if (buffer.readBoolean()) {
             this.ownerTrack = new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
         }

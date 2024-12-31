@@ -84,6 +84,10 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     @Override
     public void tick() {
         super.tick();
+        // prevent first-tick flicker due to deltaMoveOld being "uninitialized" on our first tick
+        if (tickCount == 1) {
+            deltaMovementOld = getDeltaMovement();
+        }
         if (tickCount > EXPIRE_TIME) {
             discard();
             return;

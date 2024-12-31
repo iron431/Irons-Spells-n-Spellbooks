@@ -1,15 +1,14 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss;
 
-import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.spells.fiery_dagger.FieryDaggerEntity;
-import net.minecraft.world.entity.Mob;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.phys.Vec3;
 
-public class FieryDaggerZoneAbilityGoal<T extends Mob & IMagicEntity & IAnimatedAttacker> extends AnimatedActionGoal<T> {
-    public FieryDaggerZoneAbilityGoal(T mob) {
+public class FieryDaggerZoneAbilityGoal extends AnimatedActionGoal<FireBossEntity> {
+    public FieryDaggerZoneAbilityGoal(FireBossEntity mob) {
         super(mob);
     }
 
@@ -30,42 +29,66 @@ public class FieryDaggerZoneAbilityGoal<T extends Mob & IMagicEntity & IAnimated
 
     @Override
     protected int getCooldown() {
-        return 20 * 6;
+        return 20 * 2;
     }
 
     @Override
     protected String getAnimationId() {
-        return "instant_projectile";
+        return "instant_slash";
+    }
+
+    @Override
+    public void tick() {
+        if (mob.getTarget() != null) {
+            mob.attackGoal.setTarget(mob.getTarget());
+            mob.attackGoal.doMovement(mob.distanceToSqr(mob.getTarget()));
+        }
+        super.tick();
     }
 
     @Override
     protected void doAction() {
         var target = mob.getTarget();
         if (target != null) {
+            mob.playSound(SoundRegistry.FIERY_DAGGER_THROW.get(), 2f, Utils.random.nextIntBetweenInclusive(80, 110) * .01f);
+
             Vec3 start = mob.getEyePosition();
-            Vec3 aim = target.position();
-            int delay = -Utils.random.nextIntBetweenInclusive(40, 80);
+            Vec3 targetPos = target.position();
+            Vec3 deltaAim = targetPos.subtract(start);
+            // throw 3 daggers at 30 degree angles, centered around our target's postion
+            for (int i = 0; i < 3; i++) {
+                Vec3 aim = start.add(deltaAim.yRot(Mth.PI / 6 * (i - 1)));
+                int delay = Utils.random.nextIntBetweenInclusive(20, 50);
 
-            FieryDaggerEntity dagger = new FieryDaggerEntity(mob.level);
-            dagger.setOwner(mob);
-            dagger.setPos(start);
-            dagger.delay = delay;
-            dagger.setDamage((float) (mob.getAttributeValue(Attributes.ATTACK_DAMAGE) * .25));
-            dagger.setExplosionRadius(4 + Utils.random.nextFloat() * 2);
-            dagger.setNoGravity(false);
+                FieryDaggerEntity dagger = new FieryDaggerEntity(mob.level);
+                dagger.setOwner(mob);
+                dagger.setPos(start);
+                dagger.delay = delay;
+                dagger.setDamage((float) (mob.getAttributeValue(Attributes.ATTACK_DAMAGE) * .25));
+                dagger.setExplosionRadius(4 + Utils.random.nextFloat() * 2);
+                dagger.setNoGravity(false);
 
-            double horizontalSpeed = 1;
-            Vec3 horizontal = aim.subtract(start).multiply(1, 0, 1);
-            double distance = horizontal.length();
-            double ticks = distance / horizontalSpeed;
-            // y(t) = -1/2(g)(t^2) + v0*t
-            // => v0 = [y1 + 1/2(g)(t1^2)]/t1
-            double y1 = aim.y - start.y;
-            double g = dagger.getGravity();
-            double verticalSpeed = (y1 + 0.5 * g * ticks * ticks) / ticks;
-            Vec3 trajectory = horizontal.normalize().scale(horizontalSpeed).add(0, verticalSpeed, 0);
-            dagger.setDeltaMovement(trajectory);
-            mob.level.addFreshEntity(dagger);
+                Vec3 horizontal = aim.subtract(start).multiply(1, 0, 1);
+                double horizontalSpeed = 1 * Mth.cos(Mth.PI * .25f);
+                double distance = horizontal.length();
+                double ticks = distance / horizontalSpeed;
+
+                // y(t) = -1/2(g)(t^2) + v0*t
+                // => v0 = [y1 + 1/2(g)(t1^2)]/t1
+                double y1 = aim.y - start.y;
+                double g = dagger.getGravity();
+                double verticalSpeed = (y1 + 0.5 * g * ticks * ticks) / ticks;
+                Vec3 trajectory = horizontal.normalize().scale(horizontalSpeed).add(0, verticalSpeed, 0);
+                dagger.setDeltaMovement(trajectory);
+                mob.level.addFreshEntity(dagger);
+            }
+
         }
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        mob.attackGoal.setTarget(null);
     }
 }

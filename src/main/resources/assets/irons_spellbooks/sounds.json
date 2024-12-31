@@ -695,5 +695,15 @@
     "sounds": [
       "irons_spellbooks:raise_hell_prepare"
     ]
+  },
+  "entity.fiery_dagger.throw": {
+    "sounds": [
+      "irons_spellbooks:fiery_dagger_throw"
+    ]
+  },
+  "entity.generic.fire_impact": {
+    "sounds": [
+      "irons_spellbooks:fire_impact"
+    ]
   }
 }

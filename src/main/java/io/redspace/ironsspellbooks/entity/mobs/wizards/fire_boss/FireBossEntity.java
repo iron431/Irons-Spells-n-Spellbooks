@@ -220,8 +220,8 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                         List.of(),
                         List.of()
                 );
-        this.goalSelector.addGoal(2, new FieryDaggerSwarmAbilityGoal<>(this));
-        this.goalSelector.addGoal(2, new FieryDaggerZoneAbilityGoal<>(this));
+        this.goalSelector.addGoal(2, new FieryDaggerSwarmAbilityGoal(this));
+        this.goalSelector.addGoal(2, new FieryDaggerZoneAbilityGoal(this));
         this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.RAISE_HELL_SPELL.get(), 5, 5, 80, 240, 1));
         this.goalSelector.addGoal(3, attackGoal);
 
@@ -318,10 +318,10 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                         MagicManager.spawnParticles(level, ParticleHelper.FIRE, vec3.x, vec3.y, vec3.z, 120, 0.3, 0.3, 0.3, 0.3, true);
                         var speed = this.getAttribute(Attributes.MOVEMENT_SPEED);
                         speed.removeModifier(SOUL_SPEED_MODIFIER);
-                        speed.addTransientModifier(SOUL_SPEED_MODIFIER);
+                        speed.addPermanentModifier(SOUL_SPEED_MODIFIER);
                         var scale = this.getAttribute(Attributes.SCALE);
                         scale.removeModifier(SOUL_SCALE_MODIFIER);
-                        scale.addTransientModifier(SOUL_SCALE_MODIFIER);
+                        scale.addPermanentModifier(SOUL_SCALE_MODIFIER);
                         this.playSound(SoundRegistry.FIRE_BOSS_TRANSITION_SOUL.get(), 3, 1);
                     } else if (tick < 80) {
                         var f = Mth.lerp(tick / 80f, 0.2, 0.4);
@@ -357,7 +357,6 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         if (currentHealth < maxHealth - eruptionHealthStep * (stanceBreakCounter + 1)) {
             triggerStanceBreak();
         }
-
         if (this.tickCount % 30 == 0 && this.getTarget() == null && this.tickCount - this.getLastHurtByMobTimestamp() > 200) {
             this.heal(5);
         }

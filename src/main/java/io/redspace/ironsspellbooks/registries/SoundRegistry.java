@@ -16,8 +16,10 @@ public class SoundRegistry {
         SOUND_EVENTS.register(eventBus);
     }
 
+    //TODO: bring sound locations into spec
     public static DeferredHolder<SoundEvent, SoundEvent> FORCE_IMPACT = registerSoundEvent("force_impact");
     public static DeferredHolder<SoundEvent, SoundEvent> ICE_IMPACT = registerSoundEvent("ice_impact");
+    public static DeferredHolder<SoundEvent, SoundEvent> FIRE_IMPACT = registerSoundEvent("entity.generic.fire_impact");
 
     public static DeferredHolder<SoundEvent, SoundEvent> MAGIC_SPELL_REVERSE_3 = registerSoundEvent("magic_spell_reverse_3");
     public static DeferredHolder<SoundEvent, SoundEvent> ARIAL_SUMMONING_5_CUSTOM_1 = registerSoundEvent("arial_summoning_5_custom_1");
@@ -114,6 +116,7 @@ public class SoundRegistry {
     public static DeferredHolder<SoundEvent, SoundEvent> FIRE_ARROW_CHARGE = registerSoundEvent("spell.fire_arrow.charge");
     public static DeferredHolder<SoundEvent, SoundEvent> FIRE_ARROW_CAST = registerSoundEvent("spell.fire_arrow.cast");
     public static DeferredHolder<SoundEvent, SoundEvent> RAISE_HELL_PREPARE = registerSoundEvent("spell.raise_hell.prepare");
+    public static DeferredHolder<SoundEvent, SoundEvent> FIERY_DAGGER_THROW = registerSoundEvent("entity.fiery_dagger.throw");
 
     public static DeferredHolder<SoundEvent, SoundEvent> HELLRAZOR_SWING = registerSoundEvent("item.hellrazor.swing");
     public static DeferredHolder<SoundEvent, SoundEvent> FIRE_ERUPTION_SLAM = registerSoundEvent("entity.fire_eruption.slam");
