@@ -11,7 +11,7 @@
     }
   },
   "result": {
-    "item": "irons_spellbooks:book_stack",
+    "id": "irons_spellbooks:book_stack",
     "count": 1
   }
 }

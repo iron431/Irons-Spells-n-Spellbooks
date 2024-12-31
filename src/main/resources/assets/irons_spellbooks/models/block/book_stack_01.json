@@ -1,7 +1,8 @@
 {
 	"credit": "Made with Blockbench",
-	"parent": "block/block",
+	"parent": "irons_spellbooks:block/book_stack_0",
 	"texture_size": [32, 32],
+	"ambientocclusion": false,
 	"textures": {
 		"0": "irons_spellbooks:block/book_stack",
 		"particle": "irons_spellbooks:block/book_stack_particle"
@@ -9,44 +10,30 @@
 	"elements": [
 		{
 			"name": "book_3",
-			"from": [5, 2, 4],
+			"from": [3, 4, 2],
+			"to": [10, 8, 12],
+			"rotation": {"angle": 0, "axis": "y", "origin": [6.25, 4, 7]},
+			"faces": {
+				"north": {"uv": [8, 5, 11.5, 7], "texture": "#0"},
+				"east": {"uv": [11.5, 0, 13.5, 5], "rotation": 90, "texture": "#0"},
+				"south": {"uv": [11.5, 5, 8, 7], "texture": "#0"},
+				"west": {"uv": [11, 5, 16, 7], "texture": "#0"},
+				"up": {"uv": [8, 0, 11.5, 5], "rotation": 180, "texture": "#0"},
+				"down": {"uv": [8, 0, 11.5, 5], "rotation": 180, "texture": "#0"}
+			}
+		},
+		{
+			"name": "book_2",
+			"from": [4, 0, 2],
 			"to": [11, 4, 12],
-			"rotation": {"angle": -22.5, "axis": "y", "origin": [8, 0, 8]},
+			"rotation": {"angle": -22.5, "axis": "y", "origin": [7.5, 0, 7]},
 			"faces": {
-				"north": {"uv": [3, 15, 6, 16], "texture": "#0"},
-				"east": {"uv": [11, 0, 12, 4], "rotation": 90, "texture": "#0"},
-				"south": {"uv": [0, 15, 3, 16], "texture": "#0"},
-				"west": {"uv": [1.5, 15, 5.5, 16], "texture": "#0"},
-				"up": {"uv": [8, 0, 11, 4], "rotation": 180, "texture": "#0"},
-				"down": {"uv": [8, 0, 11, 4], "rotation": 180, "texture": "#0"}
-			}
-		},
-		{
-			"name": "book_4",
-			"from": [6, 4, 4.31371],
-			"to": [12, 6, 12.31371],
-			"rotation": {"angle": 22.5, "axis": "y", "origin": [8, 0, 8]},
-			"faces": {
-				"north": {"uv": [3, 15, 6, 16], "texture": "#0"},
-				"east": {"uv": [15, 0, 16, 4], "rotation": 90, "texture": "#0"},
-				"south": {"uv": [0, 15, 3, 16], "texture": "#0"},
-				"west": {"uv": [1.5, 15, 5.5, 16], "texture": "#0"},
-				"up": {"uv": [12, 0, 15, 4], "rotation": 180, "texture": "#0"},
-				"down": {"uv": [12, 0, 15, 4], "rotation": 180, "texture": "#0"}
-			}
-		},
-		{
-			"name": "book_5",
-			"from": [5.77164, 0, 3.85195],
-			"to": [11.77164, 2, 11.85195],
-			"rotation": {"angle": -45, "axis": "y", "origin": [8, 0, 8]},
-			"faces": {
-				"north": {"uv": [3, 15, 6, 16], "texture": "#0"},
-				"east": {"uv": [3, 4, 4, 8], "rotation": 90, "texture": "#0"},
-				"south": {"uv": [0, 15, 3, 16], "texture": "#0"},
-				"west": {"uv": [1.5, 15, 5.5, 16], "texture": "#0"},
-				"up": {"uv": [0, 4, 3, 8], "rotation": 180, "texture": "#0"},
-				"down": {"uv": [0, 8, 3, 4], "rotation": 180, "texture": "#0"}
+				"north": {"uv": [0, 5, 3.5, 7], "texture": "#0"},
+				"east": {"uv": [3.5, 0, 5.5, 5], "rotation": 90, "texture": "#0"},
+				"south": {"uv": [3.5, 5, 0, 7], "texture": "#0"},
+				"west": {"uv": [3, 5, 8, 7], "texture": "#0"},
+				"up": {"uv": [0, 0, 3.5, 5], "rotation": 180, "texture": "#0"},
+				"down": {"uv": [0, 0, 3.5, 5], "rotation": 180, "texture": "#0"}
 			}
 		}
 	]
