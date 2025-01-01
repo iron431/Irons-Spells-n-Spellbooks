@@ -15,10 +15,7 @@ import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeBlock;
 import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeTile;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.ChiseledBookShelfBlock;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
@@ -58,6 +55,7 @@ public class BlockRegistry {
     public static final DeferredHolder<Block, Block> WISEWOOD_BOOKSHELF = BLOCKS.register("wisewood_bookshelf", () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.BOOKSHELF)));
     public static final DeferredHolder<Block, Block> GRIMY_TILES = BLOCKS.register("grimy_tiles", () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE)));
     public static final DeferredHolder<Block, Block> WISEWOOD_CHISELLED_BOOKSHELF = BLOCKS.register("wisewood_chiseled_bookshelf", () -> new ChiseledBookShelfBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CHISELED_BOOKSHELF)));
+    public static final DeferredHolder<Block, Block> NETHER_BRICK_PILLAR = BLOCKS.register("nether_brick_pillar", () -> new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.NETHER_BRICKS)));
 
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ScrollForgeTile>> SCROLL_FORGE_TILE = BLOCK_ENTITIES.register("scroll_forge", () -> BlockEntityType.Builder.of(ScrollForgeTile::new, SCROLL_FORGE_BLOCK.get()).build(null));
