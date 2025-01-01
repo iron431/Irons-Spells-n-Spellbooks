@@ -252,6 +252,10 @@
   "block.irons_spellbooks.brazier": "Brazier",
   "block.irons_spellbooks.brazier_soul": "Soul Brazier",
   "block.irons_spellbooks.book_stack": "Book Stack",
+  "block.irons_spellbooks.book_stack.description": "Decoration Block",
+  "block.irons_spellbooks.wisewood_bookshelf": "Wisewood Bookshelf",
+  "block.irons_spellbooks.wisewood_chiseled_bookshelf": "Wisewood Chiseled Bookshelf",
+  "block.irons_spellbooks.nether_brick_pillar": "Nether Brick Pillar",
 
   "tooltip.irons_spellbooks.shift_tooltip": "[Shift+]",
   "tooltip.irons_spellbooks.level": "Level %s",
@@ -908,6 +912,7 @@
   "entity.irons_spellbooks.fire_arrow": "Fire Arrow",
   "itemGroup.irons_spellbooks.spell_materials_tab": "Iron's Spellbooks Materials",
   "itemGroup.irons_spellbooks.spell_equipment_tab": "Iron's Spellbooks Equipment",
+  "itemGroup.irons_spellbooks.blocks_tab": "Iron's Spellbooks Blocks",
   "itemGroup.irons_spellbooks.spellbook_scrolls_tab": "Iron's Spellbooks Scrolls",
   "advancements.irons_spellbooks.root.title": "Iron's Spells 'n Spellbooks",
   "advancements.irons_spellbooks.root.description": "There's more than meets the eye to this world...",
