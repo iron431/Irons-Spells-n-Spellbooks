@@ -252,9 +252,9 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         if (recreateSpell) {
             recreateSpell = false;
             var syncedSpellData = playerMagicData.getSyncedData();
-            //var spell = SpellRegistry.getSpell(syncedSpellData.getCastingSpellId());
-            //this.initiateCastSpell(spell, syncedSpellData.getCastingSpellLevel());
-            setSyncedSpellData(syncedSpellData);
+            var spell = SpellRegistry.getSpell(syncedSpellData.getCastingSpellId());
+            this.initiateCastSpell(spell, syncedSpellData.getCastingSpellLevel());
+            //setSyncedSpellData(syncedSpellData);
         }
 
         if (isDrinkingPotion()) {
