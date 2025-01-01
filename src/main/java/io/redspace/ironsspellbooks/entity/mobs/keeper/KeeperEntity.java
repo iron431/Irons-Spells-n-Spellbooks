@@ -11,7 +11,9 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.DamageTypeTags;
@@ -58,6 +60,12 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
         if (riseAnimTick > 0) {
             animationToPlay = RawAnimation.begin().thenPlay("keeper_kneeling_rise");
         }
+        float y = this.getYRot();
+        this.yBodyRot = y;
+        this.yBodyRotO = y;
+        this.yHeadRot = y;
+        this.yHeadRotO = y;
+        this.yRotO = y;
     }
 
     //private static final EntityDataAccessor<Integer> DATA_ATTACK_TYPE = SynchedEntityData.defineId(KeeperEntity.class, EntityDataSerializers.INT);
@@ -83,6 +91,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
 
     public static final int RISE_ANIM_TIME = 25;
     public int riseAnimTick;
+    public boolean summoned;
 
     public void triggerRise() {
         this.riseAnimTick = RISE_ANIM_TIME;
@@ -94,6 +103,16 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
         this.lookControl = createLookControl();
         this.moveControl = createMoveControl();
 
+    }
+
+    @Override
+    protected boolean shouldDropLoot() {
+        return super.shouldDropLoot() && !summoned;
+    }
+
+    @Override
+    public boolean shouldDropExperience() {
+        return super.shouldDropExperience() && !summoned;
     }
 
     @Override
@@ -130,7 +149,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
 
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Mob.class, true, (entity) -> !(entity instanceof KeeperEntity)));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Mob.class, true, (entity) -> !(entity.getType().is(ModTags.INFERNAL_ALLIES))));
     }
 
     @Override
@@ -274,5 +293,24 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
     @Override
     protected PathNavigation createNavigation(Level pLevel) {
         return new NotIdioticNavigation(this, pLevel);
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag pCompound) {
+        super.addAdditionalSaveData(pCompound);
+        if (summoned) {
+            pCompound.putBoolean("summoned", true);
+        }
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag pCompound) {
+        super.readAdditionalSaveData(pCompound);
+        this.summoned = pCompound.getBoolean("summoned");
+    }
+
+    @Override
+    public boolean isAlliedTo(Entity pEntity) {
+        return super.isAlliedTo(pEntity) || pEntity.getType().is(ModTags.INFERNAL_ALLIES);
     }
 }

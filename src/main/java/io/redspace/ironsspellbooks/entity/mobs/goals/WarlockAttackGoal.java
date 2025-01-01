@@ -62,13 +62,13 @@ public class WarlockAttackGoal extends WizardAttackGoal {
             float strafeForwards;
             float speed = (float) movementSpeed();
             if (distanceSquared > meleeRange * meleeRange) {
+                mob.setXxa(0); // manually override strafe control before we set navigation
                 if (mob.tickCount % 5 == 0) {
                     this.mob.getNavigation().moveTo(this.target, meleeMoveSpeedModifier);
                 }
-                mob.getMoveControl().strafe(0, 0);
             } else {
                 this.mob.getNavigation().stop();
-                strafeForwards = .35f * meleeMoveSpeedModifier * (4 * distanceSquared > meleeRange * meleeRange ? 1.5f : -1);
+                strafeForwards = .5f * meleeMoveSpeedModifier * (4 * distanceSquared > meleeRange * meleeRange ? 1.5f : -1);
                 //we do a little strafing
                 if (++strafeTime > 25) {
                     if (mob.getRandom().nextDouble() < .1) {
@@ -77,7 +77,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
                     }
                 }
                 float strafeDir = strafingClockwise ? 1f : -1f;
-                mob.getMoveControl().strafe(strafeForwards, speed * strafeDir * 0.5f);
+                mob.getMoveControl().strafe(strafeForwards, speed * strafeDir);
             }
             //helps with head alignment? for some reason mobs just cannot align their head and body and target for their fucking life
             //update: that is due to pathfinding only working for 45 degree angles, meaning mobs must staircase their diagonal movement without manual intervention (see NotIdioticGroundNavigation)
@@ -90,7 +90,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
         var meleeRange = meleeRange();
         if (!wantsToMelee || distanceSquared > meleeRange * meleeRange || spellCastingMob.isCasting()) {
             super.handleAttackLogic(distanceSquared);
-        } else if (--this.attackTime == 0) {
+        } else if (--this.attackTime <= 0) {
             this.mob.swing(InteractionHand.MAIN_HAND);
             doMeleeAction();
         }
@@ -149,11 +149,11 @@ public class WarlockAttackGoal extends WizardAttackGoal {
     @Override
     protected void resetAttackTimer(double distanceSquared) {
         var meleeRange = meleeRange();
-        if (!wantsToMelee || distanceSquared > meleeRange * meleeRange || spellCastingMob.isCasting()) {
+        if (!wantsToMelee || distanceSquared > meleeRange * meleeRange * 2 * 2 || spellCastingMob.isCasting()) {
             super.resetAttackTimer(distanceSquared);
         } else {
             float f = (float) Math.sqrt(distanceSquared) / this.attackRadius;
-            this.attackTime = Mth.floor(f * (float) (this.meleeAttackIntervalMax - this.meleeAttackIntervalMin) + (float) this.meleeAttackIntervalMin);
+            this.attackTime = Math.max(1, Mth.floor(f * (float) (this.meleeAttackIntervalMax - this.meleeAttackIntervalMin) + (float) this.meleeAttackIntervalMin));
         }
     }
 }

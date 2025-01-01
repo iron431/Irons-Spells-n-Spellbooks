@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss;
 
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobRenderer;
 import io.redspace.ironsspellbooks.render.RenderHelper;
@@ -22,6 +23,19 @@ public class FireBossRenderer extends AbstractSpellCastingMobRenderer {
     }
 
     @Override
+    public void render(AbstractSpellCastingMob entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+        if (entity instanceof FireBossEntity fireBossEntity && fireBossEntity.isSpawning()) {
+            float f = (fireBossEntity.spawnTimer + partialTick) / FireBossEntity.SPAWN_ANIM_TIME;
+            shadowRadius = Mth.lerp(f,.65f,2);
+            shadowStrength = Mth.lerp(f,1,0);
+        } else {
+            shadowStrength = 1;
+            shadowRadius = .65f;
+        }
+        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
+    }
+
+    @Override
     public int getPackedOverlay(AbstractSpellCastingMob animatable, float u, float partialTick) {
         //disable red flashing during soul mode
         if (!(animatable instanceof FireBossEntity fbe) || !fbe.isSoulMode()) {
@@ -31,13 +45,19 @@ public class FireBossRenderer extends AbstractSpellCastingMobRenderer {
         }
     }
 
-    static final int fadeTime = 80;
+    static final int deathFadeTime = 80;
 
     @Override
     public Color getRenderColor(AbstractSpellCastingMob animatable, float partialTick, int packedLight) {
         Color color = super.getRenderColor(animatable, partialTick, packedLight);
-        if (!animatable.isInvisible() && animatable.deathTime > 160 - fadeTime) {
-            color = new Color(RenderHelper.colorf(1f, 1f, 1f, Mth.clamp((160 - animatable.deathTime) / (float) fadeTime, 0, 1f)));
+        float f = 1f;
+        if (animatable.deathTime > 160 - deathFadeTime) {
+            f = Mth.clamp((160 - animatable.deathTime) / (float) deathFadeTime, 0, 1f);
+        } else if (animatable instanceof FireBossEntity fireBoss && fireBoss.isSpawning()) {
+            f = Mth.clamp((FireBossEntity.SPAWN_ANIM_TIME - fireBoss.spawnTimer) / (float) FireBossEntity.SPAWN_ANIM_TIME, 0, 1f);
+        }
+        if (!animatable.isInvisible() && f != 1) {
+            color = new Color(RenderHelper.colorf(1f, 1f, 1f, f));
         }
 
         return color;
@@ -45,7 +65,7 @@ public class FireBossRenderer extends AbstractSpellCastingMobRenderer {
 
     @Override
     public RenderType getRenderType(AbstractSpellCastingMob animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
-        if (animatable.deathTime > 160 - fadeTime) {
+        if (animatable.isDeadOrDying() || animatable instanceof FireBossEntity fireBoss && fireBoss.isSpawning()) {
             return RenderType.entityTranslucent(texture);
         }
         return super.getRenderType(animatable, texture, bufferSource, partialTick);

@@ -62,7 +62,7 @@ public class WizardAttackGoal extends Goal {
     }
 
     public WizardAttackGoal(IMagicEntity abstractSpellCastingMob, double pSpeedModifier, int pAttackIntervalMin, int pAttackIntervalMax) {
-        this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+        this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK, Flag.TARGET));
         this.spellCastingMob = abstractSpellCastingMob;
         if (abstractSpellCastingMob instanceof PathfinderMob m) {
             this.mob = m;
@@ -226,7 +226,7 @@ public class WizardAttackGoal extends Goal {
 
     protected void resetAttackTimer(double distanceSquared) {
         float f = (float) Math.sqrt(distanceSquared) / this.attackRadius;
-        this.attackTime = Mth.floor(f * (float) (this.attackIntervalMax - this.attackIntervalMin) + (float) this.attackIntervalMin);
+        this.attackTime = Math.max(1, Mth.floor(f * (float) (this.attackIntervalMax - this.attackIntervalMin) + (float) this.attackIntervalMin));
     }
 
     protected void doMovement(double distanceSquared) {
@@ -234,12 +234,13 @@ public class WizardAttackGoal extends Goal {
         mob.lookAt(target, 30, 30);
         //make distance (flee), move into range, or strafe around
         float fleeDist = .275f;
+        float ss = getStrafeMultiplier();
         if (allowFleeing && (!spellCastingMob.isCasting() && attackTime > 10) && --fleeCooldown <= 0 && distanceSquared < attackRadiusSqr * (fleeDist * fleeDist)) {
             Vec3 flee = DefaultRandomPos.getPosAway(this.mob, 16, 7, target.position());
             if (flee != null) {
                 this.mob.getNavigation().moveTo(flee.x, flee.y, flee.z, speed * 1.5);
             } else {
-                mob.getMoveControl().strafe(-(float) speed, (float) speed);
+                mob.getMoveControl().strafe(-(float) speed * ss, (float) speed * ss);
             }
         } else if (distanceSquared < attackRadiusSqr && seeTime >= 5) {
             //irons_spellbooks.LOGGER.debug("WizardAttackGoal.tick.1: distanceSquared: {},attackRadiusSqr: {}, seeTime: {}, attackTime: {}", distanceSquared, attackRadiusSqr, seeTime, attackTime);
@@ -252,7 +253,7 @@ public class WizardAttackGoal extends Goal {
             }
             float strafeForward = (distanceSquared * 6 < attackRadiusSqr ? -1 : .5f) * .2f * (float) speedModifier;
             int strafeDir = strafingClockwise ? 1 : -1;
-            mob.getMoveControl().strafe(strafeForward, (float) speed * strafeDir);
+            mob.getMoveControl().strafe(strafeForward * ss, (float) speed * strafeDir * ss);
             if (mob.horizontalCollision && mob.getRandom().nextFloat() < .1f) {
                 tryJump();
             }
@@ -444,5 +445,14 @@ public class WizardAttackGoal extends Goal {
         int distanceWeight = (int) ((1 - distancePercent) * -75);
 
         return baseWeight + healthWeight + distanceWeight;
+    }
+
+    @Override
+    public boolean isInterruptable() {
+        return !isActing();
+    }
+
+    public float getStrafeMultiplier(){
+        return 1f;
     }
 }

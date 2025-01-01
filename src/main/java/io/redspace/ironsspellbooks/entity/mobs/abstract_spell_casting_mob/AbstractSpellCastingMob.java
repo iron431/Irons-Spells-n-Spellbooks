@@ -61,6 +61,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     protected AbstractSpellCastingMob(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         playerMagicData.setSyncedData(new SyncedSpellData(this));
+        this.noCulling = true;
         this.lookControl = createLookControl();
     }
 
@@ -158,14 +159,6 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
                 IronsSpellbooks.LOGGER.debug("ASCM.onSyncedDataUpdated.1 this.isCasting:{}, playerMagicData.isCasting:{} isClient:{}", isCasting(), playerMagicData == null ? "null" : playerMagicData.isCasting(), this.level.isClientSide());
             }
             cancelCast();
-        }
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        if (level.isClientSide) {
-            this.noCulling = this.isAnimating();
         }
     }
 
@@ -542,9 +535,9 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
 
     public boolean isAnimating() {
         return isCasting()
-                || (animationControllerLongCast.getAnimationState() != AnimationController.State.STOPPED)
-                || (animationControllerOtherCast.getAnimationState() != AnimationController.State.STOPPED)
-                || (animationControllerInstantCast.getAnimationState() != AnimationController.State.STOPPED);
+                || (animationControllerLongCast.getAnimationState() == AnimationController.State.RUNNING)
+                || (animationControllerOtherCast.getAnimationState() == AnimationController.State.RUNNING)
+                || (animationControllerInstantCast.getAnimationState() == AnimationController.State.RUNNING);
     }
 
     public boolean shouldBeExtraAnimated() {

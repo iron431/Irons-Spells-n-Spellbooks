@@ -50,6 +50,7 @@ public class SmallMagicArrow extends AbstractMagicProjectile {
         if (!inGround) {
             super.tick();
         } else {
+            deltaMovementOld = getDeltaMovement();
             if (tickCount > EXPIRE_TIME) {
                 discard();
                 return;

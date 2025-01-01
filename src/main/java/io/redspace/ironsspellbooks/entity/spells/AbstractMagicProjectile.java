@@ -10,6 +10,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -27,7 +28,6 @@ import java.util.Optional;
 
 public abstract class AbstractMagicProjectile extends Projectile implements AntiMagicSusceptible {
     protected static final int EXPIRE_TIME = 15 * 20;
-
     protected float damage;
     protected float explosionRadius;
 
@@ -84,6 +84,10 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     @Override
     public void tick() {
         super.tick();
+        // prevent first-tick flicker due to deltaMoveOld being "uninitialized" on our first tick
+        if (tickCount == 1) {
+            deltaMovementOld = getDeltaMovement();
+        }
         if (tickCount > EXPIRE_TIME) {
             discard();
             return;
@@ -92,8 +96,11 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
             trailParticles();
         }
         handleHitDetection();
+        deltaMovementOld = getDeltaMovement();
         travel();
     }
+
+    public Vec3 deltaMovementOld = Vec3.ZERO;
 
     public void handleHitDetection() {
         HitResult hitresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
@@ -103,15 +110,21 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     }
 
     public void travel() {
-        this.xOld = getX();
-        this.yOld = getY();
-        this.zOld = getZ();
         setPos(position().add(getDeltaMovement()));
-        ProjectileUtil.rotateTowardsMovement(this, 1);
+        Vec3 motion = this.getDeltaMovement();
+        float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
+        float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
+        this.setXRot(Mth.wrapDegrees(xRot));
+        this.setYRot(Mth.wrapDegrees(yRot));
         if (!this.isNoGravity()) {
             Vec3 vec34 = this.getDeltaMovement();
-            this.setDeltaMovement(vec34.x, vec34.y - (double) 0.05F, vec34.z);
+            this.setDeltaMovement(vec34.x, vec34.y - getDefaultGravity(), vec34.z);
         }
+    }
+
+    @Override
+    protected double getDefaultGravity() {
+        return 0.05;
     }
 
     @Override

@@ -9,8 +9,10 @@ import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.CameraShakeData;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.entity.spells.FireEruptionAoe;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -48,7 +50,7 @@ public class RaiseHellSpell extends AbstractSpell {
         this.manaCostPerLevel = 20;
         this.baseSpellPower = 8;
         this.spellPowerPerLevel = 3;
-        this.castTime = 16;
+        this.castTime = 32;
         this.baseManaCost = 90;
     }
 
@@ -80,7 +82,7 @@ public class RaiseHellSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.HELLRAZOR_SWING.get());
+        return Optional.of(SoundRegistry.RAISE_HELL_PREPARE.get());
     }
 
     @Override
@@ -134,11 +136,20 @@ public class RaiseHellSpell extends AbstractSpell {
 
     @Override
     public AnimationHolder getCastStartAnimation() {
-        return SpellAnimations.OVERHEAD_MELEE_SWING_ANIMATION;
+        return SpellAnimations.OVERHEAD_MELEE_SWING_DELAYED_ANIMATION;
     }
 
     @Override
     public AnimationHolder getCastFinishAnimation() {
         return AnimationHolder.pass();
+    }
+
+    public static void ambientParticles(LivingEntity entity, SyncedSpellData spellData) {
+        Vec3 vec3 = entity.getBoundingBox().getCenter();
+        for (int i = 0; i < 2; i++) {
+            Vec3 pos = vec3.add(Utils.getRandomVec3(entity.getBbHeight() * 2));
+            Vec3 motion = vec3.subtract(pos).scale(0.10f);
+            entity.level.addParticle(ParticleHelper.EMBERS, pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
+        }
     }
 }

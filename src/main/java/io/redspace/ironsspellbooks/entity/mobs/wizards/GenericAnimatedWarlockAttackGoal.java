@@ -29,7 +29,7 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
 
     List<AttackAnimationData> moveList = new ArrayList<>();
     protected final T mob;
-    int meleeAnimTimer = -1;
+    protected int meleeAnimTimer = -1;
     public @Nullable AttackAnimationData currentAttack;
     public @Nullable AttackAnimationData nextAttack;
     public @Nullable AttackAnimationData queueCombo;
@@ -142,7 +142,7 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
         mob.setYRot(yRot);
     }
 
-    protected void stopMeleeAction() {
+    public void stopMeleeAction() {
         if (currentAttack != null) {
             meleeAnimTimer = 0;
             PacketDistributor.sendToPlayersTrackingEntity(mob, new SyncAnimationPacket<>("", mob));
