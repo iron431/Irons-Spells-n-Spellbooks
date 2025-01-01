@@ -117,6 +117,8 @@ public class SoundRegistry {
     public static DeferredHolder<SoundEvent, SoundEvent> FIRE_ARROW_CAST = registerSoundEvent("spell.fire_arrow.cast");
     public static DeferredHolder<SoundEvent, SoundEvent> RAISE_HELL_PREPARE = registerSoundEvent("spell.raise_hell.prepare");
     public static DeferredHolder<SoundEvent, SoundEvent> FIERY_DAGGER_THROW = registerSoundEvent("entity.fiery_dagger.throw");
+    public static DeferredHolder<SoundEvent, SoundEvent> SOULCALLER_TOLL_SUCCESS = registerSoundEvent("item.cinderous_soulcaller.toll.success");
+    public static DeferredHolder<SoundEvent, SoundEvent> SOULCALLER_TOLL_FAILURE = registerSoundEvent("item.cinderous_soulcaller.toll.failure");
 
     public static DeferredHolder<SoundEvent, SoundEvent> HELLRAZOR_SWING = registerSoundEvent("item.hellrazor.swing");
     public static DeferredHolder<SoundEvent, SoundEvent> FIRE_ERUPTION_SLAM = registerSoundEvent("entity.fire_eruption.slam");

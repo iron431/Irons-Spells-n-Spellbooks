@@ -705,5 +705,15 @@
     "sounds": [
       "irons_spellbooks:fire_impact"
     ]
+  },
+  "item.cinderous_soulcaller.toll.success": {
+    "sounds": [
+      "irons_spellbooks:soulcaller_toll_success"
+    ]
+  },
+  "item.cinderous_soulcaller.toll.failure": {
+    "sounds": [
+      "irons_spellbooks:soulcaller_toll_failure"
+    ]
   }
 }

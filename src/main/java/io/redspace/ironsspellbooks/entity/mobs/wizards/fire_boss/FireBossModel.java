@@ -40,8 +40,7 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
         return MODEL;
     }
 
-    float leglerp = 1f;
-    float isAnimatingDampener;
+    //fixme: this really doesnt work when multiple entities exist
     int lastTick;
 
     @Override
@@ -54,19 +53,19 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
             float partialTick = animationState.getPartialTick();
             Vector2f limbSwing = getLimbSwing(entity, entity.walkAnimation, partialTick);
             if (entity.isAnimating()) {
-                isAnimatingDampener = Mth.lerp(.3f * partialTick, isAnimatingDampener, 0);
+                fireBossEntity.isAnimatingDampener = Mth.lerp(.3f * partialTick, fireBossEntity.isAnimatingDampener, 0);
             } else {
-                isAnimatingDampener = Mth.lerp(.1f * partialTick, isAnimatingDampener, 1);
+                fireBossEntity.isAnimatingDampener = Mth.lerp(.1f * partialTick, fireBossEntity.isAnimatingDampener, 1);
             }
             if (entity.getMainHandItem().is(ItemRegistry.HELLRAZOR)) {
                 GeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
                 GeoBone rightHand = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT);
                 Vector3f armPose = new Vector3f(-30, -30, 10);
-                armPose.mul(Mth.DEG_TO_RAD * isAnimatingDampener);
+                armPose.mul(Mth.DEG_TO_RAD * fireBossEntity.isAnimatingDampener);
                 transformStack.pushRotation(rightArm, armPose);
 
                 Vector3f scythePos = new Vector3f(-5, 0, -48);
-                scythePos.mul(Mth.DEG_TO_RAD * isAnimatingDampener);
+                scythePos.mul(Mth.DEG_TO_RAD * fireBossEntity.isAnimatingDampener);
                 transformStack.pushRotation(rightHand, scythePos);
 
                 if (!entity.isAnimating()) {
@@ -86,7 +85,7 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
         if (entity.isSpawning()) {
             body.setTrackingMatrices(true);
             if (lastTick != entity.tickCount) {
-                int particles = 10 * entity.spawnTimer / FireBossEntity.SPAWN_ANIM_TIME;
+                int particles = (int) (10 * Mth.clamp((entity.spawnTimer - 20f) / FireBossEntity.SPAWN_ANIM_TIME, 0, 1));
                 lastTick = entity.tickCount;
                 Vector3d pos = body.getWorldPosition();
                 for (int i = 0; i < particles; i++) {
@@ -116,17 +115,7 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
     @Override
     protected Vector2f getLimbSwing(AbstractSpellCastingMob entity, WalkAnimationState walkAnimationState, float partialTick) {
         Vector2f swing = super.getLimbSwing(entity, walkAnimationState, partialTick);
-        swing.mul(0.6f, 1f); return swing;
+        swing.mul(0.6f, 1f);
+        return swing;
     }
-    //    @Override
-//    protected Vector2f getLimbSwing(AbstractSpellCastingMob entity, WalkAnimationState walkAnimationState, float partialTick) {
-//        Vector2f swing = super.getLimbSwing(entity, walkAnimationState, partialTick);
-//        if (!entity.onGround()) {
-//            swing.mul(leglerp);
-//            leglerp = Mth.lerp(.2f * partialTick, leglerp, 0.5f);
-//        } else if (leglerp < 1) {
-//            leglerp = Mth.lerp(.2f * partialTick, leglerp, 1.01f);
-//        }
-//        return swing;
-//    }
 }

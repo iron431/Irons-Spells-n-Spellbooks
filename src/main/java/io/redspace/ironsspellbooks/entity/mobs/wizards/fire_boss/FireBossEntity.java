@@ -23,6 +23,7 @@ import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -34,6 +35,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -82,7 +84,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     public void readSpawnData(RegistryFriendlyByteBuf additionalData) {
         this.spawnTimer = additionalData.readInt();
         if (spawnTimer > 0) {
-            animationToPlay = RawAnimation.begin().thenPlay("fire_boss_spawn");
+            playAnimation("fire_boss_spawn");
         }
         float y = this.getYRot();
         this.yBodyRot = y;
@@ -96,10 +98,31 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     private static final AttributeModifier SOUL_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.05, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     private static final AttributeModifier SOUL_SCALE_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.20, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
+    @Override
+    public void kill() {
+        if (this.isDeadOrDying() || this.isSpawning()) {
+            discard();
+        } else {
+            super.kill();
+        }
+    }
+
+    @Override
+    public void push(Entity pEntity) {
+        if (!isSpawning()) {
+            super.push(pEntity);
+        }
+    }
+
     /**
      * Client flag for whether code animations should pause over current animation
      */
     private boolean canAnimateOver;
+
+    /**
+     * Client side model control value
+     */
+    public float isAnimatingDampener;
 
     public FireBossEntity(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -242,7 +265,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     static final int ERUPTION_BEGIN_ANIM_TIME = (int) (6.5 * 20);
     static final int STANCE_BREAK_COUNT = 2;
     int spawnTimer;
-    static final int SPAWN_ANIM_TIME = (int) (6.75 * 20);
+    static final int SPAWN_ANIM_TIME = (int) (8.75 * 20);
 
     public void triggerSpawnAnim() {
         this.spawnTimer = SPAWN_ANIM_TIME;
@@ -289,17 +312,24 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.bossEvent.setProgress(currentHealth / maxHealth);
         if (isSpawning()) {
             spawnTimer--;
-            float z = Mth.lerp((float) spawnTimer / SPAWN_ANIM_TIME, -40 / 16f, 0);
-            Vec3 position = this.position().add(0, 0, z);
-            if (spawnTimer == SPAWN_ANIM_TIME - 1 || spawnTimer == SPAWN_ANIM_TIME - 20 || spawnTimer == SPAWN_ANIM_TIME - 40 || spawnTimer == SPAWN_ANIM_TIME - 60 || spawnTimer == SPAWN_ANIM_TIME - 74 || spawnTimer == SPAWN_ANIM_TIME - 88) {
+            float z = Mth.lerp((float) spawnTimer / SPAWN_ANIM_TIME, 0, -60 / 16f);
+            Vec3 position = this.position().add(new Vec3(0, 0, z).yRot(-this.getYRot() * Mth.DEG_TO_RAD));
+            if (!level.isClientSide && spawnTimer == SPAWN_ANIM_TIME - 1) {
+                MagicManager.spawnParticles(level, ParticleTypes.CAMPFIRE_COSY_SMOKE, position.x, position.y + 1.2, position.z, 165, 0.5, 1.2, 0.5, 0.01, true);
+                MagicManager.spawnParticles(level, ParticleHelper.FOG_CAMPFIRE_SMOKE, position.x, position.y + 0.1, position.z, 6, 0.6, .1, 0.6, 0.05, true);
+            }
+
+            //step sounds
+            if (spawnTimer == SPAWN_ANIM_TIME - 20 || spawnTimer == SPAWN_ANIM_TIME - 40 || spawnTimer == SPAWN_ANIM_TIME - 60 || spawnTimer == SPAWN_ANIM_TIME - 80 || spawnTimer == SPAWN_ANIM_TIME - 100 || spawnTimer == SPAWN_ANIM_TIME - 114 || spawnTimer == SPAWN_ANIM_TIME - 128) {
                 level.playSound(null, position.x, position.y, position.z, SoundRegistry.KEEPER_STEP, this.getSoundSource(), 0.5f, 1f);
             }
-            if (spawnTimer == SPAWN_ANIM_TIME - 1) {
-                level.playSound(null, position.x, position.y, position.z, SoundRegistry.FIRE_BOSS_DEATH_FINAL, this.getSoundSource(), 3f, 1f);
-            } else if (spawnTimer == SPAWN_ANIM_TIME - 88) {
-                level.playSound(null, position.x, position.y, position.z, SoundRegistry.FIRE_BOSS_DEATH_FINAL, this.getSoundSource(), 3f, 2f);
-            } else if (spawnTimer == SPAWN_ANIM_TIME - 92) {
-                level.playSound(null, position.x, position.y, position.z, SoundRegistry.FIRE_CAST, this.getSoundSource(), 3f, 2f);
+            // responding bell toll
+            if (spawnTimer == SPAWN_ANIM_TIME - 35) {
+                level.playSound(null, position.x, position.y, position.z, SoundRegistry.SOULCALLER_TOLL_SUCCESS, SoundSource.PLAYERS, 5f, .75f);
+            }
+            // summon scythe sound
+            if (spawnTimer == SPAWN_ANIM_TIME - 132) {
+                level.playSound(null, position.x, position.y, position.z, SoundRegistry.FIRE_CAST, this.getSoundSource(), 3f, 1.5f);
             }
             if (spawnTimer == 0 && !level.isClientSide) {
                 spawnKnight(true);
