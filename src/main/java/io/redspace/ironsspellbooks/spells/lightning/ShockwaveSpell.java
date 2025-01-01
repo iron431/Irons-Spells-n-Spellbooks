@@ -113,7 +113,10 @@ public class ShockwaveSpell extends AbstractSpell {
                 }
             }
         });
-        ((ServerLevel) level).sendParticles(new ZapParticleOption(start), start.x, start.y + 4, start.z, 7, 4, 2.5, 4, 0);
+        for (int i = 0; i < 7; i++) {
+            Vec3 dest = start.add(Utils.getRandomVec3(1).multiply(4, 2.5, 4).add(0, 4, 0));
+            ((ServerLevel) level).sendParticles(new ZapParticleOption(dest), start.x, start.y, start.z, 1, 0, 0, 0, 0);
+        }
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
