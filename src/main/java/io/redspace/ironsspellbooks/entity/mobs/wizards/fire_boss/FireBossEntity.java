@@ -16,6 +16,7 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
 import io.redspace.ironsspellbooks.entity.spells.FireEruptionAoe;
+import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -324,8 +325,11 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 level.playSound(null, position.x, position.y, position.z, SoundRegistry.KEEPER_STEP, this.getSoundSource(), 0.5f, 1f);
             }
             // responding bell toll
-            if (spawnTimer == SPAWN_ANIM_TIME - 35) {
+            if (spawnTimer == SPAWN_ANIM_TIME - 40) {
                 level.playSound(null, position.x, position.y, position.z, SoundRegistry.SOULCALLER_TOLL_SUCCESS, SoundSource.PLAYERS, 5f, .75f);
+                if (!level.isClientSide) {
+                    MagicManager.spawnParticles(level, new BlastwaveParticleOptions(1, .6f, 0.3f, 8), position.x, position.y, position.z, 0, 0, 0, 0, 0, true);
+                }
             }
             // summon scythe sound
             if (spawnTimer == SPAWN_ANIM_TIME - 132) {
