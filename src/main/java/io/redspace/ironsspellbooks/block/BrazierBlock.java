@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.block;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.BlockPos;
@@ -40,7 +39,7 @@ public class BrazierBlock extends Block implements SimpleWaterloggedBlock {
     private final boolean soul;
 
     public BrazierBlock(boolean soul) {
-        super(Properties.ofFullCopy(Blocks.CAULDRON).lightLevel((blockState) -> blockState.getValue(LIT) ? 15 : 0));
+        super(Properties.ofFullCopy(Blocks.CHAIN).lightLevel((blockState) -> blockState.getValue(LIT) ? 15 : 0));
         this.registerDefaultState(this.defaultBlockState().setValue(WATERLOGGED, false).setValue(LIT, true).setValue(HANGING, false));
         this.soul = soul;
     }
@@ -64,12 +63,21 @@ public class BrazierBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    protected void entityInside(BlockState pState, Level pLevel, BlockPos pPos, Entity pEntity) {
-        if (pState.getValue(LIT) && pEntity instanceof LivingEntity) {
-            pEntity.hurt(pLevel.damageSources().campfire(), 1);
+    protected void entityInside(BlockState pState, Level pLevel, BlockPos blockpos, Entity entity) {
+        if (pState.getValue(LIT) && entity instanceof LivingEntity) {
+            float margin = 0.0625f; // one pixel
+            var bb = entity.getBoundingBox();
+            // model is not full cube in horizontal dimensions. make sure they are inside fire before dishing damage
+            if (bb.maxX > blockpos.getX() + margin &&
+                    bb.maxZ > blockpos.getZ() + margin &&
+                    bb.minX < blockpos.getX() + 1 - margin &&
+                    bb.minZ < blockpos.getZ() + 1 - margin
+            ) {
+                entity.hurt(pLevel.damageSources().campfire(), 1);
+            }
         }
 
-        super.entityInside(pState, pLevel, pPos, pEntity);
+        super.entityInside(pState, pLevel, blockpos, entity);
     }
 
     @Override
