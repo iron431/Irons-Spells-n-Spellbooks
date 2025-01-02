@@ -8,7 +8,6 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.PoiTypeRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ItemParticleOption;
@@ -40,15 +39,15 @@ public class CinderousSoulcallerItem extends Item {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        ItemStack itemStack = player.getItemInHand(hand);
         if (level instanceof ServerLevel serverlevel && player instanceof ServerPlayer serverPlayer) {
             player.getCooldowns().addCooldown(ItemRegistry.CINDEROUS_SOULCALLER.get(), 80);
-            ItemStack itemStack = player.getItemInHand(hand);
-
             BlockPos playerBlockPos = player.blockPosition();
             PoiManager poimanager = serverlevel.getPoiManager();
             // arena radius is 23. slightly shorter distance means player must approach center/keystone
+            // player must also be at or above the keystone (with tolerance of 2 blocks) so as to be on an even fighting field
             var keystone = poimanager.findClosest(poi -> Objects.equals(poi.getKey(), PoiTypeRegistry.FIRE_BOSS_KEYSTONE.getKey()), playerBlockPos, 18, PoiManager.Occupancy.ANY);
-            if (keystone.isPresent()) {
+            if (keystone.isPresent() && playerBlockPos.getY() + 2 >= keystone.get().getY()) {
                 BlockPos keystonePos = keystone.get();
                 AABB exclusiveRange = AABB.ofSize(keystonePos.getCenter(), 80, 80, 80);
                 if (level.getEntitiesOfClass(FireBossEntity.class, exclusiveRange).isEmpty()) {
@@ -81,7 +80,8 @@ public class CinderousSoulcallerItem extends Item {
 
 
         }
-        return super.use(level, player, hand);
+        player.swing(hand);
+        return InteractionResultHolder.consume(itemStack);
     }
 
     public void tollEffects(ServerLevel serverLevel, Vec3 usePosition, boolean success) {
