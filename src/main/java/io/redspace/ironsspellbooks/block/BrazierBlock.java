@@ -17,6 +17,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -87,7 +88,7 @@ public class BrazierBlock extends Block implements SimpleWaterloggedBlock {
             pLevel.scheduleTick(pPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
         }
         if (pDirection == Direction.UP) {
-            boolean chain = pNeighborState.is(Blocks.CHAIN);
+            boolean chain = pNeighborState.is(Blocks.CHAIN) && pNeighborState.getValue(RotatedPillarBlock.AXIS).isVertical();
             if (chain != pState.getValue(HANGING)) {
                 newState = newState.setValue(HANGING, chain);
             }
