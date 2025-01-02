@@ -69,16 +69,14 @@ public class CinderousSoulcallerItem extends Item {
                     tollEffects(serverlevel, player.position(), true);
                 } else {
                     //failure, boss already exists
-                    serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.cinderous_soulcaller.failure.already_exists").withStyle(ChatFormatting.GOLD)));
+                    serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("item.irons_spellbooks.cinderous_soulcaller.failure.in_progress").withStyle(ChatFormatting.GOLD)));
                     tollEffects(serverlevel, player.position(), false);
                 }
             } else {
                 //failure, no soul present
-                serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.cinderous_soulcaller.failure.no_soul").withStyle(ChatFormatting.GOLD)));
+                serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("item.irons_spellbooks.cinderous_soulcaller.failure.no_soul").withStyle(ChatFormatting.GOLD)));
                 tollEffects(serverlevel, player.position(), false);
             }
-
-
         }
         player.swing(hand);
         return InteractionResultHolder.consume(itemStack);

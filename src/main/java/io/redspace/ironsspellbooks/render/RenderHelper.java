@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.function.Function;
 
 public class RenderHelper {
-
     public static int colorLerp(float f, int colorA, int colorB) {
         int redA = (colorA >> 16) & 0xFF;
         int greenA = (colorA >> 8) & 0xFF;

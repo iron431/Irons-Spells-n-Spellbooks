@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CNC",
+    "CEC",
+    "CNC"
+  ],
+  "key": {
+    "E": {
+      "item": "minecraft:echo_shard"
+    },
+    "C": {
+      "item": "irons_spellbooks:cinder_essence"
+    },
+    "N": {
+      "item": "minecraft:netherite_scrap"
+    }
+  },
+  "result": {
+    "id": "irons_spellbooks:cinderous_soulcaller",
+    "count": 1
+  }
+}

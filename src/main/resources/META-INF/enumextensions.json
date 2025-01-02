@@ -14,18 +14,21 @@
         "class": "io/redspace/ironsspellbooks/render/StaffArmPose",
         "field": "STAFF_ARM_POSE"
       }
-    }/*,
+    },
     {
       //https://docs.neoforged.net/docs/advanced/extensibleenums/
       // The enum class the entry should be added to
-      "enum": "net/minecraft/world/item/ItemDisplayContext",
+      "enum": "net/minecraft/world/item/Rarity",
       // The field name of the new entry, must be prefixed with the mod ID
-      "name": "IRONS_SPELLBOOKS_LECTERN_DISPLAY",
+      "name": "IRONS_SPELLBOOKS_RARITY_CINDEROUS",
       // The constructor to be used
-      //Lnet/minecraft/world/item/ItemDisplayContext;<init>(ILjava/lang/String;Ljava/lang/String;)V
-      "constructor": "(ILjava/lang/String;Ljava/lang/String;)V",
+      //Lnet/minecraft/world/item/Rarity;<init>(ILjava/lang/String;Ljava/util/function/UnaryOperator;)V
+      "constructor": "(ILjava/lang/String;Ljava/util/function/UnaryOperator;)V",
       // Constant parameters provided directly.
-      "parameters": [-1,"irons_spellbooks:lectern","irons_spellbooks:lectern_fallback"]
-    }*/
+      "parameters": {
+        "class": "io/redspace/ironsspellbooks/render/CinderousRarity",
+        "field": "CINDEROUS_RARITY_PROXY"
+      }
+    }
   ]
 }
