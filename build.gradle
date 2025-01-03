@@ -94,8 +94,8 @@ dependencies {
     // If you want to run with tetra in dev comment the above line and uncomment the following 2 lines
 //    localRuntime "curse.maven:tetra-${tetra_version}"
 //    localRuntime "se.mickelus.mutil:mutil:${mutil_version}"
-    localRuntime "curse.maven:better-combat-by-daedelus-639842:5723092"
-    localRuntime "curse.maven:cloth-config-348521:5623420"
+//    localRuntime "curse.maven:better-combat-by-daedelus-639842:5723092"
+//    localRuntime "curse.maven:cloth-config-348521:5623420"
 
     // JEI ********************************************************************************************************
     compileOnly "mezz.jei:jei-${jei_mc_version}-common-api:${jei_version}"

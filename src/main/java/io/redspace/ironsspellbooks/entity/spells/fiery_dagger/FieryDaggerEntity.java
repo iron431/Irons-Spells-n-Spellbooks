@@ -147,11 +147,11 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
             }
             if (age == delay) {
                 if (isGrounded) {
-                    if (Utils.random.nextFloat() < 0.5f) {
-                        playSound(SoundRegistry.FIERY_DAGGER_THROW.get(), 0.75f, Utils.random.nextIntBetweenInclusive(80, 110) * .01f);
+                    if (Utils.random.nextFloat() < 0.25f) {
+                        playSound(SoundRegistry.FIERY_DAGGER_THROW.get(), 0.75f, Utils.random.nextIntBetweenInclusive(90, 110) * .01f);
                     }
                 } else {
-                    playSound(SoundRegistry.FIERY_DAGGER_THROW.get(), 2f, Utils.random.nextIntBetweenInclusive(80, 110) * .01f);
+                    playSound(SoundRegistry.FIERY_DAGGER_THROW.get(), 2f, Utils.random.nextIntBetweenInclusive(90, 110) * .01f);
                 }
                 // do an initial near-collision check since we cannot organically hit things if we originate inside their hitbox (such as if they are standing on a dagger)
                 var hits = level.getEntities(this, this.getBoundingBox().inflate(0.4f), this::canHitEntity);

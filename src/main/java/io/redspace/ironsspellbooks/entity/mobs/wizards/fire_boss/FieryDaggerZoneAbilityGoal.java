@@ -14,7 +14,7 @@ public class FieryDaggerZoneAbilityGoal extends AnimatedActionGoal<FireBossEntit
 
     @Override
     protected boolean canStartAction() {
-        return mob.onGround() && mob.getTarget() != null && mob.distanceToSqr(mob.getTarget()) > 4 * 4;
+        return mob.onGround() && mob.getTarget() != null && mob.distanceToSqr(mob.getTarget()) > 6 * 6;
     }
 
     @Override
@@ -24,12 +24,12 @@ public class FieryDaggerZoneAbilityGoal extends AnimatedActionGoal<FireBossEntit
 
     @Override
     protected int getActionDuration() {
-        return 20;
+        return 5;
     }
 
     @Override
     protected int getCooldown() {
-        return 20 * 2;
+        return 20 * 4 + Utils.random.nextInt(41);
     }
 
     @Override
@@ -82,7 +82,6 @@ public class FieryDaggerZoneAbilityGoal extends AnimatedActionGoal<FireBossEntit
                 dagger.setDeltaMovement(trajectory);
                 mob.level.addFreshEntity(dagger);
             }
-
         }
     }
 

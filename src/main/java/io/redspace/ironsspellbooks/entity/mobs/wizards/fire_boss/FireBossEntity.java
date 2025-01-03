@@ -321,19 +321,19 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             }
 
             //step sounds
-            if (spawnTimer == SPAWN_ANIM_TIME - 20 || spawnTimer == SPAWN_ANIM_TIME - 40 || spawnTimer == SPAWN_ANIM_TIME - 60 || spawnTimer == SPAWN_ANIM_TIME - 80 || spawnTimer == SPAWN_ANIM_TIME - 100 || spawnTimer == SPAWN_ANIM_TIME - 114 || spawnTimer == SPAWN_ANIM_TIME - 128) {
+            if (spawnTimer == SPAWN_ANIM_TIME - 40 || spawnTimer == SPAWN_ANIM_TIME - 60 || spawnTimer == SPAWN_ANIM_TIME - 80 || spawnTimer == SPAWN_ANIM_TIME - 100 || spawnTimer == SPAWN_ANIM_TIME - 114 || spawnTimer == SPAWN_ANIM_TIME - 128) {
                 level.playSound(null, position.x, position.y, position.z, SoundRegistry.KEEPER_STEP, this.getSoundSource(), 0.5f, 1f);
             }
             // responding bell toll
-            if (spawnTimer == SPAWN_ANIM_TIME - 40) {
+            if (spawnTimer == SPAWN_ANIM_TIME - 30) {
                 level.playSound(null, position.x, position.y, position.z, SoundRegistry.SOULCALLER_TOLL_SUCCESS, SoundSource.PLAYERS, 5f, .75f);
                 if (!level.isClientSide) {
                     MagicManager.spawnParticles(level, new BlastwaveParticleOptions(1, .6f, 0.3f, 8), position.x, position.y, position.z, 0, 0, 0, 0, 0, true);
                 }
             }
             // summon scythe sound
-            if (spawnTimer == SPAWN_ANIM_TIME - 132) {
-                level.playSound(null, position.x, position.y, position.z, SoundRegistry.FIRE_CAST, this.getSoundSource(), 3f, 1.5f);
+            if (spawnTimer == SPAWN_ANIM_TIME - 132 + 17) {
+                level.playSound(null, position.x, position.y, position.z, SoundRegistry.FIRE_BOSS_SUMMON_SCYTHE, this.getSoundSource(), 3f, 1f);
             }
             if (spawnTimer == 0 && !level.isClientSide) {
                 spawnKnight(true);
@@ -519,12 +519,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     @Override
     protected void playStepSound(BlockPos pPos, BlockState pState) {
-        this.playSound(SoundRegistry.KEEPER_STEP.get(), .25f, 1f);
-    }
-
-    @Override
-    protected float nextStep() {
-        return moveDist + .8f;
+        this.playSound(SoundRegistry.KEEPER_STEP.get(), .25f, .9f);
     }
 
     @Override

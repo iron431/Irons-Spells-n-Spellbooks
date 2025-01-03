@@ -127,6 +127,7 @@ public class SoundRegistry {
     public static DeferredHolder<SoundEvent, SoundEvent> FIRE_BOSS_DEATH = registerSoundEvent("entity.fire_boss.death");
     public static DeferredHolder<SoundEvent, SoundEvent> FIRE_BOSS_DEATH_FINAL = registerSoundEvent("entity.fire_boss.death_final");
     public static DeferredHolder<SoundEvent, SoundEvent> FIRE_BOSS_TRANSITION_SOUL = registerSoundEvent("entity.fire_boss.enter_soul");
+    public static DeferredHolder<SoundEvent, SoundEvent> FIRE_BOSS_SUMMON_SCYTHE = registerSoundEvent("entity.fire_boss.summon_scythe");
 
     public static DeferredHolder<SoundEvent, SoundEvent> DEAD_KING_SWING = registerSoundEvent("entity.dead_king.attack_swing");
     public static DeferredHolder<SoundEvent, SoundEvent> DEAD_KING_SLAM = registerSoundEvent("entity.dead_king.attack_slam");

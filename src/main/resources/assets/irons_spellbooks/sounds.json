@@ -656,7 +656,7 @@
   },
   "entity.fire_boss.stance_break": {
     "sounds": [
-      "irons_spellbooks:fire_boss_stance_break"
+      "irons_spellbooks:fire_boss/fire_boss_stance_break"
     ]
   },
   "entity.fire_eruption.slam": {
@@ -666,12 +666,12 @@
   },
   "entity.fire_boss.hurt": {
     "sounds": [
-      "irons_spellbooks:fire_boss_hurt"
+      "irons_spellbooks:fire_boss/fire_boss_hurt"
     ]
   },
   "entity.fire_boss.enter_soul": {
     "sounds": [
-      "irons_spellbooks:fire_boss_enter_soul"
+      "irons_spellbooks:fire_boss/fire_boss_enter_soul"
     ]
   },
   "item.hellrazor.swing": {
@@ -683,12 +683,17 @@
   },
   "entity.fire_boss.death": {
     "sounds": [
-      "irons_spellbooks:fire_boss_death"
+      "irons_spellbooks:fire_boss/fire_boss_death"
     ]
   },
   "entity.fire_boss.death_final": {
     "sounds": [
-      "irons_spellbooks:fire_boss_death_final"
+      "irons_spellbooks:fire_boss/fire_boss_death_final"
+    ]
+  },
+  "entity.fire_boss.summon_scythe": {
+    "sounds": [
+      "irons_spellbooks:fire_boss/fire_boss_summon_scythe"
     ]
   },
   "spell.raise_hell.prepare": {
