@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
@@ -213,6 +214,19 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.APOTHECARIST_SPAWN_EGG.get());
             })
             .withTabsBefore(EQUIPMENT_TAB.getKey())
+            .build());
+
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> BLOCKS_TAB = TABS.register("spellbook_blocks", () -> CreativeModeTab.builder()
+            .title(Component.translatable("itemGroup." + IronsSpellbooks.MODID + ".blocks_tab"))
+            .icon(() -> new ItemStack(ItemRegistry.INSCRIPTION_TABLE_BLOCK_ITEM.get()))
+            .displayItems((enabledFeatures, entries) -> {
+                ItemRegistry.getIronsItems().forEach(holder -> {
+                    if (holder.get() instanceof BlockItem) {
+                        entries.accept(holder.get());
+                    }
+                });
+            })
+            .withTabsBefore(MATERIALS_TAB.getKey())
             .build());
 
     public static final Supplier<CreativeModeTab> SCROLLS_TAB = TABS.register("spellbook_scrolls", () -> CreativeModeTab.builder()

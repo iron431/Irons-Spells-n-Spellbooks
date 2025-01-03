@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "irons_spellbooks:block/nether_brick_pillar_top",
+    "side": "irons_spellbooks:block/nether_brick_pillar"
+  }
+}

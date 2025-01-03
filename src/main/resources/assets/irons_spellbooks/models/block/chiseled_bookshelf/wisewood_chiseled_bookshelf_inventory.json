@@ -1,0 +1,9 @@
+{
+    "parent": "block/chiseled_bookshelf_inventory",
+    "textures": {
+        "top": "irons_spellbooks:block/wisewood_chiseled_bookshelf_top",
+        "side": "irons_spellbooks:block/wisewood_chiseled_bookshelf_side",
+        "front": "irons_spellbooks:block/wisewood_chiseled_bookshelf_empty",
+        "particle": "#top"
+    }
+}
