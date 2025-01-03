@@ -1,0 +1,15 @@
+{
+  "name": "irons_spellbooks:citadel_entrance_tower_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:citadel/citadel_entrance_tower",
+        "processors": "irons_spellbooks:citadel_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}
