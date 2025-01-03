@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -50,7 +51,7 @@ public class BlockRegistry {
     public static final DeferredHolder<Block, Block> BRAZIER_FIRE = BLOCKS.register("brazier", () -> new BrazierBlock(false));
     public static final DeferredHolder<Block, Block> BRAZIER_SOUL = BLOCKS.register("brazier_soul", () -> new BrazierBlock(true));
 
-    public static final DeferredHolder<Block, Block> CINDEROUS_KEYSTONE = BLOCKS.register("cinderous_keystone", () -> new Block(BlockBehaviour.Properties.of().sound(SoundType.DEEPSLATE).noLootTable().strength(50)));
+    public static final DeferredHolder<Block, Block> CINDEROUS_KEYSTONE = BLOCKS.register("cinderous_keystone", () -> new Block(BlockBehaviour.Properties.of().pushReaction(PushReaction.BLOCK).sound(SoundType.DEEPSLATE).noLootTable().strength(40,1200.0F)));
 
     public static final DeferredHolder<Block, Block> MITHRIL_ORE = BLOCKS.register("mithril_ore", () -> new Block(BlockBehaviour.Properties.of().lightLevel(state -> 9).mapColor(DyeColor.GRAY).requiresCorrectToolForDrops().strength(20.0F, 1200.0F).sound(SoundType.ANCIENT_DEBRIS)));
     public static final DeferredHolder<Block, Block> MITHRIL_ORE_DEEPSLATE = BLOCKS.register("deepslate_mithril_ore", () -> new Block(BlockBehaviour.Properties.of().lightLevel(state -> 9).mapColor(DyeColor.GRAY).requiresCorrectToolForDrops().strength(20.0F, 1200.0F).sound(SoundType.ANCIENT_DEBRIS)));

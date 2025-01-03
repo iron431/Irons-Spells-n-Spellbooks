@@ -254,6 +254,7 @@
   "block.irons_spellbooks.portal_frame.desc": "Can be connected with Portal spell",
   "block.irons_spellbooks.brazier": "Brazier",
   "block.irons_spellbooks.brazier_soul": "Soul Brazier",
+  "block.irons_spellbooks.cinderous_keystone": "Cinderous Keystone",
 
   "tooltip.irons_spellbooks.shift_tooltip": "[Shift+]",
   "tooltip.irons_spellbooks.level": "Level %s",
