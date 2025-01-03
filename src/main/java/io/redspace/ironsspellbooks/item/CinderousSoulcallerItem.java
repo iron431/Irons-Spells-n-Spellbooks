@@ -46,7 +46,7 @@ public class CinderousSoulcallerItem extends Item {
             PoiManager poimanager = serverlevel.getPoiManager();
             // arena radius is 23. slightly shorter distance means player must approach center/keystone
             // player must also be at or above the keystone (with tolerance of 2 blocks) so as to be on an even fighting field
-            var keystone = poimanager.findClosest(poi -> Objects.equals(poi.getKey(), PoiTypeRegistry.FIRE_BOSS_KEYSTONE.getKey()), playerBlockPos, 18, PoiManager.Occupancy.ANY);
+            var keystone = poimanager.findClosest(poi -> Objects.equals(poi.getKey(), PoiTypeRegistry.CINDEROUS_KEYSTONE_POI.getKey()), playerBlockPos, 18, PoiManager.Occupancy.ANY);
             if (keystone.isPresent() && playerBlockPos.getY() + 2 >= keystone.get().getY()) {
                 BlockPos keystonePos = keystone.get();
                 AABB exclusiveRange = AABB.ofSize(keystonePos.getCenter(), 80, 80, 80);

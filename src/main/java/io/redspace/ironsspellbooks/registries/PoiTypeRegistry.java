@@ -21,7 +21,7 @@ public class PoiTypeRegistry {
         POIS.register(eventBus);
     }
 
-    public static final DeferredHolder<PoiType, PoiType> FIRE_BOSS_KEYSTONE = POIS.register("fire_boss_keystone", ()->new PoiType(getBlockStates(BlockRegistry.CINDEROUS_SOUL_RUNE.get()),1,1));
+    public static final DeferredHolder<PoiType, PoiType> CINDEROUS_KEYSTONE_POI = POIS.register("fire_boss_keystone", ()->new PoiType(getBlockStates(BlockRegistry.CINDEROUS_KEYSTONE.get()),1,1));
 
     private static Set<BlockState> getBlockStates(Block pBlock) {
         return ImmutableSet.copyOf(pBlock.getStateDefinition().getPossibleStates());
