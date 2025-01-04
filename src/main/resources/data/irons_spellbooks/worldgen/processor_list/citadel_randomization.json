@@ -1,6 +1,12 @@
 {
   "processors": [
     {
+      "processor_type": "irons_spellbooks:foundation",
+      "block": {
+        "Name": "minecraft:blackstone"
+      }
+    },
+    {
       "processor_type": "minecraft:rule",
       "rules": [
         {
@@ -49,7 +55,7 @@
           "input_predicate": {
             "predicate_type": "minecraft:random_block_match",
             "block": "irons_spellbooks:book_stack",
-            "probability": 0.3
+            "probability": 0.40
           },
           "output_state": {
             "Name": "minecraft:air"
