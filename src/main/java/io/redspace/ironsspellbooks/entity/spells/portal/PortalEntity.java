@@ -4,34 +4,27 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.PortalManager;
-import io.redspace.ironsspellbooks.damage.DamageSources;
-import io.redspace.ironsspellbooks.damage.ISSDamageTypes;
 import io.redspace.ironsspellbooks.damage.PortalDamageSource;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
+import io.redspace.ironsspellbooks.particle.SparkParticleOptions;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
@@ -78,14 +71,14 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
 
     @Override
     public void onRemovedFromLevel() {
-        if (level.isClientSide) return;
+        if (!level.isClientSide) {
+            var removalReason = getRemovalReason();
+            if (removalReason != null && removalReason.shouldDestroy()) {
+                PortalManager.INSTANCE.killPortal(uuid, getOwnerUUID());
+            }
 
-        var removalReason = getRemovalReason();
-        if (removalReason != null && removalReason.shouldDestroy()) {
-            PortalManager.INSTANCE.killPortal(uuid, getOwnerUUID());
+            MagicManager.spawnParticles(level, new SparkParticleOptions(new Vector3f(.5f, .05f, .6f)), getX(), getY() + 0.5, getZ(), 25, .2, .4, .2, .3, false);
         }
-
-        MagicManager.spawnParticles(level, new DustParticleOptions(new Vector3f(.5f, .05f, .6f), 1.5f), getX(), getY(), getZ(), 25, .4, .8, .4, .03, false);
 
         super.onRemovedFromLevel();
     }
