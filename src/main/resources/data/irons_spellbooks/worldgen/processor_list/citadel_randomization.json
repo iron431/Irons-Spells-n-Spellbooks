@@ -7,6 +7,10 @@
       }
     },
     {
+      "processor_type": "irons_spellbooks:handle_lit_blocks",
+      "chanceLit": 0.15
+    },
+    {
       "processor_type": "minecraft:rule",
       "rules": [
         {
@@ -20,6 +24,32 @@
           },
           "output_state": {
             "Name": "minecraft:cracked_deepslate_bricks"
+          }
+        },
+        {
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          },
+          "input_predicate": {
+            "predicate_type": "minecraft:random_block_match",
+            "block": "minecraft:black_stained_glass",
+            "probability": 1.0
+          },
+          "output_state": {
+            "Name": "minecraft:purple_stained_glass"
+          }
+        },
+        {
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          },
+          "input_predicate": {
+            "predicate_type": "minecraft:random_block_match",
+            "block": "minecraft:white_stained_glass",
+            "probability": 1.0
+          },
+          "output_state": {
+            "Name": "minecraft:purple_stained_glass"
           }
         },
         {

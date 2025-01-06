@@ -40,7 +40,7 @@
     }
   },
   "start_height": {
-    "absolute": 32
+    "absolute": 33
   },
   "start_pool": "irons_spellbooks:citadel/start_pool",
   "step": "underground_decoration",
