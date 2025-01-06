@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "FWF",
+    " A "
+  ],
+  "key": {
+    "A": {
+      "item": "irons_spellbooks:archevoker_boots"
+    },
+    "W": {
+      "item": "irons_spellbooks:mithril_weave"
+    },
+    "F": {
+      "item": "minecraft:feather"
+    }
+  },
+  "result": {
+    "id": "irons_spellbooks:speed_boots",
+    "count": 1
+  }
+}

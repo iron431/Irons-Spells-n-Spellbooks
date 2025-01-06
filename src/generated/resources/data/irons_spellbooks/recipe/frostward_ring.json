@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "M": {
+      "item": "irons_spellbooks:permafrost_shard"
+    },
+    "X": {
+      "item": "irons_spellbooks:mithril_scrap"
+    }
+  },
+  "pattern": [
+    "M ",
+    " X"
+  ],
+  "result": {
+    "count": 1,
+    "id": "irons_spellbooks:frostward_ring"
+  }
+}

@@ -3,6 +3,10 @@
     "minecraft:freeze",
     "minecraft:starve",
     "minecraft:on_fire",
-    "minecraft:wither"
+    "minecraft:wither",
+    {
+      "id": "neoforge:poison",
+      "required": false
+    }
   ]
 }

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "M": {
+      "tag": "c:ingots/copper"
+    },
+    "X": {
+      "item": "irons_spellbooks:mithril_scrap"
+    }
+  },
+  "pattern": [
+    " M ",
+    "MXM",
+    " M "
+  ],
+  "result": {
+    "count": 1,
+    "id": "irons_spellbooks:cooldown_ring"
+  }
+}

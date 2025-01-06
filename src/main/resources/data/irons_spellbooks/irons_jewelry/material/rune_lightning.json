@@ -1,0 +1,18 @@
+{
+  "descriptionId": "material.irons_spellbooks.rune_lightning",
+  "ingredient": {
+    "item": "irons_spellbooks:lightning_rune"
+  },
+  "materialType": [
+    "spellbooks_rune"
+  ],
+  "paletteLocation": "irons_spellbooks:palettes/rune_lightning",
+  "quality": 1.5,
+  "bonusParameters": {
+    "irons_jewelry:attribute": {
+      "attribute": "irons_spellbooks:lightning_spell_power",
+      "amount": 0.05,
+      "operation": "add_multiplied_total"
+    }
+  }
+}

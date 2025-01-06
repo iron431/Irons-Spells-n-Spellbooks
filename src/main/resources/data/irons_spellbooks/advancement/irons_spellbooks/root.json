@@ -22,7 +22,7 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "irons_spellbooks:gold_spell_book"
+      "id": "irons_spellbooks:gold_spell_book"
     },
     "show_toast": false,
     "title": {

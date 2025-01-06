@@ -1,0 +1,27 @@
+{
+  "feature": "irons_spellbooks:ore_mithril_feature",
+  "placement": [
+    {
+      "type": "minecraft:count",
+      "count": 7
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:height_range",
+      "height": {
+        "type": "minecraft:uniform",
+        "max_inclusive": {
+          "absolute": -38
+        },
+        "min_inclusive": {
+          "absolute": -63
+        }
+      }
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

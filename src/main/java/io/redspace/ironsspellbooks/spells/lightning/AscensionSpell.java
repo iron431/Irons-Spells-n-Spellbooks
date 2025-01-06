@@ -108,6 +108,9 @@ public class AscensionSpell extends AbstractSpell {
                 if (target instanceof Creeper creeper) {
                     creeper.thunderHit((ServerLevel) level, lightningBolt);
                 }
+                if (target instanceof LivingEntity livingEntity) {
+                    livingEntity.knockback(0.25f + finalDamage / 10f, entity.getX() - livingEntity.getX(), entity.getZ() - livingEntity.getZ());
+                }
             }
         });
 

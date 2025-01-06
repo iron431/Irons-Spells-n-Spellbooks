@@ -61,13 +61,13 @@
         ],
         "mapping": {
           "D": "minecraft:deepslate",
-          "A": "irons_spellbooks:arcane_debris",
+          "A": "irons_spellbooks:deepslate_mithril_ore",
           "P": "irons_spellbooks:armor_pile",
           "S": "minecraft:soul_sand",
           "F": "minecraft:soul_fire"
         }
       },
-      "text": "Arcane Debris is an Overworld equivalent to Ancient Debris, found below y=-38. It requires a netherite pickaxe."
+      "text": "Mithril is a rare Overworld ore, found below y = -38 and unexposed to air. It requires a netherite pickaxe."
     },
     {
       "type": "patchouli:entity",

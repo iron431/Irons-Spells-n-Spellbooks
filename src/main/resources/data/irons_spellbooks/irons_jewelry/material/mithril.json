@@ -1,0 +1,24 @@
+{
+  "descriptionId": "material.irons_spellbooks.mithril",
+  "ingredient": {
+    "tag": "c:ingots/mithril"
+  },
+  "materialType": [
+    "metal"
+  ],
+  "paletteLocation": "irons_spellbooks:palettes/mithril",
+  "quality": 3,
+  "bonusParameters": {
+    "irons_jewelry:attribute": {
+      "attribute": "irons_spellbooks:spell_power",
+      "amount": 0.05,
+      "operation": "add_multiplied_total"
+    },
+    "irons_jewelry:negative_effect": {
+      "effect": "irons_spellbooks:rend"
+    },
+    "irons_jewelry:positive_effect": {
+      "effect": "irons_spellbooks:charged"
+    }
+  }
+}

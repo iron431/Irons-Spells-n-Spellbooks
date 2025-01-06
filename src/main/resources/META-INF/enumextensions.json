@@ -14,6 +14,18 @@
         "class": "io/redspace/ironsspellbooks/render/StaffArmPose",
         "field": "STAFF_ARM_POSE"
       }
-    }
+    }/*,
+    {
+      //https://docs.neoforged.net/docs/advanced/extensibleenums/
+      // The enum class the entry should be added to
+      "enum": "net/minecraft/world/item/ItemDisplayContext",
+      // The field name of the new entry, must be prefixed with the mod ID
+      "name": "IRONS_SPELLBOOKS_LECTERN_DISPLAY",
+      // The constructor to be used
+      //Lnet/minecraft/world/item/ItemDisplayContext;<init>(ILjava/lang/String;Ljava/lang/String;)V
+      "constructor": "(ILjava/lang/String;Ljava/lang/String;)V",
+      // Constant parameters provided directly.
+      "parameters": [-1,"irons_spellbooks:lectern","irons_spellbooks:lectern_fallback"]
+    }*/
   ]
 }

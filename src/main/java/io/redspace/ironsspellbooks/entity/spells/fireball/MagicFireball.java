@@ -69,7 +69,7 @@ public class MagicFireball extends AbstractMagicProjectile {
 
     @Override
     public Optional<Holder<SoundEvent>> getImpactSound() {
-        return Optional.of(Holder.direct(SoundEvents.GENERIC_EXPLODE.value()));
+        return Optional.of(SoundEvents.GENERIC_EXPLODE);
     }
 
     @Override

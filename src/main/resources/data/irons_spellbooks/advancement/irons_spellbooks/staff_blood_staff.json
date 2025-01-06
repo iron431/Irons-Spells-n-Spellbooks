@@ -2,7 +2,7 @@
   "display": {
     "hidden": true,
     "icon": {
-      "item": "irons_spellbooks:blood_staff"
+      "id": "irons_spellbooks:blood_staff"
     },
     "title": {
       "translate": "advancements.irons_spellbooks.staff_blood_staff.title"

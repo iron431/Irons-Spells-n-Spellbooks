@@ -10,6 +10,10 @@
     "minecraft:out_of_world",
     "minecraft:dry_out",
     "minecraft:in_wall",
-    "irons_spellbooks:blood_cauldron"
+    "irons_spellbooks:blood_cauldron",
+    {
+      "id": "neoforge:poison",
+      "required": false
+    }
   ]
 }

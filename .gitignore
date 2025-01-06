@@ -28,4 +28,3 @@ libs
 # Files from Forge MDK
 forge*changelog.txt
 /runs/
-/src/generated/

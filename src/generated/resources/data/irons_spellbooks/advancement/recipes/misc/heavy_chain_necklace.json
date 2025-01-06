@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "irons_spellbooks:heavy_chain_necklace"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "mithril_scrap": {
+      "conditions": {
+        "items": [
+          {
+            "items": "irons_spellbooks:mithril_scrap"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "mithril_scrap"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "irons_spellbooks:heavy_chain_necklace"
+    ]
+  }
+}

@@ -1,9 +1,6 @@
 {
   "variants": {
-    "lit=false": {
-      "model": "irons_spellbooks:block/alchemist_cauldron"
-    },
-    "lit=true": {
+    "": {
       "model": "irons_spellbooks:block/alchemist_cauldron"
     }
   }

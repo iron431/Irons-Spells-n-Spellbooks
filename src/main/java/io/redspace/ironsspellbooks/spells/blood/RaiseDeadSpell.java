@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.spells.blood;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
+import io.redspace.ironsspellbooks.api.events.SpellSummonEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
@@ -28,6 +29,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.List;
 import java.util.Optional;
@@ -98,7 +100,8 @@ public class RaiseDeadSpell extends AbstractSpell {
             undead.setPos(spawn.x, spawn.y, spawn.z);
             undead.setYRot(entity.getYRot());
             undead.setOldPosAndRot();
-            world.addFreshEntity(undead);
+            var event = NeoForge.EVENT_BUS.post(new SpellSummonEvent<>(entity, undead, this.spellId, spellLevel));
+            world.addFreshEntity(event.getCreature());
         }
 
         int effectAmplifier = spellLevel - 1;

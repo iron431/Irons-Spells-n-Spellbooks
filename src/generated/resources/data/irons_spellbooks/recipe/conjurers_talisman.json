@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "M": {
+      "item": "minecraft:skeleton_skull"
+    },
+    "S": {
+      "item": "minecraft:string"
+    },
+    "X": {
+      "item": "irons_spellbooks:mithril_scrap"
+    }
+  },
+  "pattern": [
+    " S ",
+    "SXS",
+    " M "
+  ],
+  "result": {
+    "count": 1,
+    "id": "irons_spellbooks:conjurers_talisman"
+  }
+}

@@ -1,0 +1,17 @@
+name: 🖥️ API Enhancement
+description: Suggest new functionality or improvements of the codebase/api
+labels: [enhancement]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of what you want to improve
+    validations:
+      required: true
+  - type: checkboxes
+    attributes:
+      label: Not a feature request
+      options:
+        - label: I understand this is not a content/feature request, which can be found on discord
+          required: true

@@ -2,7 +2,7 @@
   "display": {
     "hidden": false,
     "icon": {
-      "item": "irons_spellbooks:lightning_rod"
+      "id": "irons_spellbooks:lightning_rod"
     },
     "title": {
       "translate": "advancements.irons_spellbooks.staff_lightning_rod.title"

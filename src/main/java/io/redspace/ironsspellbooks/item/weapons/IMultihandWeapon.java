@@ -1,7 +1,8 @@
 package io.redspace.ironsspellbooks.item.weapons;
 
 /**
- * Marker Interface. Will apply mainhand attributes when held in the offhand, if another Multihand Weapon is not held in the mainhand, as well as adjust tooltip accordingly.
+ * Deprecated: Multihand functionality now determined via presence of {@link io.redspace.ironsspellbooks.registries.ComponentRegistry#MULTIHAND_WEAPON} component on the item
  */
+@Deprecated(forRemoval = true)
 public interface IMultihandWeapon {
 }

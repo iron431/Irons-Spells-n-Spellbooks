@@ -1,6 +1,6 @@
-// 1.21	2024-07-14T16:49:16.4978888	Tags for minecraft:damage_type mod id irons_spellbooks
+// 1.21	2024-09-24T11:26:24.0313215	Tags for minecraft:damage_type mod id irons_spellbooks
 3dc0dbd0c904c58b17060f2abb8815db72c39675 data/irons_spellbooks/tags/damage_type/blood_magic.json
-f8dad72d46a3de9e4286f1c3ec4fbf7a31f848c3 data/irons_spellbooks/tags/damage_type/bypass_evasion.json
+83f97d47471c1c1a243d04baca09e480dbb28977 data/irons_spellbooks/tags/damage_type/bypass_evasion.json
 25e13978a61cb08b6fa4c558aee37ef68fe0f437 data/irons_spellbooks/tags/damage_type/eldritch_magic.json
 01e962e95af2267dd18ada4e18daa8d24e25985d data/irons_spellbooks/tags/damage_type/ender_magic.json
 8bbd54c0280eb72ad29c4eea7e2f135a59083a8d data/irons_spellbooks/tags/damage_type/evocation_magic.json
@@ -8,5 +8,5 @@ f8dad72d46a3de9e4286f1c3ec4fbf7a31f848c3 data/irons_spellbooks/tags/damage_type/
 3ecc777ed8fa2753948f56e7679770c8253e876f data/irons_spellbooks/tags/damage_type/holy_magic.json
 ce256e399161078f499f4e70abc56c1b3b78d930 data/irons_spellbooks/tags/damage_type/ice_magic.json
 4792bf5179fdfe91dd7407bedd5d207287dd3aa1 data/irons_spellbooks/tags/damage_type/lightning_magic.json
-57796dca465dba62e84ef1176233798e6b99e877 data/irons_spellbooks/tags/damage_type/long_cast_ignore.json
+d5c35882c0c75c891526f808d0c56642b50c5e4b data/irons_spellbooks/tags/damage_type/long_cast_ignore.json
 44c30ec42a1dbad1c93a49ac5376266c516b7527 data/irons_spellbooks/tags/damage_type/nature_magic.json

@@ -26,6 +26,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.phys.Vec2;
 import net.neoforged.api.distmarker.Dist;
@@ -41,11 +42,11 @@ public class EldritchResearchScreen extends Screen {
     private static final ResourceLocation WINDOW_LOCATION = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/eldritch_research_screen/window.png");
     private static final ResourceLocation FRAME_LOCATION = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/eldritch_research_screen/spell_frame.png");
     public static final int WINDOW_WIDTH = 252;
-    public static final int WINDOW_HEIGHT = 140;
+    public static final int WINDOW_HEIGHT = 256;
     private static final int WINDOW_INSIDE_X = 9;
     private static final int WINDOW_INSIDE_Y = 18;
     public static final int WINDOW_INSIDE_WIDTH = 234;
-    public static final int WINDOW_INSIDE_HEIGHT = 113;
+    public static final int WINDOW_INSIDE_HEIGHT = 229;
     private static final int WINDOW_TITLE_X = 8;
     private static final int WINDOW_TITLE_Y = 6;
     public static final int BACKGROUND_TILE_WIDTH = 16;
@@ -82,15 +83,24 @@ public class EldritchResearchScreen extends Screen {
         this.leftPos = (this.width - WINDOW_WIDTH) / 2;
         this.topPos = (this.height - WINDOW_HEIGHT) / 2;
         nodes = new ArrayList<>();
-        float f = 6.282f / learnableSpells.size();
-        //RandomSource randomSource = RandomSource.create(431L);
-        //int gridsize = 64;
+        RandomSource randomSource = RandomSource.create(431L);
 
+        float f = Mth.TWO_PI / 6; // current angel between nodes
+        float r = 35; // current radius
+        float circumference = 0; // tracked length of current ring
+        float offset = 0.5f; // angular offset of this ring (units of f)
         for (int i = 0; i < learnableSpells.size(); i++) {
-            float r = 35;
-            int x = leftPos + WINDOW_WIDTH / 2 - 8 + (int) (r * Mth.cos(f * i));
-            int y = topPos + WINDOW_HEIGHT / 2 - 8 + (int) (r * Mth.sin(f * i));
+            if (circumference > r * Mth.TWO_PI) {
+                r += 40;
+                f /= 2;
+                circumference = 0;
+                offset = i;
+            }
+            float a = f * (i + offset) ;
+            int x = leftPos + WINDOW_WIDTH / 2 - 8 + (int) (r * Mth.cos(a));
+            int y = topPos + WINDOW_HEIGHT / 2 - 8 + (int) (r * Mth.sin(a));
             nodes.add(new SpellNode(learnableSpells.get(i), x, y));
+            circumference += r * f * 1.1f;
         }
         float maxDistX = 0;
         float maxDistY = 0;
@@ -153,9 +163,24 @@ public class EldritchResearchScreen extends Screen {
         if (tooltip != null) {
             guiGraphics.renderTooltip(Minecraft.getInstance().font, tooltip, mouseX, mouseY);
         }
+//        String mousePos = String.format("(%s\t%s)", mouseX, mouseY);
+//        String boundX = String.format("%s + %s - %s = %s", mouseX, (int) viewportOffset.x, leftPos, mouseX + (int) viewportOffset.x - leftPos);
+//        String boundY = String.format("%s + %s - %s = %s", mouseY, (int) viewportOffset.y, topPos, mouseY + (int) viewportOffset.y - topPos);
+//        String pX = String.format("%s", (mouseX + (int) viewportOffset.x - leftPos) / (float)WINDOW_WIDTH);
+//        String pY = String.format("%s", (mouseY + (int) viewportOffset.y - topPos) / (float)WINDOW_HEIGHT);
+//        String sx = String.format("x:%s", ( Math.clamp(Mth.clamp(mouseX + viewportOffset.x - leftPos, 0, WINDOW_WIDTH)/20f,0,1)) / (float)WINDOW_WIDTH);
+//        guiGraphics.drawString(font, mousePos, 0, 0, 0xFFFFFF);
+//        guiGraphics.drawString(font, boundX, 0, 10, 0xFFFFFF);
+//        guiGraphics.drawString(font, boundY, 0, 20, 0xFFFFFF);
+//        guiGraphics.drawString(font, pX, 0, 30, 0xFFFFFF);
+//        guiGraphics.drawString(font, pY, 0, 40, 0xFFFFFF);
+//        guiGraphics.drawString(font, sx, 0, 50, 0xFFFFFF);
+
     }
 
     private void renderProgressOverlay(GuiGraphics gui, int x, int y, float progress) {
+        x += (int) viewportOffset.x;
+        y += (int) viewportOffset.y;
         gui.fill(x, y, x + Mth.ceil(16.0F * progress), y + 16, FastColor.ARGB32.color(127, 244, 65, 255));
     }
 
@@ -184,7 +209,7 @@ public class EldritchResearchScreen extends Screen {
     }
 
     private void drawWithClipping(ResourceLocation texture, GuiGraphics guiGraphics, int x, int y, int uvx, int uvy, int width, int height, int imageWidth, int imageHeight, int bbx, int bby, int bbw, int bbh) {
-        x += viewportOffset.x;
+        x += (int) viewportOffset.x;
         if (x < bbx) {
             int xDiff = bbx - x;
             width -= xDiff;
@@ -194,7 +219,7 @@ public class EldritchResearchScreen extends Screen {
             int xDiff = x - (bbx + bbw - width);
             width -= xDiff;
         }
-        y += viewportOffset.y;
+        y += (int) viewportOffset.y;
         if (y < bby) {
             int yDiff = bby - y;
             height -= yDiff;
@@ -237,37 +262,39 @@ public class EldritchResearchScreen extends Screen {
             Vec2 b = new Vec2(nodes.get(i + 1).x, nodes.get(i + 1).y);
             Vec2 orth = new Vec2(-(b.y - a.y), b.x - a.x).normalized().scale(1.5f);
 
-            final float x1m1 = a.x + orth.x + 8 + viewportOffset.x;
-            final float x2m1 = b.x + orth.x + 8 + viewportOffset.x;
-            final float y1m1 = a.y + orth.y + 8 + viewportOffset.y;
-            final float y2m1 = b.y + orth.y + 8 + viewportOffset.y;
+            final float x1m1 = a.x + orth.x + 8 + (int) viewportOffset.x;
+            final float x2m1 = b.x + orth.x + 8 + (int) viewportOffset.x;
+            final float y1m1 = a.y + orth.y + 8 + (int) viewportOffset.y;
+            final float y2m1 = b.y + orth.y + 8 + (int) viewportOffset.y;
 
-            final float x1m2 = a.x - orth.x + 8 + viewportOffset.x;
-            final float x2m2 = b.x - orth.x + 8 + viewportOffset.x;
-            final float y1m2 = a.y - orth.y + 8 + viewportOffset.y;
-            final float y2m2 = b.y - orth.y + 8 + viewportOffset.y;
-
+            final float x1m2 = a.x - orth.x + 8 + (int) viewportOffset.x;
+            final float x2m2 = b.x - orth.x + 8 + (int) viewportOffset.x;
+            final float y1m2 = a.y - orth.y + 8 + (int) viewportOffset.y;
+            final float y2m2 = b.y - orth.y + 8 + (int) viewportOffset.y;
 
             var color1 = lerpColor(color, glowcolor, glowIntensity * (nodes.get(i).spell.isLearned(Minecraft.getInstance().player) ? 1 : 0));
             var color2 = lerpColor(color, glowcolor, glowIntensity * (nodes.get(i + 1).spell.isLearned(Minecraft.getInstance().player) ? 1 : 0));
-            var alphaTopLeft = (Mth.clamp(x1m1 + viewportOffset.x - leftPos, 0, WINDOW_INSIDE_X * 2) / WINDOW_INSIDE_X * 2) * (Mth.clamp(y1m1 + viewportOffset.y - topPos, 0, WINDOW_INSIDE_Y * 2) / WINDOW_INSIDE_Y * 2);
             RenderHelper.quadBuilder()
-                    .vertex(x1m1, y1m1).color(color1)
-                    .vertex(x2m1, y2m1).color(color2)
-                    .vertex(x2m2, y2m2).color(color2)
-                    .vertex(x1m2, y1m2).color(color1)
+                    .vertex(x1m1, y1m1).color(fadeOutTowardEdges(guiGraphics, x1m1, y1m1, color1))
+                    .vertex(x2m1, y2m1).color(fadeOutTowardEdges(guiGraphics, x2m1, y2m1, color2))
+                    .vertex(x2m2, y2m2).color(fadeOutTowardEdges(guiGraphics, x2m2, y2m2, color2))
+                    .vertex(x1m2, y1m2).color(fadeOutTowardEdges(guiGraphics, x1m2, y1m2, color1))
                     .build(guiGraphics, RenderType.gui());
         }
     }
 
-    private float fadeOutTowardEdges(GuiGraphics guiGraphics, double x, double y) {
-        int px = (int) Mth.clamp(x + viewportOffset.x - leftPos, 0, WINDOW_INSIDE_X * 2);
-        int py = (int) Mth.clamp(y + viewportOffset.y - topPos, 0, WINDOW_INSIDE_Y * 2);
-        int px2 = (int) Mth.clamp(WINDOW_INSIDE_WIDTH - (x + viewportOffset.x - leftPos), 0, WINDOW_INSIDE_X * 2);
-        int py2 = (int) Mth.clamp(WINDOW_INSIDE_HEIGHT - (y + viewportOffset.y - topPos), 0, WINDOW_INSIDE_Y * 2);
-        //Minecraft.getInstance().font.draw(poseStack, String.format("%d/%d * %d/%d", px, WINDOW_INSIDE_X * 2, py, WINDOW_INSIDE_Y * 2), (float) x, (float) y, 0xFFFFFF);
-        return Mth.clamp(px / ((float) WINDOW_INSIDE_X * 0.5f), 0, 1) * Mth.clamp(py / ((float) WINDOW_INSIDE_Y * 0.5f), 0, 1) * Mth.clamp(px2 / ((float) WINDOW_INSIDE_X * 0.5f), 0, 1) * Mth.clamp(py2 / ((float) WINDOW_INSIDE_Y * 0.5f), 0, 1);
-        //* (Mth.clamp(WINDOW_INSIDE_WIDTH - (x + viewportOffset.x - leftPos), 0, WINDOW_INSIDE_X * 2) / WINDOW_INSIDE_X * 2) * (Mth.clamp(WINDOW_INSIDE_HEIGHT - (y + viewportOffset.y - topPos), 0, WINDOW_INSIDE_Y * 2) / WINDOW_INSIDE_Y * 2));
+    private Vector4f fadeOutTowardEdges(GuiGraphics guiGraphics, double x, double y, Vector4f color) {
+        float margin = 40;
+        int maxWidth = WINDOW_WIDTH;
+        int maxHeight = WINDOW_HEIGHT;
+        int boundXMin = (int) Mth.clamp(x + viewportOffset.x - leftPos, 0, maxWidth);
+        int boundXMax = maxWidth - (int) Mth.clamp(x + viewportOffset.x - leftPos, 0, maxWidth);
+        int boundYMin = (int) Mth.clamp(y + viewportOffset.y - topPos, 0, maxHeight);
+        int boundYMax = maxHeight - (int) Mth.clamp(y + viewportOffset.y - topPos, 0, maxHeight);
+        float px = Mth.clamp(Math.min(boundXMin, boundXMax) / margin, 0, 1);
+        float py = Mth.clamp(Math.min(boundYMin, boundYMax) / margin, 0, 1);
+        float alpha = Mth.sqrt(px * py);
+        return new Vector4f(color.x, color.y, color.z, color.w * alpha);
 
     }
 
@@ -339,7 +366,7 @@ public class EldritchResearchScreen extends Screen {
 
     @Override
     public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
-        if (this.isMouseDragging && false /*No dragging for now*/) {
+        if (this.isMouseDragging && false) {
             viewportOffset = new Vec2((float) (viewportOffset.x + pDragX), (float) (viewportOffset.y + pDragY));
             return true;
         } else {

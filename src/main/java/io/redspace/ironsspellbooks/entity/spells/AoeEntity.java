@@ -10,6 +10,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -273,4 +274,8 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
 
     }
 
+    @Override
+    public boolean ignoreExplosion(Explosion explosion) {
+        return true;
+    }
 }

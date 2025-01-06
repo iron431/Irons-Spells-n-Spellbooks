@@ -81,10 +81,6 @@ dependencies {
     // GECKOLIB ***************************************************************************************************
     implementation "software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
 
-    // CAELUS *****************************************************************************************************
-    compileOnly "com.illusivesoulworks.caelus:caelus-neoforge:${caelus_version}:api"
-    localRuntime "com.illusivesoulworks.caelus:caelus-neoforge:${caelus_version}"
-
     // PLAYER ANIMATOR ********************************************************************************************
     //compileOnly "dev.kosmx.player-anim:player-animation-lib-forge:${player_animator_version}"
     implementation "dev.kosmx.player-anim:player-animation-lib-forge:${player_animator_version}"
@@ -117,14 +113,17 @@ dependencies {
 //    localRuntime "curse.maven:cloth-config-348521:4633416"
 //
 //    // PATCHOULI **************************************************************************************************
-//    compileOnly "vazkii.patchouli:Patchouli:${patchouli_version}:api"
-//    localRuntime "vazkii.patchouli:Patchouli:${patchouli_version}"
+    compileOnly "vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE"
+    localRuntime "vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE"
 //
 //    // APOTHEOSIS
     compileOnly "curse.maven:apotheosis-${apotheosis_version}"
-//    localRuntime "curse.maven:apotheosis-${apotheosis_version}"
-//    localRuntime "curse.maven:placebo-${placebo_version}"
-//    localRuntime "curse.maven:apothic-curios-950712:5108911"
+    compileOnly "curse.maven:apothic-attributes-898963:5597608"
+
+    localRuntime "curse.maven:placebo-${placebo_version}"
+    localRuntime "curse.maven:apothic-attributes-898963:5597608"
+//    implementation "curse.maven:irons-jewelry-1101111:5943490"
+//    implementation "curse.maven:atlas-api-1145462:5940096"
 
     //QOL
     //todo: 1.21: update these mods
@@ -177,7 +176,6 @@ tasks.withType(ProcessResources).configureEach {
             neo_version            : neo_version,
             neo_version_range      : neo_version_range,
             loader_version_range   : loader_version_range,
-            caelus_version         : caelus_version,
             geckolib_version       : geckolib_version,
             player_animator_version: player_animator_version,
             mod_id                 : mod_id,
@@ -269,9 +267,8 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 tasks.register('copyAnimations', Copy) {
-    from "src/main/resources/assets/${mod_id}/player_animation"
-    include 'casting_animations.json'
-    into "src/main/resources/assets/${mod_id}/animations"
+    from layout.projectDirectory.file("src/main/resources/assets/${mod_id}/player_animations/casting_animations.json")
+    into layout.projectDirectory.dir("src/main/resources/assets/${mod_id}/animations")
 }
 
 tasks.classes.dependsOn(tasks.copyAnimations)

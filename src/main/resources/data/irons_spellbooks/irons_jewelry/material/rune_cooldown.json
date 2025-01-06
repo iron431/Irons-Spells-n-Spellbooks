@@ -1,0 +1,18 @@
+{
+  "descriptionId": "material.irons_spellbooks.rune_cooldown",
+  "ingredient": {
+    "item": "irons_spellbooks:cooldown_rune"
+  },
+  "materialType": [
+    "spellbooks_rune"
+  ],
+  "paletteLocation": "irons_spellbooks:palettes/rune_recovery",
+  "quality": 1.5,
+  "bonusParameters": {
+    "irons_jewelry:attribute": {
+      "attribute": "irons_spellbooks:cooldown_reduction",
+      "amount": 0.05,
+      "operation": "add_multiplied_total"
+    }
+  }
+}

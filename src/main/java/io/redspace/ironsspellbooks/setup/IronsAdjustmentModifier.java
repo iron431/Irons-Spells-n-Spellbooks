@@ -14,6 +14,10 @@ import java.util.function.BiFunction;
  * Implementation of {@link AdjustmentModifier} but uses a BiFunction to include the additional parameter of partial tick when making adjustments
  */
 public class IronsAdjustmentModifier extends AbstractModifier {
+    /**
+     * Keep reference to the instance so that we can invoke a fadeout when we stop an animation
+     */
+    public static IronsAdjustmentModifier INSTANCE;
     public boolean enabled = true;
 
     protected BiFunction<String, Float, Optional<AdjustmentModifier.PartModifier>> transformFunction;
@@ -25,8 +29,8 @@ public class IronsAdjustmentModifier extends AbstractModifier {
     protected float getFadeIn(float delta) {
         float fadeIn = 1;
         IAnimation animation = this.getAnim();
-        if(animation instanceof KeyframeAnimationPlayer) {
-            KeyframeAnimationPlayer player = (KeyframeAnimationPlayer)anim;
+        if (animation instanceof KeyframeAnimationPlayer) {
+            KeyframeAnimationPlayer player = (KeyframeAnimationPlayer) anim;
             float currentTick = player.getTick() + delta;
             fadeIn = currentTick / (float) player.getData().beginTick;
             fadeIn = Math.min(fadeIn, 1F);
@@ -40,7 +44,7 @@ public class IronsAdjustmentModifier extends AbstractModifier {
 
         if (remainingFadeout > 0) {
             remainingFadeout -= 1;
-            if(remainingFadeout <= 0) {
+            if (remainingFadeout <= 0) {
                 instructedFadeout = 0;
             }
         }
@@ -50,21 +54,28 @@ public class IronsAdjustmentModifier extends AbstractModifier {
     private int remainingFadeout = 0;
 
     public void fadeOut(int fadeOut) {
-        instructedFadeout = fadeOut;
-        remainingFadeout = fadeOut + 1;
+        if (instructedFadeout == 0) {
+            instructedFadeout = fadeOut;
+            remainingFadeout = fadeOut + 1;
+        }
+    }
+
+    public void resetFadeOut(){
+        instructedFadeout = 0;
+        remainingFadeout = 0;
     }
 
     protected float getFadeOut(float delta) {
         float fadeOut = 1;
-        if(remainingFadeout > 0 && instructedFadeout > 0) {
-            float current = Math.max(remainingFadeout - delta , 0);
-            fadeOut = current / ((float)instructedFadeout);
+        if (remainingFadeout > 0 && instructedFadeout > 0) {
+            float current = Math.max(remainingFadeout - delta, 0);
+            fadeOut = current / ((float) instructedFadeout);
             fadeOut = Math.min(fadeOut, 1F);
             return fadeOut;
         }
         IAnimation animation = this.getAnim();
-        if(animation instanceof KeyframeAnimationPlayer) {
-            KeyframeAnimationPlayer player = (KeyframeAnimationPlayer)anim;
+        if (animation instanceof KeyframeAnimationPlayer) {
+            KeyframeAnimationPlayer player = (KeyframeAnimationPlayer) anim;
 
             float currentTick = player.getTick() + delta;
             float position = (-1F) * (currentTick - player.getData().stopTick);

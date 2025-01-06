@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "G G",
+    "WAW",
+    "GWG"
+  ],
+  "key": {
+    "A": {
+      "item": "irons_spellbooks:priest_chestplate"
+    },
+    "W": {
+      "item": "irons_spellbooks:mithril_weave"
+    },
+    "G": {
+      "tag": "c:ingots/gold"
+    }
+  },
+  "result": {
+    "id": "irons_spellbooks:paladin_chestplate",
+    "count": 1
+  }
+}

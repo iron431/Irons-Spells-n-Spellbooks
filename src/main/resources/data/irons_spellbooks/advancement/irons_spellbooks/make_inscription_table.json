@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "irons_spellbooks:inscription_table"
+      "id": "irons_spellbooks:inscription_table"
     },
     "title": {
       "translate": "advancements.irons_spellbooks.make_inscription_table.title"

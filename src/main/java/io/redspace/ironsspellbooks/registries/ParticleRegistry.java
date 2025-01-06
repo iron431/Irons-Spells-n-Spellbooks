@@ -91,5 +91,4 @@ public class ParticleRegistry {
         }
     });
     public static final Supplier<SimpleParticleType> CLEANSE_PARTICLE = PARTICLE_TYPES.register("cleanse", () -> new SimpleParticleType(false));
-
 }

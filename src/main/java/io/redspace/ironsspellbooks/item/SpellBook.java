@@ -12,14 +12,18 @@ import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.render.RenderHelper;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
@@ -33,7 +37,7 @@ import top.theillusivec4.curios.api.type.capability.ICurio;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpellContainer {
+public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpellContainer, ILecternPlaceable {
     protected final int maxSpellSlots;
 
     public SpellBook() {
@@ -116,5 +120,35 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpell
         if (!ISpellContainer.isSpellContainer(itemStack)) {
             itemStack.set(ComponentRegistry.SPELL_CONTAINER, ISpellContainer.create(getMaxSpellSlots(), true, true));
         }
+    }
+
+    @Override
+    public List<Component> getPages(ItemStack stack) {
+        var spellbookData = ISpellContainer.get(stack);
+        if (spellbookData != null && !spellbookData.isEmpty()) {
+            var player = MinecraftInstanceHelper.getPlayer();
+            return spellbookData.getActiveSpells().stream().map(slot -> {
+                var color = slot.getSpell().getSchoolType().getDisplayName().getStyle().getColor().getValue();
+                color = RenderHelper.colorLerp(.6f, color, 0);
+                var titleStyle = Style.EMPTY.withColor(color).withUnderlined(true).withBold(true).withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.patreon.com/iron431"));
+                boolean hideStats = false;
+                if (player != null) {
+                    var scrollTooltip = TooltipsUtils.formatActiveSpellTooltip(null, slot.spellData(), CastSource.SPELLBOOK, (LocalPlayer) player);
+                    scrollTooltip.remove(0); // this is a space for tooltip, which we don't want
+                    titleStyle = titleStyle.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, scrollTooltip.stream().reduce((a, b) -> a.append("\n").append(b)).get()));
+                    if (slot.getSpell().obfuscateStats(player)) {
+                        hideStats = true;
+                    }
+                }
+                var title = Component.translatable(slot.getSpell().getComponentId()).withStyle(titleStyle);
+                var desc = Component.translatable(slot.getSpell().getComponentId() + ".guide").withStyle(ChatFormatting.BLACK);
+                var page = Component.literal("").append(title).append("\n\n").append(desc);
+                if (hideStats) {
+                    page = page.withStyle(page.getStyle().applyTo(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("alt"))));
+                }
+                return (Component) page;
+            }).toList();
+        }
+        return List.of(Component.translatable("ui.irons_spellbooks.empty_spellbook_lectern").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
     }
 }

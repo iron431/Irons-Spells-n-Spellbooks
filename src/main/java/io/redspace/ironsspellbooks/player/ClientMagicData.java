@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.player;
 
-import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
@@ -83,11 +82,6 @@ public class ClientMagicData {
     public static void resetTargetingData() {
         spellTargetingData = null;
     }
-
-    /**
-     * Animation Data
-     */
-    public static HashMap<UUID, KeyframeAnimationPlayer> castingAnimationPlayerLookup = new HashMap<>();
 
     public static PlayerCooldowns getCooldowns() {
         return playerMagicData.getPlayerCooldowns();

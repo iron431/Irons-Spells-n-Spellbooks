@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.item.armor;
 
-import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
+import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
 import io.redspace.ironsspellbooks.entity.armor.netherite.NetheriteMageArmorModel;
 import io.redspace.ironsspellbooks.registries.ArmorMaterialRegistry;
 import net.neoforged.api.distmarker.Dist;
@@ -15,7 +15,7 @@ public class NetheriteMageArmorItem extends ImbuableChestplateArmorItem {
     @Override
     @OnlyIn(Dist.CLIENT)
     public GeoArmorRenderer<?> supplyRenderer() {
-        return new GeoArmorRenderer<>(new NetheriteMageArmorModel());
+        return new GenericCustomArmorRenderer<>(new NetheriteMageArmorModel());
     }
 
 }

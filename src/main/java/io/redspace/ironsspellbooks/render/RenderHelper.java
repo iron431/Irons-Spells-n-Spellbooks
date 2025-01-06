@@ -11,6 +11,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,6 +24,20 @@ import java.util.List;
 import java.util.function.Function;
 
 public class RenderHelper {
+
+    public static int colorLerp(float f, int colorA, int colorB) {
+        int redA = (colorA >> 16) & 0xFF;
+        int greenA = (colorA >> 8) & 0xFF;
+        int blueA = colorA & 0xFF;
+        int redB = (colorB >> 16) & 0xFF;
+        int greenB = (colorB >> 8) & 0xFF;
+        int blueB = colorB & 0xFF;
+        return color255(
+                (int) Mth.lerp(f, redA, redB),
+                (int) Mth.lerp(f, greenA, greenB),
+                (int) Mth.lerp(f, blueA, blueB)
+        );
+    }
 
     public static int color255(int pRed, int pGreen, int pBlue, int pAlpha) {
         return pAlpha << 24 | pRed << 16 | pGreen << 8 | pBlue;

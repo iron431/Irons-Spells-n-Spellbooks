@@ -42,10 +42,10 @@ public class HasteSpell extends AbstractSpell {
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.UNCOMMON)
+            .setMinRarity(SpellRarity.EPIC)
             .setSchoolResource(SchoolRegistry.HOLY_RESOURCE)
-            .setMaxLevel(6)
-            .setCooldownSeconds(45)
+            .setMaxLevel(4)
+            .setCooldownSeconds(80)
             .build();
 
     public HasteSpell() {

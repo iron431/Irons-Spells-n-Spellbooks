@@ -83,10 +83,13 @@ public class BlackHoleSpell extends AbstractSpell {
         HitResult raycast = Utils.raycastForEntity(level, entity, 16 + radius * 1.5f, true);
         Vec3 center = raycast.getLocation();
         if (raycast instanceof BlockHitResult blockHitResult) {
-            if (blockHitResult.getDirection().getAxis().isHorizontal())
-                center = center.subtract(0, radius, 0);
-            else if (blockHitResult.getDirection() == Direction.DOWN)
-                center = center.subtract(0, radius * 2, 0);
+            if (blockHitResult.getDirection().getAxis().isHorizontal()) {
+                center = center.subtract(0, radius, 0); // Make black hole centered on hit location
+            } else if (blockHitResult.getDirection() == Direction.DOWN) {
+                center = center.subtract(0, radius * 2 - 1, 0); // Make black hole stick one block into ceiling surface
+            } else {
+                center = center.subtract(0, 1, 0); // Make black hole sink into ground 1 block if we hit top face
+            }
         }
 
         level.playSound(null, center.x, center.y, center.z, SoundRegistry.BLACK_HOLE_CAST.get(), SoundSource.AMBIENT, 4, 1);

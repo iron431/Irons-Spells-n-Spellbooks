@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "irons_spellbooks:item/paladin_chestplate"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "M": {
+      "item": "minecraft:chain"
+    },
+    "S": {
+      "item": "minecraft:chain"
+    },
+    "X": {
+      "item": "irons_spellbooks:mithril_scrap"
+    }
+  },
+  "pattern": [
+    " S ",
+    "SXS",
+    " M "
+  ],
+  "result": {
+    "count": 1,
+    "id": "irons_spellbooks:heavy_chain_necklace"
+  }
+}

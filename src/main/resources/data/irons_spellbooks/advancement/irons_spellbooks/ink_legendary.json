@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "irons_spellbooks:legendary_ink"
+      "id": "irons_spellbooks:legendary_ink"
     },
     "title": {
       "translate": "advancements.irons_spellbooks.ink_legendary.title"

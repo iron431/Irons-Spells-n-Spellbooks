@@ -9,7 +9,6 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -103,6 +102,7 @@ public class ZapParticle extends TextureSheetParticle {
 
         if (randomSource.nextFloat() < chanceToBranch) {
             Vector3f branch = randomVector3f(randomSource, .5f);
+            branch.add(end); // branch relative to end position
             drawLightningBeam(consumer, partialTick, f, f1, f2, start, branch, chanceToBranch * .5f, randomSource);
         }
     }
@@ -170,17 +170,16 @@ public class ZapParticle extends TextureSheetParticle {
     }
 
     public static ParticleRenderType PARTICLE_EMISSIVE = new ParticleRenderType() {
-        public BufferBuilder begin(Tesselator p_350993_, TextureManager p_107456_) {
+        public BufferBuilder begin(Tesselator tesselator, TextureManager p_107456_) {
             RenderSystem.depthMask(true);
-            RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
             RenderSystem.enableBlend();
             RenderSystem.disableCull();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
-            return p_350993_.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
+            return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
         }
 
         public String toString() {
-            return "PARTICLE_EMISSIVE";
+            return "irons_spellbooks:particle_emissive";
         }
     };
 

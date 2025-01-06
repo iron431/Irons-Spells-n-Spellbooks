@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "irons_spellbooks:copper_spell_book"
+      "id": "irons_spellbooks:copper_spell_book"
     },
     "title": {
       "translate": "advancements.irons_spellbooks.spell_book_equip.title"

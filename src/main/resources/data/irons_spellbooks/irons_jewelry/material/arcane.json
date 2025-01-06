@@ -1,0 +1,37 @@
+{
+  "descriptionId": "material.irons_spellbooks.arcane",
+  "ingredient": {
+    "item": "irons_spellbooks:arcane_ingot"
+  },
+  "materialType": [
+    "metal"
+  ],
+  "paletteLocation": "irons_spellbooks:palettes/arcane",
+  "quality": 1.5,
+  "bonusParameters": {
+    "irons_jewelry:attribute": {
+      "attribute": "irons_spellbooks:max_mana",
+      "amount": 50,
+      "operation": "add_value"
+    },
+    "irons_jewelry:action": {
+      "targetSelf": false,
+      "action": {
+        "type": "irons_jewelry:create_items",
+        "item": "irons_spellbooks:arcane_essence",
+        "chance": {
+          "base": 0.04,
+          "scalar": 0.02,
+          "min": 0.01,
+          "max": 1
+        },
+        "minCount": 1,
+        "maxCount": {
+          "base": 3,
+          "scalar": 2
+        },
+        "sound": "minecraft:block.amethyst_cluster.place"
+      }
+    }
+  }
+}

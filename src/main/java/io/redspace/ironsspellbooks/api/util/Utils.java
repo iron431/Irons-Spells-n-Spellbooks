@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.api.util;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.attribute.IMagicAttribute;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.events.SpellTeleportEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
@@ -42,6 +43,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Enemy;
@@ -66,8 +68,8 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.entity.PartEntity;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Vector3f;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.SlotResult;
@@ -78,6 +80,9 @@ import java.util.function.Predicate;
 public class Utils {
 
     public static final RandomSource random = RandomSource.createThreadSafe();
+
+    public static final Predicate<Holder<Attribute>> ONLY_MAGIC_ATTRIBUTES = (attribute) -> attribute.value() instanceof IMagicAttribute;
+    public static final Predicate<Holder<Attribute>> NON_BASE_ATTRIBUTES = (attribute) -> !(attribute == Attributes.ENTITY_INTERACTION_RANGE || attribute == Attributes.ATTACK_DAMAGE || attribute == Attributes.ATTACK_SPEED || attribute == Attributes.ATTACK_KNOCKBACK);
 
     public static long getServerTick() {
         return IronsSpellbooks.OVERWORLD.getGameTime();
@@ -360,6 +365,13 @@ public class Utils {
         return false;
     }
 
+    /**
+     * @return min(|A|, |B|) with sign of a
+     */
+    public static double signedMin(double a, double b) {
+        return (a < 0 ? -1 : 1) * Math.min(Math.abs(a), Math.abs(b));
+    }
+
     public static boolean serverSideInitiateQuickCast(ServerPlayer serverPlayer, int slot) {
         var spellSelection = new SpellSelectionManager(serverPlayer).getSpellSlot(slot);
         if (spellSelection != null) {
@@ -389,8 +401,9 @@ public class Utils {
         List<? extends Entity> entities = level.getEntities(originEntity, range, filter);
         for (Entity target : entities) {
             HitResult hit = checkEntityIntersecting(target, start, end, bbInflation);
-            if (hit.getType() != HitResult.Type.MISS)
+            if (hit.getType() != HitResult.Type.MISS) {
                 hits.add(hit);
+            }
         }
 
         if (!hits.isEmpty()) {
@@ -755,12 +768,6 @@ public class Utils {
 
     public static ItemStack setPotion(ItemStack itemStack, Holder<Potion> potion) {
         itemStack.set(DataComponents.POTION_CONTENTS, new PotionContents(potion));
-        return itemStack;
-    }
-
-    @Deprecated
-    public static ItemStack setPotion(ItemStack itemStack, Potion potion) {
-        itemStack.set(DataComponents.POTION_CONTENTS, new PotionContents(new Holder.Direct<>(potion)));
         return itemStack;
     }
 }

@@ -44,7 +44,7 @@ body:
         - Single Player
         - Dedicated Server
     validations:
-      required: true        
+      required: true
   - type: input
     id: crashlog
     attributes:
@@ -62,7 +62,7 @@ body:
     id: forge-version
     attributes:
       label: Forge version
-      placeholder: "example: 1.19.2 - 43.2.8"
+      placeholder: "example: Neoforge 1.19.2 - 43.2.8"
     validations:
       required: true
   - type: textarea
@@ -70,3 +70,9 @@ body:
     attributes:
       label: Other mods
       description: List any other mods present when the bug was encountered, include the mod versions
+  - type: checkboxes
+    attributes:
+      label: Crashlog Check
+      options:
+        - label: I understand if this is a crashbug and I did not attach a crashlog, this will not be handled
+          required: true

@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 
@@ -57,13 +58,21 @@ public class DamageTypeTagGenerator extends TagsProvider<DamageType> {
                 DamageTypes.OUTSIDE_BORDER,
                 DamageTypes.FELL_OUT_OF_WORLD,
                 DamageTypes.DRY_OUT,
-                ISSDamageTypes.CAULDRON);
+                DamageTypes.IN_WALL,
+                ISSDamageTypes.CAULDRON
+        );
+        tag(BYPASS_EVASION).addOptional(
+                NeoForgeMod.POISON_DAMAGE.location()
+        );
 
         tag(LONG_CAST_IGNORE).add(
                 DamageTypes.FREEZE,
                 DamageTypes.STARVE,
                 DamageTypes.ON_FIRE,
                 DamageTypes.WITHER
+        );
+        tag(LONG_CAST_IGNORE).addOptional(
+                NeoForgeMod.POISON_DAMAGE.location()
         );
     }
 }

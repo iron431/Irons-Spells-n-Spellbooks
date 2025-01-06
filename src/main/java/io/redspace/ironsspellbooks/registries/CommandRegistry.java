@@ -29,6 +29,7 @@ public class CommandRegistry {
         if (!FMLLoader.isProduction()) {
             ClearSpellSelectionCommand.register(commandDispatcher);
             IronsDebugCommand.register(commandDispatcher);
+            GenerateSiteData.register(commandDispatcher);
         }
     }
 }

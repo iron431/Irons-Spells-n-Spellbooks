@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.registries;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -65,6 +66,22 @@ public class ArmorMaterialRegistry {
             () -> Ingredient.of(Tags.Items.INGOTS_NETHERITE),
             3,
             0);
+
+    public static DeferredHolder<ArmorMaterial, ArmorMaterial> PALADIN = register("paladin",
+            schoolArmorMap(),
+            40,
+            SoundEvents.ARMOR_EQUIP_NETHERITE,
+            () -> Ingredient.of(ModTags.MITHRIL_INGOT),
+            4,
+            0.4f);
+
+    public static DeferredHolder<ArmorMaterial, ArmorMaterial> BOOTS_OF_SPEED = register("speed_boots",
+            schoolArmorMap(),
+            40,
+            SoundEvents.ARMOR_EQUIP_LEATHER,
+            () -> Ingredient.of(ModTags.MITHRIL_INGOT),
+            0,
+            0f);
 
     public static DeferredHolder<ArmorMaterial, ArmorMaterial> DEV = register("dev",
             makeArmorMap(20, 20, 20, 20),

@@ -106,7 +106,7 @@ public class TelekinesisSpell extends AbstractSpell {
     public void onServerCastTick(Level level, int spellLevel, LivingEntity entity, @Nullable MagicData playerMagicData) {
         super.onServerCastTick(level, spellLevel, entity, playerMagicData);
         if (playerMagicData != null && (playerMagicData.getCastDurationRemaining()) % 2 == 0) {
-            handleTelekinesis((ServerLevel) level, entity, playerMagicData, .3f);
+            handleTelekinesis((ServerLevel) level, entity, playerMagicData, .6f);
         }
     }
 
@@ -123,7 +123,7 @@ public class TelekinesisSpell extends AbstractSpell {
                 float actualDistance = entity.distanceTo(targetEntity);
                 float distance = Mth.lerp(actualDistance > lockedDistance ? .25f : .1f, lockedDistance, actualDistance);
                 targetData.setDistance(distance);
-                Vec3 force = (entity.getForward().normalize().scale(targetData.getDistance()).add(entity.position()).subtract(targetEntity.position())).scale(.15f * resistance * strength);
+                Vec3 force = (entity.getForward().normalize().scale(targetData.getDistance()).add(entity.position()).subtract(targetEntity.position())).scale(resistance * strength);
                 Vec3 travel = new Vec3(targetEntity.getX() - targetEntity.xOld, targetEntity.getY() - targetEntity.yOld, targetEntity.getZ() - targetEntity.zOld);
                 if (force.y > 0) {
                     targetEntity.resetFallDistance();
@@ -133,7 +133,15 @@ public class TelekinesisSpell extends AbstractSpell {
                     targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.AIRBORNE, 31, airborne));
                     targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.ANTIGRAVITY, 11, 0));
                 }
-                targetEntity.setDeltaMovement(targetEntity.getDeltaMovement().add(force));
+                var deltaMovement = targetEntity.getDeltaMovement();
+                var newMotion = force.subtract(deltaMovement).scale(0.25).add(deltaMovement);
+                var delta = newMotion.subtract(deltaMovement);
+                var clampedMotion = new Vec3(
+                        Utils.signedMin(delta.x, force.x * 4),
+                        Utils.signedMin(delta.y, force.y * 4),
+                        Utils.signedMin(delta.z, force.z * 4)
+                );
+                targetEntity.setDeltaMovement(deltaMovement.add(clampedMotion));
                 targetEntity.hurtMarked = true;
             }
         }

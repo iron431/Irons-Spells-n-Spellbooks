@@ -1,9 +1,9 @@
 package io.redspace.ironsspellbooks.player;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.attribute.IMagicAttribute;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
@@ -17,11 +17,10 @@ import io.redspace.ironsspellbooks.effect.AscensionEffect;
 import io.redspace.ironsspellbooks.effect.CustomDescriptionMobEffect;
 import io.redspace.ironsspellbooks.effect.guiding_bolt.GuidingBoltManager;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingMusicManager;
-import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
-import io.redspace.ironsspellbooks.item.weapons.IMultihandWeapon;
 import io.redspace.ironsspellbooks.network.casting.CancelCastPacket;
+import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
 import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
@@ -34,6 +33,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -47,10 +47,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
-import net.neoforged.neoforge.client.event.RenderLivingEvent;
-import net.neoforged.neoforge.client.event.ScreenEvent;
-import net.neoforged.neoforge.client.event.ViewportEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -58,9 +55,24 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class ClientPlayerEvents {
+
+    @SubscribeEvent
+    public static void onCalculatePlayerSpeed(MovementInputUpdateEvent event) {
+        if (ClientMagicData.isCasting()) {
+            float baseCastingSpeed = 0.2f;
+            //due to the way attribute modifiers work, using 0.2 as the base for the attribute means you need +500% movespeed to reach 1.0x movespeed.
+            //thus, we abstract the formula to make the values make sense to the player
+            //it takes +80% Casting Movespeed to reach maximum speed (zero penalty)
+            float castingSpeedModifier = (float) event.getEntity().getAttributeValue(AttributeRegistry.CASTING_MOVESPEED);
+            float speed = baseCastingSpeed + castingSpeedModifier - 1;
+            event.getInput().forwardImpulse *= speed;
+            event.getInput().leftImpulse *= speed;
+        }
+    }
 
     @SubscribeEvent
     public static void onPlayerLogOut(ClientPlayerNetworkEvent.LoggingOut event) {
@@ -190,7 +202,7 @@ public class ClientPlayerEvents {
             var lines = event.getToolTip();
             boolean advanced = event.getFlags().isAdvanced();
             // Active Spell Tooltip
-            if (stack.getItem() instanceof CastingItem) {
+            if (stack.has(ComponentRegistry.CASTING_IMPLEMENT)) {
                 handleCastingImplementTooltip(stack, player, lines, advanced);
             }
             // Imbued Spell Tooltip
@@ -207,57 +219,52 @@ public class ClientPlayerEvents {
 //                }
                 lines.add(1, Component.translatable("tooltip.irons_spellbooks.can_be_imbued_frame", Component.translatable("tooltip.irons_spellbooks.can_be_imbued_number", spellContainer.getActiveSpellCount(), spellContainer.getMaxSpellCount()).withStyle(ChatFormatting.YELLOW)).withStyle(ChatFormatting.GOLD));
             }
-            if (stack.getItem() instanceof IMultihandWeapon) {
-                if (ServerConfigs.APPLY_ALL_MULTIHAND_ATTRIBUTES.get()) {
-                    int i = TooltipsUtils.indexOfComponent(lines, "item.modifiers.mainhand");
-                    if (i >= 0) {
-                        lines.set(i, Component.translatable("tooltip.irons_spellbooks.modifiers.multihand").withStyle(lines.get(i).getStyle()));
-                    }
-                } else {
-                    int i = TooltipsUtils.indexOfComponent(lines, "item.modifiers.mainhand");
-                    if (i >= 0) {
-                        int endIndex = 0;
-                        List<Integer> linesToGrab = new ArrayList<>();
-                        for (int j = i; j < lines.size(); j++) {
-                            var contents = lines.get(j).getContents();
-                            if (contents instanceof TranslatableContents translatableContents) {
-                                //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip translatableContents {}/{} :{}", j, lines.size(), translatableContents.getKey());
-                                if (translatableContents.getKey().startsWith("attribute.modifier")) {
-                                    //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip attribute line: {} | args: {}", lines.get(j).getString(), translatableContents.getArgs());
-                                    endIndex = j;
-                                    for (Object arg : translatableContents.getArgs()) {
-                                        if (arg instanceof Component component && component.getContents() instanceof TranslatableContents translatableContents2) {
-                                            //IronsSpellbooks.LOGGER.debug("attribute.modifier arg translatable key: {} ({})", translatableContents2.getKey(), getAttributeForDescriptionId(translatableContents2.getKey()));
-                                            if (getAttributeForDescriptionId(translatableContents2.getKey()) instanceof IMagicAttribute) {
-                                                linesToGrab.add(j);
-                                            }
+            if (stack.has(ComponentRegistry.MULTIHAND_WEAPON)) {
+                Predicate<Holder<Attribute>> predicate = ServerConfigs.APPLY_ALL_MULTIHAND_ATTRIBUTES.get() ? Utils.NON_BASE_ATTRIBUTES : Utils.ONLY_MAGIC_ATTRIBUTES;
+                int i = TooltipsUtils.indexOfComponent(lines, "item.modifiers.mainhand");
+                if (i >= 0) {
+                    int endIndex = 0;
+                    List<Integer> linesToGrab = new ArrayList<>();
+                    for (int j = i; j < lines.size(); j++) {
+                        var contents = lines.get(j).getContents();
+                        if (contents instanceof TranslatableContents translatableContents) {
+                            //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip translatableContents {}/{} :{}", j, lines.size(), translatableContents.getKey());
+                            if (translatableContents.getKey().startsWith("attribute.modifier")) {
+                                //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip attribute line: {} | args: {}", lines.get(j).getString(), translatableContents.getArgs());
+                                endIndex = j;
+                                for (Object arg : translatableContents.getArgs()) {
+                                    if (arg instanceof Component component && component.getContents() instanceof TranslatableContents translatableContents2) {
+                                        //IronsSpellbooks.LOGGER.debug("attribute.modifier arg translatable key: {} ({})", translatableContents2.getKey(), getAttributeForDescriptionId(translatableContents2.getKey()));
+                                        var atr = getAttributeForDescriptionId(translatableContents2.getKey());
+                                        if (atr != null && predicate.test(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(atr))) {
+                                            linesToGrab.add(j);
                                         }
                                     }
-                                } else if (i != j && translatableContents.getKey().startsWith("item.modifiers")) {
-                                    break;
                                 }
-                            } else {
-                                //Based on the ItemStack tooltip code, the only attributes getting here should be the base UUID attributes
-                                for (Component line : lines.get(j).getSiblings()) {
-                                    if (line.getContents() instanceof TranslatableContents translatableContents) {
-                                        if (translatableContents.getKey().startsWith("attribute.modifier")) {
-                                            endIndex = j;
-                                        }
+                            } else if (i != j && translatableContents.getKey().startsWith("item.modifiers")) {
+                                break;
+                            }
+                        } else {
+                            //Based on the ItemStack tooltip code, the only attributes getting here should be the base UUID attributes
+                            for (Component line : lines.get(j).getSiblings()) {
+                                if (line.getContents() instanceof TranslatableContents translatableContents) {
+                                    if (translatableContents.getKey().startsWith("attribute.modifier")) {
+                                        endIndex = j;
                                     }
                                 }
                             }
                         }
-                        //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip: lines to grab: {}", linesToGrab);
-                        if (!linesToGrab.isEmpty()) {
-                            //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip: end index: {} ({})", endIndex, lines.get(endIndex));
-                            lines.add(++endIndex, Component.empty());
-                            lines.add(++endIndex, Component.translatable("tooltip.irons_spellbooks.modifiers.multihand").withStyle(lines.get(i).getStyle()));
-                            for (Integer index : linesToGrab) {
-                                lines.add(++endIndex, lines.get(index));
-                            }
-                            for (int j = linesToGrab.size() - 1; j >= 0; j--) {
-                                lines.remove((int) linesToGrab.get(j));
-                            }
+                    }
+                    //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip: lines to grab: {}", linesToGrab);
+                    if (!linesToGrab.isEmpty()) {
+                        //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip: end index: {} ({})", endIndex, lines.get(endIndex));
+                        lines.add(++endIndex, Component.empty());
+                        lines.add(++endIndex, Component.translatable("tooltip.irons_spellbooks.modifiers.multihand").withStyle(lines.get(i).getStyle()));
+                        for (Integer index : linesToGrab) {
+                            lines.add(++endIndex, lines.get(index));
+                        }
+                        for (int j = linesToGrab.size() - 1; j >= 0; j--) {
+                            lines.remove((int) linesToGrab.get(j));
                         }
                     }
                 }
@@ -284,9 +291,9 @@ public class ClientPlayerEvents {
     }
 
     private static void handleCastingImplementTooltip(ItemStack stack, LocalPlayer player, List<Component> lines, boolean advanced) {
-        var spellSlot = ClientMagicData.getSpellSelectionManager().getSelectedSpellData();
-        if (spellSlot != SpellData.EMPTY) {
-            var additionalLines = TooltipsUtils.formatActiveSpellTooltip(stack, spellSlot, CastSource.SWORD, player);
+        var spellSlot = ClientMagicData.getSpellSelectionManager().getSelection();
+        if (spellSlot != null && spellSlot.spellData != SpellData.EMPTY) {
+            var additionalLines = TooltipsUtils.formatActiveSpellTooltip(stack, spellSlot.spellData, spellSlot.getCastSource(), player);
             //Add header
             additionalLines.add(1, Component.translatable("tooltip.irons_spellbooks.casting_implement_tooltip").withStyle(ChatFormatting.GRAY));
             //Indent the title because we have an additional header

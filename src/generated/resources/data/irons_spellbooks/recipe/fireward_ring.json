@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "M": {
+      "item": "irons_spellbooks:cinder_essence"
+    },
+    "X": {
+      "item": "irons_spellbooks:mithril_scrap"
+    }
+  },
+  "pattern": [
+    " M ",
+    "MXM",
+    " M "
+  ],
+  "result": {
+    "count": 1,
+    "id": "irons_spellbooks:fireward_ring"
+  }
+}
