@@ -1,0 +1,78 @@
+{
+  "name": "irons_spellbooks:citadel_rampart_trophy_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:citadel/rampart/decoration/rampart/armor_piles",
+        "processors": "irons_spellbooks:citadel_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:citadel/rampart/decoration/rampart/barrels",
+        "processors": "irons_spellbooks:citadel_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:citadel/rampart/decoration/rampart/chest",
+        "processors": "irons_spellbooks:citadel_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 4,
+      "element": {
+        "location": "irons_spellbooks:citadel/rampart/decoration/rampart/brazier",
+        "processors": "irons_spellbooks:citadel_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:citadel/rampart/decoration/rampart/spawner",
+        "processors": "irons_spellbooks:citadel_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:citadel/rampart/decoration/rampart/empty",
+        "processors": "irons_spellbooks:citadel_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "location": "irons_spellbooks:citadel/rampart/decoration/rampart/rubble_1",
+        "processors": "irons_spellbooks:citadel_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "location": "irons_spellbooks:citadel/rampart/decoration/rampart/rubble_2",
+        "processors": "irons_spellbooks:citadel_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}
