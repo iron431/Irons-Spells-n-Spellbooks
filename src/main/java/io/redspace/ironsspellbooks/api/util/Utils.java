@@ -60,6 +60,7 @@ import net.minecraft.world.level.BlockCollisions;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.neoforged.neoforge.common.NeoForge;
@@ -364,7 +365,7 @@ public class Utils {
     }
 
     /**
-     * @return min(|A|, |B|) with sign of a
+     * @return min(| A |, | B |) with sign of a
      */
     public static double signedMin(double a, double b) {
         return (a < 0 ? -1 : 1) * Math.min(Math.abs(a), Math.abs(b));
@@ -420,6 +421,9 @@ public class Utils {
         CancelCastPacket.cancelCast(serverPlayer, triggerCooldown);
     }
 
+    /**
+     * Smoothsteps from a to b by percentage x
+     */
     public static float smoothstep(float a, float b, float x) {
         //6x^5 - 15x^4 + 10x^3
         x = 6 * (x * x * x * x * x) - 15 * (x * x * x * x) + 10 * (x * x * x);
@@ -761,6 +765,12 @@ public class Utils {
                 level.addFreshEntity(fallingblockentity2);
             }
         }
+    }
+
+    public static void createTremorBlockWithState(Level level, BlockState state, BlockPos blockPos, float impulseStrength) {
+        var fallingblockentity = new VisualFallingBlockEntity(level, blockPos.getX(), blockPos.getY(), blockPos.getZ(), state, 10);
+        fallingblockentity.setDeltaMovement(0, impulseStrength, 0);
+        level.addFreshEntity(fallingblockentity);
     }
 
     public static ItemStack setPotion(ItemStack itemStack, Holder<Potion> potion) {

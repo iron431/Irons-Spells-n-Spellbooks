@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "irons_spellbooks:block/grimy_tiles_03"
+  }
+}

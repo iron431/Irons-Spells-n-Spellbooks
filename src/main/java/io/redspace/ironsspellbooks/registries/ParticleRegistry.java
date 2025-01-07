@@ -91,4 +91,14 @@ public class ParticleRegistry {
         }
     });
     public static final Supplier<SimpleParticleType> CLEANSE_PARTICLE = PARTICLE_TYPES.register("cleanse", () -> new SimpleParticleType(false));
+    public static final Supplier<ParticleType<FlameStrikeParticleOptions>> FLAME_STRIKE_PARTICLE = PARTICLE_TYPES.register("flame_strike", () -> new ParticleType<>(true) {
+        public MapCodec<FlameStrikeParticleOptions> codec() {
+            return FlameStrikeParticleOptions.MAP_CODEC;
+        }
+        public StreamCodec<? super RegistryFriendlyByteBuf, FlameStrikeParticleOptions> streamCodec() {
+            return FlameStrikeParticleOptions.STREAM_CODEC;
+        }
+    });
+    public static final Supplier<SimpleParticleType> EMBEROUS_ASH_PARTICLE = PARTICLE_TYPES.register("emberous_ash", () -> new SimpleParticleType(false));
+
 }

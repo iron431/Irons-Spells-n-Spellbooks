@@ -643,5 +643,82 @@
     "sounds": [
       "irons_spellbooks:ice_spike_emerge"
     ]
+  },
+  "spell.fire_arrow.charge": {
+    "sounds": [
+      "irons_spellbooks:fire_arrow_charge"
+    ]
+  },
+  "spell.fire_arrow.cast": {
+    "sounds": [
+      "irons_spellbooks:fire_arrow_cast"
+    ]
+  },
+  "entity.fire_boss.stance_break": {
+    "sounds": [
+      "irons_spellbooks:fire_boss/fire_boss_stance_break"
+    ]
+  },
+  "entity.fire_eruption.slam": {
+    "sounds": [
+      "irons_spellbooks:fire_eruption_slam"
+    ]
+  },
+  "entity.fire_boss.hurt": {
+    "sounds": [
+      "irons_spellbooks:fire_boss/fire_boss_hurt"
+    ]
+  },
+  "entity.fire_boss.enter_soul": {
+    "sounds": [
+      "irons_spellbooks:fire_boss/fire_boss_enter_soul"
+    ]
+  },
+  "item.hellrazor.swing": {
+    "sounds": [
+      "irons_spellbooks:hellrazor_swing_1",
+      "irons_spellbooks:hellrazor_swing_2",
+      "irons_spellbooks:hellrazor_swing_3"
+    ]
+  },
+  "entity.fire_boss.death": {
+    "sounds": [
+      "irons_spellbooks:fire_boss/fire_boss_death"
+    ]
+  },
+  "entity.fire_boss.death_final": {
+    "sounds": [
+      "irons_spellbooks:fire_boss/fire_boss_death_final"
+    ]
+  },
+  "entity.fire_boss.summon_scythe": {
+    "sounds": [
+      "irons_spellbooks:fire_boss/fire_boss_summon_scythe"
+    ]
+  },
+  "spell.raise_hell.prepare": {
+    "sounds": [
+      "irons_spellbooks:raise_hell_prepare"
+    ]
+  },
+  "entity.fiery_dagger.throw": {
+    "sounds": [
+      "irons_spellbooks:fiery_dagger_throw"
+    ]
+  },
+  "entity.generic.fire_impact": {
+    "sounds": [
+      "irons_spellbooks:fire_impact"
+    ]
+  },
+  "item.cinderous_soulcaller.toll.success": {
+    "sounds": [
+      "irons_spellbooks:soulcaller_toll_success"
+    ]
+  },
+  "item.cinderous_soulcaller.toll.failure": {
+    "sounds": [
+      "irons_spellbooks:soulcaller_toll_failure"
+    ]
   }
 }

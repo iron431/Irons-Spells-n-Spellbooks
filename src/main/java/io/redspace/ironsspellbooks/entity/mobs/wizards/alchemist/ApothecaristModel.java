@@ -1,15 +1,17 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.alchemist;
 
+import com.google.common.collect.Streams;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobModel;
 import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.WalkAnimationState;
 import org.joml.Vector3f;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
+
+import java.util.stream.Stream;
 
 public class ApothecaristModel extends AbstractSpellCastingMobModel {
     public static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/apothecarist.png");
@@ -56,31 +58,8 @@ public class ApothecaristModel extends AbstractSpellCastingMobModel {
         }
         //Ear animations
         if (leftEar != null && rightEar != null) {
-            WalkAnimationState walkAnimationState = entity.walkAnimation;
-            float pLimbSwingAmount = 0.0F;
-            float pLimbSwing = 0.0F;
-            if (entity.isAlive()) {
-                pLimbSwingAmount = walkAnimationState.speed(partialTick);
-                pLimbSwing = walkAnimationState.position(partialTick);
-                if (entity.isBaby()) {
-                    pLimbSwing *= 3.0F;
-                }
-
-                if (pLimbSwingAmount > 1.0F) {
-                    pLimbSwingAmount = 1.0F;
-                }
-            }
-            float f = 1.0F;
-            if (entity.getFallFlyingTicks() > 4) {
-                f = (float) entity.getDeltaMovement().lengthSqr();
-                f /= 0.2F;
-                f *= f * f;
-            }
-
-            if (f < 1.0F) {
-                f = 1.0F;
-            }
-            float r = Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 2.0F * pLimbSwingAmount * 0.5F / f;
+            var walkanimation = this.getLimbSwing(entity, entity.walkAnimation, partialTick);
+            float r = Mth.cos(walkanimation.y * 0.6662F + (float) Math.PI) * 2.0F * walkanimation.x * 0.5F;
             r *= .3f;
             r += Mth.PI * .08f;
             transformStack.pushRotation(leftEar, 0, 0, -r);
@@ -88,5 +67,13 @@ public class ApothecaristModel extends AbstractSpellCastingMobModel {
 
         }
         super.setCustomAnimations(entity, instanceId, animationState);
+    }
+
+    @Override
+    protected Stream<GeoBone> getBonesForStackReset() {
+        return Streams.concat(Stream.of(
+                this.getAnimationProcessor().getBone("left_ear"),
+                this.getAnimationProcessor().getBone("right_ear")
+        ), super.getBonesForStackReset());
     }
 }

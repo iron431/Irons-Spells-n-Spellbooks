@@ -26,7 +26,41 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
     protected int duration = 600;
     protected int reapplicationDelay = 10;
     protected int durationOnUse;
+
+    public int getReapplicationDelay() {
+        return reapplicationDelay;
+    }
+
+    public int getDurationOnUse() {
+        return durationOnUse;
+    }
+
+    public float getRadiusOnUse() {
+        return radiusOnUse;
+    }
+
+    public float getRadiusPerTick() {
+        return radiusPerTick;
+    }
+
     protected float radiusOnUse;
+
+    public void setReapplicationDelay(int reapplicationDelay) {
+        this.reapplicationDelay = reapplicationDelay;
+    }
+
+    public void setDurationOnUse(int durationOnUse) {
+        this.durationOnUse = durationOnUse;
+    }
+
+    public void setRadiusOnUse(float radiusOnUse) {
+        this.radiusOnUse = radiusOnUse;
+    }
+
+    public void setRadiusPerTick(float radiusPerTick) {
+        this.radiusPerTick = radiusPerTick;
+    }
+
     protected float radiusPerTick;
     protected int effectDuration;
 
@@ -59,12 +93,11 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
     @Override
     public void tick() {
         super.tick();
-        if (tickCount > duration) {
-            //IronsSpellbooks.LOGGER.debug("AOEProjectile.discarding ({}/{})", tickCount, duration);
-            discard();
-            return;
-        }
         if (!level.isClientSide) {
+            if (tickCount > duration) {
+                discard();
+                return;
+            }
             if (tickCount % reapplicationDelay == 1) {
                 checkHits();
             }
@@ -111,7 +144,7 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
 
     @Override
     protected boolean canHitEntity(Entity pTarget) {
-        return (getOwner() != null && pTarget != getOwner() && !getOwner().isAlliedTo(pTarget)) && super.canHitEntity(pTarget);
+        return (getOwner() == null || (pTarget != getOwner() && !getOwner().isAlliedTo(pTarget))) && super.canHitEntity(pTarget);
     }
 
     /**
@@ -204,6 +237,10 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
         if (!this.level.isClientSide) {
             this.duration = duration;
         }
+    }
+
+    public int getDuration() {
+        return this.duration;
     }
 
     public void refreshDimensions() {

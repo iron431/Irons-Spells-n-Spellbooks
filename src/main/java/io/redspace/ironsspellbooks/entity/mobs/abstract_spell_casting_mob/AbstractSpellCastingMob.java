@@ -61,6 +61,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     protected AbstractSpellCastingMob(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         playerMagicData.setSyncedData(new SyncedSpellData(this));
+        this.noCulling = true;
         this.lookControl = createLookControl();
     }
 
@@ -162,14 +163,6 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     }
 
     @Override
-    public void tick() {
-        super.tick();
-        if (level.isClientSide) {
-            this.noCulling = this.isAnimating();
-        }
-    }
-
-    @Override
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
         playerMagicData.getSyncedData().saveNBTData(pCompound, level.registryAccess());
@@ -252,9 +245,9 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         if (recreateSpell) {
             recreateSpell = false;
             var syncedSpellData = playerMagicData.getSyncedData();
-            //var spell = SpellRegistry.getSpell(syncedSpellData.getCastingSpellId());
-            //this.initiateCastSpell(spell, syncedSpellData.getCastingSpellLevel());
-            setSyncedSpellData(syncedSpellData);
+            var spell = SpellRegistry.getSpell(syncedSpellData.getCastingSpellId());
+            this.initiateCastSpell(spell, syncedSpellData.getCastingSpellLevel());
+            //setSyncedSpellData(syncedSpellData);
         }
 
         if (isDrinkingPotion()) {
@@ -423,7 +416,6 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     private AbstractSpell instantCastSpellType = SpellRegistry.none();
     private boolean cancelCastAnimation = false;
     private boolean animatingLegs = false;
-    private final RawAnimation idle = RawAnimation.begin().thenLoop("blank");
     private final AnimationController animationControllerOtherCast = new AnimationController(this, "other_casting", 0, this::otherCastingPredicate);
     private final AnimationController animationControllerInstantCast = new AnimationController(this, "instant_casting", 0, this::instantCastingPredicate);
     private final AnimationController animationControllerLongCast = new AnimationController(this, "long_casting", 0, this::longCastingPredicate);
@@ -439,16 +431,16 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     }
 
     @Override
+    public double getBoneResetTime() {
+        return 5;
+    }
+
+    @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
         controllerRegistrar.add(animationControllerOtherCast);
         controllerRegistrar.add(animationControllerInstantCast);
         controllerRegistrar.add(animationControllerLongCast);
-        controllerRegistrar.add(new AnimationController(this, "idle", 0, this::idlePredicate));
-    }
-
-    private PlayState idlePredicate(AnimationState event) {
-        event.getController().setAnimation(idle);
-        return PlayState.STOP;
+        //controllerRegistrar.add(new AnimationController(this, "idle", 0, this::idlePredicate));
     }
 
     private PlayState instantCastingPredicate(AnimationState event) {
@@ -543,9 +535,9 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
 
     public boolean isAnimating() {
         return isCasting()
-                || (animationControllerLongCast.getAnimationState() != AnimationController.State.STOPPED)
-                || (animationControllerOtherCast.getAnimationState() != AnimationController.State.STOPPED)
-                || (animationControllerInstantCast.getAnimationState() != AnimationController.State.STOPPED);
+                || (animationControllerLongCast.getAnimationState() == AnimationController.State.RUNNING)
+                || (animationControllerOtherCast.getAnimationState() == AnimationController.State.RUNNING)
+                || (animationControllerInstantCast.getAnimationState() == AnimationController.State.RUNNING);
     }
 
     public boolean shouldBeExtraAnimated() {

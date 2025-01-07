@@ -1,0 +1,15 @@
+{
+    "variants": {
+        "": [
+            { "model": "irons_spellbooks:block/wisewood_bookshelf_01" },
+			{ "model": "irons_spellbooks:block/wisewood_bookshelf_02" },
+			{ "model": "irons_spellbooks:block/wisewood_bookshelf_03" },
+			{ "model": "irons_spellbooks:block/wisewood_bookshelf_04" },
+			{ "model": "irons_spellbooks:block/wisewood_bookshelf_05" },
+			{ "model": "irons_spellbooks:block/wisewood_bookshelf_06" },
+			{ "model": "irons_spellbooks:block/wisewood_bookshelf_07" },
+			{ "model": "irons_spellbooks:block/wisewood_bookshelf_08" },
+			{ "model": "irons_spellbooks:block/wisewood_bookshelf_09" }
+        ]
+    }
+}

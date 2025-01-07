@@ -27,6 +27,7 @@ public class ParticleHelper {
     public static final ParticleOptions FOG_THUNDER_LIGHT = new FogParticleOptions(new Vector3f(.5f, .5f, .5f), 1.5f);
     public static final ParticleOptions FOG_THUNDER_DARK = new FogParticleOptions(new Vector3f(.4f, .4f, .4f), 1.5f);
     public static final ParticleOptions POISON_CLOUD = new FogParticleOptions(new Vector3f(.08f, 0.64f, .16f), 1f);
+    public static final ParticleOptions FOG_CAMPFIRE_SMOKE = new FogParticleOptions(new Vector3f(138 / 255f, 130 / 255f, 125 / 255f), 1f);
     public static final ParticleOptions ICY_FOG = new FogParticleOptions(new Vector3f(208 / 255f, 249 / 255f, 255 / 255f), 0.6f);
     public static final ParticleOptions SUNBEAM = new FogParticleOptions(new Vector3f(0.95f, 0.97f, 0.36f), 1f);
     public static final ParticleOptions FIREFLY = ParticleRegistry.FIREFLY_PARTICLE.get();

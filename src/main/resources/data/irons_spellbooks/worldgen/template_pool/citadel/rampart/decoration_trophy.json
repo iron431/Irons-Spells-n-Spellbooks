@@ -1,0 +1,42 @@
+{
+  "name": "irons_spellbooks:citadel_rampart_trophy_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:citadel/rampart/decoration/trophy/chest",
+        "processors": "irons_spellbooks:citadel_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "location": "irons_spellbooks:citadel/rampart/decoration/trophy/brazier",
+        "processors": "irons_spellbooks:citadel_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "location": "irons_spellbooks:citadel/rampart/decoration/trophy/spawner",
+        "processors": "irons_spellbooks:citadel_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:citadel/rampart/decoration/trophy/empty",
+        "processors": "irons_spellbooks:citadel_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

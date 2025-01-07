@@ -9,6 +9,9 @@
     "irons_spellbooks:deepslate_mithril_ore",
     "irons_spellbooks:armor_pile",
     "irons_spellbooks:alchemist_cauldron",
-    "irons_spellbooks:portal_frame"
+    "irons_spellbooks:portal_frame",
+    "irons_spellbooks:nether_brick_pillar",
+    "irons_spellbooks:brazier",
+    "irons_spellbooks:brazier_soul"
   ]
 }

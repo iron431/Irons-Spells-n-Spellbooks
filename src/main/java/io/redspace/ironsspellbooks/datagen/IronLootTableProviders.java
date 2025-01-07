@@ -35,6 +35,11 @@ public class IronLootTableProviders {
             this.add(BlockRegistry.MITHRIL_ORE.get(), p_249875_ -> this.createOreDrop(p_249875_, ItemRegistry.RAW_MITHRIL.get()));
             this.add(BlockRegistry.MITHRIL_ORE_DEEPSLATE.get(), p_249875_ -> this.createOreDrop(p_249875_, ItemRegistry.RAW_MITHRIL.get()));
             this.add(BlockRegistry.PORTAL_FRAME.get(), p_249875_ -> this.createSingleItemTable(ItemRegistry.PORTAL_FRAME_ITEM.get()));
+            this.add(BlockRegistry.WISEWOOD_BOOKSHELF.get(), p_249875_ -> this.createSingleItemTable(ItemRegistry.WISEWOOD_BOOKSHELF_BLOCK_ITEM.get()));
+            this.add(BlockRegistry.WISEWOOD_CHISELLED_BOOKSHELF.get(), p_249875_ -> this.createSingleItemTable(ItemRegistry.WISEWOOD_CHISELED_BOOKSHELF_BLOCK_ITEM.get()));
+            this.add(BlockRegistry.BRAZIER_FIRE.get(), p_249875_ -> this.createSingleItemTable(ItemRegistry.BRAZIER_ITEM.get()));
+            this.add(BlockRegistry.BRAZIER_SOUL.get(), p_249875_ -> this.createSingleItemTable(ItemRegistry.SOUL_BRAZIER_ITEM.get()));
+            this.add(BlockRegistry.NETHER_BRICK_PILLAR.get(), p_249875_ -> this.createSingleItemTable(ItemRegistry.NETHER_BRICK_PILLAR_BLOCK_ITEM.get()));
         }
 
         @Override

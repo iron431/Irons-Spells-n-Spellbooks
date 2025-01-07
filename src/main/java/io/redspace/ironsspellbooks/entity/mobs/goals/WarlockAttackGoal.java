@@ -10,7 +10,6 @@ import java.util.List;
 
 public class WarlockAttackGoal extends WizardAttackGoal {
 
-    protected float meleeRange;
     protected boolean wantsToMelee;
     protected int meleeTime;
     protected int meleeDecisionTime;
@@ -19,9 +18,9 @@ public class WarlockAttackGoal extends WizardAttackGoal {
     protected float meleeMoveSpeedModifier;
     protected int meleeAttackIntervalMin;
     protected int meleeAttackIntervalMax;
-    public WarlockAttackGoal(IMagicEntity abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval, float meleeRange) {
+
+    public WarlockAttackGoal(IMagicEntity abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval) {
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);
-        this.meleeRange = meleeRange;
         this.meleeDecisionTime = mob.getRandom().nextIntBetweenInclusive(80, 200);
         this.meleeBiasMin = .25f;
         this.meleeBiasMax = .75f;
@@ -41,6 +40,10 @@ public class WarlockAttackGoal extends WizardAttackGoal {
         }
     }
 
+    public float meleeRange() {
+        return (float) (mob.getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE) * mob.getScale());
+    }
+
     protected float meleeBias() {
         return Mth.clampedLerp(meleeBiasMin, meleeBiasMax, mob.getHealth() / mob.getMaxHealth());
     }
@@ -54,18 +57,18 @@ public class WarlockAttackGoal extends WizardAttackGoal {
         if (target.isDeadOrDying()) {
             this.mob.getNavigation().stop();
         } else {
+            var meleeRange = meleeRange();
             mob.lookAt(target, 30, 30);
-            float strafeForwards = 0;
+            float strafeForwards;
             float speed = (float) movementSpeed();
             if (distanceSquared > meleeRange * meleeRange) {
+                mob.setXxa(0); // manually override strafe control before we set navigation
                 if (mob.tickCount % 5 == 0) {
                     this.mob.getNavigation().moveTo(this.target, meleeMoveSpeedModifier);
                 }
-                //move control is for localized and simple maneuvers. Navigation is for pathfinding.
-                mob.getMoveControl().strafe(0, 0);
             } else {
                 this.mob.getNavigation().stop();
-                strafeForwards = .25f * meleeMoveSpeedModifier * (4 * distanceSquared > meleeRange * meleeRange ? 1.5f : -1);
+                strafeForwards = .5f * meleeMoveSpeedModifier * (4 * distanceSquared > meleeRange * meleeRange ? 1.5f : -1);
                 //we do a little strafing
                 if (++strafeTime > 25) {
                     if (mob.getRandom().nextDouble() < .1) {
@@ -77,15 +80,17 @@ public class WarlockAttackGoal extends WizardAttackGoal {
                 mob.getMoveControl().strafe(strafeForwards, speed * strafeDir);
             }
             //helps with head alignment? for some reason mobs just cannot align their head and body and target for their fucking life
+            //update: that is due to pathfinding only working for 45 degree angles, meaning mobs must staircase their diagonal movement without manual intervention (see NotIdioticGroundNavigation)
             mob.getLookControl().setLookAt(target);
         }
     }
 
     @Override
     protected void handleAttackLogic(double distanceSquared) {
+        var meleeRange = meleeRange();
         if (!wantsToMelee || distanceSquared > meleeRange * meleeRange || spellCastingMob.isCasting()) {
             super.handleAttackLogic(distanceSquared);
-        } else if (--this.attackTime == 0) {
+        } else if (--this.attackTime <= 0) {
             this.mob.swing(InteractionHand.MAIN_HAND);
             doMeleeAction();
         }
@@ -137,16 +142,18 @@ public class WarlockAttackGoal extends WizardAttackGoal {
 
     @Override
     protected double movementSpeed() {
+        //fixme: move control already reads speed attribute, we should not be basing speed modifier based on it as well
         return wantsToMelee ? meleeMoveSpeedModifier * mob.getAttributeValue(Attributes.MOVEMENT_SPEED) * 2 : super.movementSpeed();
     }
 
     @Override
     protected void resetAttackTimer(double distanceSquared) {
-        if (!wantsToMelee || distanceSquared > meleeRange * meleeRange || spellCastingMob.isCasting()) {
+        var meleeRange = meleeRange();
+        if (!wantsToMelee || distanceSquared > meleeRange * meleeRange * 2 * 2 || spellCastingMob.isCasting()) {
             super.resetAttackTimer(distanceSquared);
         } else {
             float f = (float) Math.sqrt(distanceSquared) / this.attackRadius;
-            this.attackTime = Mth.floor(f * (float) (this.meleeAttackIntervalMax - this.meleeAttackIntervalMin) + (float) this.meleeAttackIntervalMin);
+            this.attackTime = Math.max(1, Mth.floor(f * (float) (this.meleeAttackIntervalMax - this.meleeAttackIntervalMin) + (float) this.meleeAttackIntervalMin));
         }
     }
 }

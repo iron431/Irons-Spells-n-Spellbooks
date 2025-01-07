@@ -146,9 +146,7 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
                 poseStack.translate(0, 0, -0.0625);
                 poseStack.translate(0, -0.0625, 0);
                 boolean offhand = stack == animatable.getOffhandItem();
-//                if (stack.getItem() instanceof PotionItem) {
-//                    poseStack.mulPose(Axis.XP.rotationDegrees(-90f));
-//                }
+
                 if (!offhand) {
                     poseStack.mulPose(Axis.XP.rotationDegrees(-90f));
 
@@ -168,7 +166,6 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
                         poseStack.translate(animatable.isLeftHanded() ? hipOffset : -hipOffset, 0, -.4);
 
                         poseStack.mulPose(Axis.XP.rotationDegrees(215f));
-                        //poseStack.mulPose(Axis.ZP.rotationDegrees(180));
                         poseStack.scale(.85f, .85f, .85f);
                     }
                 }

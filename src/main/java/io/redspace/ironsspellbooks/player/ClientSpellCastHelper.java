@@ -92,6 +92,19 @@ public class ClientSpellCastHelper {
         }
     }
 
+    public static void handleClientboundFlamethrowerParticles(Vec3 pos, Vec3 dir) {
+        if (Minecraft.getInstance().player == null)
+            return;
+        var level = Minecraft.getInstance().player.level;
+        int particleCount = dir.lengthSqr() < 0.25 ? 3 : 5;
+        for (int i = 0; i < particleCount; i++) {
+            Vec3 spread = Utils.getRandomVec3(0.025);
+            Vec3 traverse = dir.scale(Utils.random.nextFloat()).add(pos);
+            Vec3 motion = dir.scale(Utils.random.nextIntBetweenInclusive(8, 11) * .08f).add(spread);
+            level.addParticle(ParticleHelper.FIRE_EMITTER, traverse.x, traverse.y, traverse.z, motion.x, motion.y, motion.z);
+        }
+    }
+
     public static void handleClientboundShockwaveParticle(Vec3 pos, float radius, ParticleType<?> particleType) {
         if (Minecraft.getInstance().player == null || !(particleType instanceof ParticleOptions)) {
             return;
@@ -182,35 +195,6 @@ public class ClientSpellCastHelper {
                         Math.random() - .5
                 ).scale(.1);
                 level.addParticle(ParticleHelper.WISP, pos.x + offset.x, 1 + pos.y + offset.y, pos.z + offset.z, motion.x, motion.y, motion.z);
-            }
-        }
-    }
-
-    /**
-     * Animation Helper
-     */
-    private static void animatePlayerStart(Player player, ResourceLocation resourceLocation) {
-        var rawanimation = PlayerAnimationRegistry.getAnimation(resourceLocation);
-        if (rawanimation instanceof KeyframeAnimation keyframeAnimation) {
-            //noinspection unchecked
-            var playerAnimationData = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(SpellAnimations.ANIMATION_RESOURCE);
-            if (playerAnimationData != null) {
-                var animation = new KeyframeAnimationPlayer(keyframeAnimation) {
-                    @Override
-                    public void stop() {
-                        playerAnimationData.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(4, Ease.INOUTSINE), null, false);
-                        IronsAdjustmentModifier.INSTANCE.fadeOut(5);
-                    }
-                };
-                var armsFlag = SHOW_FIRST_PERSON_ARMS.get();
-                var itemsFlag = SHOW_FIRST_PERSON_ITEMS.get();
-                if (armsFlag || itemsFlag) {
-                    animation.setFirstPersonMode(FirstPersonMode.THIRD_PERSON_MODEL);
-                    animation.setFirstPersonConfiguration(new FirstPersonConfiguration(armsFlag, armsFlag, itemsFlag, itemsFlag));
-                } else {
-                    animation.setFirstPersonMode(FirstPersonMode.DISABLED);
-                }
-                playerAnimationData.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(2, Ease.INOUTSINE), animation, true);
             }
         }
     }
@@ -320,6 +304,43 @@ public class ClientSpellCastHelper {
 
         if (castingEntityId.equals(Minecraft.getInstance().player.getUUID()) && ClientInputEvents.isUseKeyDown) {
             ClientInputEvents.hasReleasedSinceCasting = false;
+        }
+    }
+
+    /**
+     * Animation Helper
+     */
+    private static void animatePlayerStart(Player player, ResourceLocation resourceLocation) {
+        var rawanimation = PlayerAnimationRegistry.getAnimation(resourceLocation);
+        if (rawanimation instanceof KeyframeAnimation keyframeAnimation) {
+            //noinspection unchecked
+            var playerAnimationData = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(SpellAnimations.ANIMATION_RESOURCE);
+            if (playerAnimationData != null) {
+                var animation = new KeyframeAnimationPlayer(keyframeAnimation) {
+//                    @Override
+//                    public void stop() {
+//                        playerAnimationData.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(2, Ease.INOUTSINE), null, false);
+//                        IronsAdjustmentModifier.INSTANCE.fadeOut(3);
+//                    }
+
+                    @Override
+                    public void tick() {
+                        if (getCurrentTick() == getStopTick() - 2) {
+                            IronsAdjustmentModifier.INSTANCE.fadeOut(3);
+                        }
+                        super.tick();
+                    }
+                };
+                var armsFlag = SHOW_FIRST_PERSON_ARMS.get();
+                var itemsFlag = SHOW_FIRST_PERSON_ITEMS.get();
+                if (armsFlag || itemsFlag) {
+                    animation.setFirstPersonMode(FirstPersonMode.THIRD_PERSON_MODEL);
+                    animation.setFirstPersonConfiguration(new FirstPersonConfiguration(armsFlag, armsFlag, itemsFlag, itemsFlag));
+                } else {
+                    animation.setFirstPersonMode(FirstPersonMode.DISABLED);
+                }
+                playerAnimationData.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(2, Ease.INOUTSINE), animation, true);
+            }
         }
     }
 }

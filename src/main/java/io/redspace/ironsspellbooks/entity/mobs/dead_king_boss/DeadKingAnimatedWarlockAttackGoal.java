@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WarlockAttackGoal;
 import io.redspace.ironsspellbooks.network.SyncAnimationPacket;
@@ -16,8 +17,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     final DeadKingBoss deadKing;
 
-    public DeadKingAnimatedWarlockAttackGoal(DeadKingBoss abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval, float meleeRange) {
-        super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval, meleeRange);
+    public DeadKingAnimatedWarlockAttackGoal(DeadKingBoss abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval) {
+        super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);
         deadKing = abstractSpellCastingMob;
         nextAttack = randomizeNextAttack(0);
         this.wantsToMelee = true;
@@ -29,7 +30,13 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     public DeadKingBoss.AttackType queueCombo;
 
     @Override
+    public boolean isActing() {
+        return super.isActing() || meleeAnimTimer > 0;
+    }
+
+    @Override
     protected void handleAttackLogic(double distanceSquared) {
+        var meleeRange = meleeRange();
         if (meleeAnimTimer < 0 && (!wantsToMelee || distanceSquared > meleeRange * meleeRange || spellCastingMob.isCasting())) {
             super.handleAttackLogic(distanceSquared);
             return;
@@ -66,7 +73,7 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
                         }
                     });
                 } else {
-                    if (distanceSquared <= meleeRange * meleeRange) {
+                    if (distanceSquared <= meleeRange * meleeRange && Utils.hasLineOfSight(mob.level, mob, target, true)) {
                         boolean flag = this.mob.doHurtTarget(target);
                         target.invulnerableTime = 0;
                         if (flag) {
@@ -91,7 +98,7 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
         } else {
             //Handling attack delay
             if (distanceSquared < meleeRange * meleeRange * 1.2 * 1.2) {
-                if (--this.attackTime == 0) {
+                if (hasLineOfSight && --this.attackTime == 0) {
                     doMeleeAction();
                 } else if (this.attackTime < 0) {
                     resetAttackTimer(distanceSquared);
@@ -129,6 +136,7 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
 
     @Override
     protected void doMovement(double distanceSquared) {
+        var meleeRange = meleeRange();
         if (target.isDeadOrDying()) {
             this.mob.getNavigation().stop();
         } else if (distanceSquared > meleeRange * meleeRange) {

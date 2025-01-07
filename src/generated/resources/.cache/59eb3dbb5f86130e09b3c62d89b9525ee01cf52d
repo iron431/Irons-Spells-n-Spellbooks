@@ -1,4 +1,9 @@
-// 1.21	2024-09-24T11:23:19.2648764	Loot Tables
+// 1.21	2024-12-31T23:08:50.6399541	Loot Tables
+2295f61a2bb8c434a09b1cc90c50ad6e9ed5392c data/irons_spellbooks/loot_table/blocks/brazier.json
+5945fe22fbe7f4dfb41c528e5c3c5179c7e3baf5 data/irons_spellbooks/loot_table/blocks/brazier_soul.json
 422fa2b11748fc7edc4c172103423dff35d20964 data/irons_spellbooks/loot_table/blocks/deepslate_mithril_ore.json
 b20768ceea204b8e455440cb543df7653bbee629 data/irons_spellbooks/loot_table/blocks/mithril_ore.json
+576e77283e197c3251fe003abc10af7a9843cf67 data/irons_spellbooks/loot_table/blocks/nether_brick_pillar.json
 9bf8698563fef54ae90f7fcde094ce570bf8be51 data/irons_spellbooks/loot_table/blocks/portal_frame.json
+0964ff405ff730ad2f46d2fa5554cf60c06941a6 data/irons_spellbooks/loot_table/blocks/wisewood_bookshelf.json
+83844dec9de67e47b46b6b543a4dd5b85d8afb02 data/irons_spellbooks/loot_table/blocks/wisewood_chiseled_bookshelf.json

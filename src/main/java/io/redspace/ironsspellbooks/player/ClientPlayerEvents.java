@@ -26,6 +26,7 @@ import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
 import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
 import io.redspace.ironsspellbooks.spells.ender.RecallSpell;
 import io.redspace.ironsspellbooks.spells.fire.BurningDashSpell;
+import io.redspace.ironsspellbooks.spells.fire.RaiseHellSpell;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
@@ -137,6 +138,8 @@ public class ClientPlayerEvents {
                             }
                         } else if (spellData.getCastingSpellId().equals(SpellRegistry.RECALL_SPELL.get().getSpellId())) {
                             RecallSpell.ambientParticles(livingEntity, spellData);
+                        } else if (spellData.getCastingSpellId().equals(SpellRegistry.RAISE_HELL_SPELL.get().getSpellId())) {
+                            RaiseHellSpell.ambientParticles(livingEntity, spellData);
                         }
                     }
                 });

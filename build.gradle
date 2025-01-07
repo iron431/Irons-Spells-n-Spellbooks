@@ -94,8 +94,8 @@ dependencies {
     // If you want to run with tetra in dev comment the above line and uncomment the following 2 lines
 //    localRuntime "curse.maven:tetra-${tetra_version}"
 //    localRuntime "se.mickelus.mutil:mutil:${mutil_version}"
-    localRuntime "curse.maven:better-combat-by-daedelus-639842:5723092"
-    localRuntime "curse.maven:cloth-config-348521:5623420"
+//    localRuntime "curse.maven:better-combat-by-daedelus-639842:5723092"
+//    localRuntime "curse.maven:cloth-config-348521:5623420"
 
     // JEI ********************************************************************************************************
     compileOnly "mezz.jei:jei-${jei_mc_version}-common-api:${jei_version}"
@@ -120,8 +120,8 @@ dependencies {
     compileOnly "curse.maven:apotheosis-${apotheosis_version}"
     compileOnly "curse.maven:apothic-attributes-898963:5597608"
 
-    localRuntime "curse.maven:placebo-${placebo_version}"
-    localRuntime "curse.maven:apothic-attributes-898963:5597608"
+//    localRuntime "curse.maven:placebo-${placebo_version}"
+//    localRuntime "curse.maven:apothic-attributes-898963:5597608"
 //    implementation "curse.maven:irons-jewelry-1101111:5943490"
 //    implementation "curse.maven:atlas-api-1145462:5940096"
 

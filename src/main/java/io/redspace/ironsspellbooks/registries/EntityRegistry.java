@@ -13,6 +13,7 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.alchemist.ApothecaristEnt
 import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cultist.CultistEntity;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.FireBossEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.priest.PriestEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import io.redspace.ironsspellbooks.entity.spells.*;
@@ -29,12 +30,13 @@ import io.redspace.ironsspellbooks.entity.spells.dragon_breath.DragonBreathPool;
 import io.redspace.ironsspellbooks.entity.spells.dragon_breath.DragonBreathProjectile;
 import io.redspace.ironsspellbooks.entity.spells.eldritch_blast.EldritchBlastVisualEntity;
 import io.redspace.ironsspellbooks.entity.spells.electrocute.ElectrocuteProjectile;
+import io.redspace.ironsspellbooks.entity.spells.fiery_dagger.FieryDaggerEntity;
+import io.redspace.ironsspellbooks.entity.spells.fire_arrow.FireArrowProjectile;
 import io.redspace.ironsspellbooks.entity.spells.fire_breath.FireBreathProjectile;
 import io.redspace.ironsspellbooks.entity.spells.fireball.MagicFireball;
 import io.redspace.ironsspellbooks.entity.spells.fireball.SmallMagicFireball;
 import io.redspace.ironsspellbooks.entity.spells.firebolt.FireboltProjectile;
 import io.redspace.ironsspellbooks.entity.spells.firefly_swarm.FireflySwarmProjectile;
-import io.redspace.ironsspellbooks.entity.spells.flame_strike.FlameStrike;
 import io.redspace.ironsspellbooks.entity.spells.guiding_bolt.GuidingBoltProjectile;
 import io.redspace.ironsspellbooks.entity.spells.gust.GustCollider;
 import io.redspace.ironsspellbooks.entity.spells.ice_block.IceBlockProjectile;
@@ -286,7 +288,15 @@ public class EntityRegistry {
             ENTITIES.register("citadel_keeper", () -> EntityType.Builder.<KeeperEntity>of(KeeperEntity::new, MobCategory.MONSTER)
                     .sized(.85f, 2.3f)
                     .clientTrackingRange(64)
+                    .eyeHeight(2.3f)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "citadel_keeper").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<FireBossEntity>> FIRE_BOSS =
+            ENTITIES.register("fire_boss", () -> EntityType.Builder.<FireBossEntity>of(FireBossEntity::new, MobCategory.MONSTER)
+                    .sized(.85f, 2.1f)
+                    .clientTrackingRange(64)
+                    .fireImmune()
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "fire_boss").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<VoidTentacle>> SCULK_TENTACLE =
             ENTITIES.register("sculk_tentacle", () -> EntityType.Builder.<VoidTentacle>of(VoidTentacle::new, MobCategory.MISC)
@@ -458,12 +468,6 @@ public class EntityRegistry {
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "firefly_swarm").toString()));
 
-    public static final DeferredHolder<EntityType<?>, EntityType<FlameStrike>> FLAME_STRIKE =
-            ENTITIES.register("flame_strike", () -> EntityType.Builder.<FlameStrike>of(FlameStrike::new, MobCategory.MISC)
-                    .sized(5f, 1f)
-                    .clientTrackingRange(64)
-                    .build(new ResourceLocation(IronsSpellbooks.MODID, "flame_strike").toString()));
-
     public static final DeferredHolder<EntityType<?>, EntityType<ArrowVolleyEntity>> ARROW_VOLLEY_ENTITY =
             ENTITIES.register("arrow_volley", () -> EntityType.Builder.<ArrowVolleyEntity>of(ArrowVolleyEntity::new, MobCategory.MISC)
                     .sized(1f, 1f)
@@ -517,6 +521,24 @@ public class EntityRegistry {
                     .sized(1f, 2f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "ice_spike").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<FireArrowProjectile>> FIRE_ARROW_PROJECTILE =
+            ENTITIES.register("fire_arrow", () -> EntityType.Builder.<FireArrowProjectile>of(FireArrowProjectile::new, MobCategory.MISC)
+                    .sized(.8f, .8f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "fire_arrow").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<FireEruptionAoe>> FIRE_ERUPTION_AOE =
+            ENTITIES.register("fire_eruption", () -> EntityType.Builder.<FireEruptionAoe>of(FireEruptionAoe::new, MobCategory.MISC)
+                    .sized(4f, .8f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "fire_eruption").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<FieryDaggerEntity>> FIERY_DAGGER_PROJECTILE =
+            ENTITIES.register("fiery_dagger", () -> EntityType.Builder.<FieryDaggerEntity>of(FieryDaggerEntity::new, MobCategory.MISC)
+                    .sized(.5f, .5f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "fiery_dagger").toString()));
 
 }
 
