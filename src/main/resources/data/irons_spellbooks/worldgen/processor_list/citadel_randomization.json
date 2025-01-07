@@ -8,7 +8,7 @@
     },
     {
       "processor_type": "irons_spellbooks:handle_lit_blocks",
-      "chanceLit": 0.15
+      "chanceLit": 0.65
     },
     {
       "processor_type": "minecraft:rule",
