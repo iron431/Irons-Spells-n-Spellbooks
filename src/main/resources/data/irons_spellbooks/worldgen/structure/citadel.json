@@ -43,7 +43,7 @@
     "absolute": 33
   },
   "start_pool": "irons_spellbooks:citadel/start_pool",
-  "step": "underground_decoration",
+  "step": "top_layer_modification",
   "terrain_adaptation": "beard_box",
   "use_expansion_hack": false
 }
