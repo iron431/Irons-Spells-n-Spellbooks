@@ -3,7 +3,7 @@
   "fallback": "minecraft:empty",
   "elements": [
     {
-      "weight": 3,
+      "weight": 4,
       "element": {
         "location": "irons_spellbooks:citadel/rampart/decoration/rampart/armor_piles",
         "processors": "irons_spellbooks:citadel_randomization",
@@ -30,7 +30,7 @@
       }
     },
     {
-      "weight": 5,
+      "weight": 6,
       "element": {
         "location": "irons_spellbooks:citadel/rampart/decoration/rampart/brazier",
         "processors": "irons_spellbooks:citadel_randomization",
@@ -39,7 +39,7 @@
       }
     },
     {
-      "weight": 2,
+      "weight": 3,
       "element": {
         "location": "irons_spellbooks:citadel/rampart/decoration/rampart/spawner",
         "processors": "irons_spellbooks:citadel_randomization",
@@ -48,7 +48,7 @@
       }
     },
     {
-      "weight": 3,
+      "weight": 4,
       "element": {
         "location": "irons_spellbooks:citadel/rampart/decoration/rampart/empty",
         "processors": "irons_spellbooks:citadel_randomization",

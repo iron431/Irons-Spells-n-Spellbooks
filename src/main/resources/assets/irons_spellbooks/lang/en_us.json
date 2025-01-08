@@ -239,6 +239,7 @@
   "item.irons_spellbooks.cinderous_soulcaller": "Cinderous Soulcaller",
   "item.irons_spellbooks.cinderous_soulcaller.failure.no_soul": "Nothing echoes back...",
   "item.irons_spellbooks.cinderous_soulcaller.failure.in_progress": "An echo has already answered.",
+  "item.irons_spellbooks.decrepit_key": "Decrepit Key",
 
   "block.irons_spellbooks.inscription_table": "Inscription Table",
   "block.irons_spellbooks.scroll_forge": "Scroll Forge",

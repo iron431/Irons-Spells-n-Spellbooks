@@ -177,6 +177,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.ENERGIZED_CORE.get());
                 entries.accept(ItemRegistry.FURLED_MAP.get());
 
+                entries.accept(ItemRegistry.DECREPIT_KEY.get());
                 entries.accept(ItemRegistry.CINDEROUS_SOULCALLER.get());
 
                 entries.accept(ItemRegistry.BLANK_RUNE.get());
