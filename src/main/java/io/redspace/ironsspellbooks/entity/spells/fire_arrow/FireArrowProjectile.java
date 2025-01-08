@@ -63,7 +63,7 @@ public class FireArrowProjectile extends AbstractMagicProjectile {
             var x = Mth.lerp(f, d0, this.getX() + vec3.x);
             var y = Mth.lerp(f, d1, this.getY() + vec3.y) - .4;
             var z = Mth.lerp(f, d2, this.getZ() + vec3.z);
-            this.level.addParticle(ParticleHelper.FIRE_EMITTER, true,x - random.x, y + 0.5D - random.y, z - random.z, random.x * .5f, random.y * .5f, random.z * .5f);
+            this.level.addParticle(ParticleHelper.FIRE, true,x - random.x, y + 0.5D - random.y, z - random.z, random.x * .5f, random.y * .5f, random.z * .5f);
         }
     }
 

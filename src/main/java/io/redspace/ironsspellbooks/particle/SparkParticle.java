@@ -3,12 +3,16 @@ package io.redspace.ironsspellbooks.particle;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 public class SparkParticle extends TextureSheetParticle {
+    float targetR, targetG, targetB;
+    int colorTime;
+
     public SparkParticle(SparkParticleOptions options, ClientLevel level, double xCoord, double yCoord, double zCoord, double xd, double yd, double zd) {
         super(level, xCoord, yCoord, zCoord, xd, yd, zd);
         this.scale(this.random.nextFloat() * .65f + .4f);
@@ -16,10 +20,12 @@ public class SparkParticle extends TextureSheetParticle {
         this.gravity = 1.3F;
         this.friction = .985f;
         this.quadSize = .0625f;
-        this.rCol = options.color.x() * (.9f + this.random.nextFloat() * 0.1f);
-        this.gCol = options.color.y() * (.9f + this.random.nextFloat() * 0.1f);
-        this.bCol = options.color.z() * (.9f + this.random.nextFloat() * 0.1f);
+        this.targetR = options.color.x() * (.9f + this.random.nextFloat() * 0.1f);
+        this.targetG = options.color.y() * (.9f + this.random.nextFloat() * 0.1f);
+        this.targetB = options.color.z() * (.9f + this.random.nextFloat() * 0.1f);
         bounciness = .6f + this.random.nextFloat() * .2f;
+        this.colorTime = 5 + (int) (Math.random() * 20);
+
         this.xd = xd;
         this.yd = yd;
         this.zd = zd;
@@ -30,10 +36,14 @@ public class SparkParticle extends TextureSheetParticle {
 
     @Override
     public void tick() {
-        if (!touchedGround && lifetime < 80) {
+        if (!touchedGround && lifetime < 30) {
             //try to let sparks bounce at least once
             lifetime++;
         }
+        float f = Mth.clamp(this.age / (float) this.colorTime, 0, 1);
+        this.rCol = Mth.lerp(f, 1, targetR);
+        this.gCol = Mth.lerp(f, 1, targetG);
+        this.bCol = Mth.lerp(f, 1, targetB);
         if (this.onGround) {
             touchedGround = true;
             this.yd *= -bounciness;
@@ -48,7 +58,7 @@ public class SparkParticle extends TextureSheetParticle {
 
     @Override
     public ParticleRenderType getRenderType() {
-        return ZapParticle.PARTICLE_EMISSIVE;
+        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
     @OnlyIn(Dist.CLIENT)

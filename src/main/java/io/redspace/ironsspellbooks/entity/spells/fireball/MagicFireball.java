@@ -47,13 +47,13 @@ public class MagicFireball extends AbstractMagicProjectile {
         double d2 = this.getZ() - vec3.z;
         var count = Mth.clamp((int) (vec3.lengthSqr() * 4), 1, 4);
         for (int i = 0; i < count; i++) {
-            Vec3 random = Utils.getRandomVec3(.25);
+            Vec3 motion = Utils.getRandomVec3(0.7).add(vec3.normalize()).scale(0.25);
+            Vec3 random = Utils.getRandomVec3(getBbHeight() * .2f);
             var f = i / ((float) count);
-            var x = Mth.lerp(f, d0, this.getX());
-            var y = Mth.lerp(f, d1, this.getY());
-            var z = Mth.lerp(f, d2, this.getZ());
-            this.level.addParticle(ParticleTypes.LARGE_SMOKE, true, x - random.x, y + 0.5D - random.y, z - random.z, random.x * .5f, random.y * .5f, random.z * .5f);
-            this.level.addParticle(ParticleHelper.FIRE, x - random.x, y + 0.5D - random.y, z - random.z, random.x * .5f, random.y * .5f, random.z * .5f);
+            var x = Mth.lerp(f, d0, this.getX() + vec3.x);
+            var y = Mth.lerp(f, d1, this.getY() + vec3.y);
+            var z = Mth.lerp(f, d2, this.getZ() + vec3.z);
+            this.level.addParticle(ParticleHelper.FIRE_EMITTER, true,x - random.x, y + getBbHeight() * .5f - random.y, z - random.z, motion.x * .5f, motion.y * .5f, motion.z * .5f);
         }
     }
 

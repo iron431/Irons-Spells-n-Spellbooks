@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.CameraShakeData;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.RecastInstance;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.entity.spells.FireEruptionAoe;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -44,13 +45,19 @@ public class RaiseHellSpell extends AbstractSpell {
             .setSchoolResource(SchoolRegistry.FIRE_RESOURCE)
             .setMaxLevel(5)
             .setCooldownSeconds(25)
+            .setAllowCrafting(false)
             .build();
 
+    @Override
+    public boolean allowLooting() {
+        return false;
+    }
+
     public RaiseHellSpell() {
-        this.manaCostPerLevel = 20;
-        this.baseSpellPower = 8;
-        this.spellPowerPerLevel = 3;
-        this.castTime = 32;
+        this.manaCostPerLevel = 45;
+        this.baseSpellPower = 15;
+        this.spellPowerPerLevel = 0;
+        this.castTime = 16;
         this.baseManaCost = 90;
     }
 
@@ -91,7 +98,15 @@ public class RaiseHellSpell extends AbstractSpell {
     }
 
     @Override
+    public int getRecastCount(int spellLevel, @Nullable LivingEntity entity) {
+        return spellLevel;
+    }
+
+    @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
+        if (!playerMagicData.getPlayerRecasts().hasRecastForSpell(getSpellId())) {
+            playerMagicData.getPlayerRecasts().addRecast(new RecastInstance(getSpellId(), spellLevel, getRecastCount(spellLevel, entity), 40, castSource, null), playerMagicData);
+        }
         float radius = 10;
         float range = 1.7f;
         Vec3 hitLocation = Utils.moveToRelativeGroundLevel(level, Utils.raycastForBlock(level, entity.getEyePosition(), entity.getEyePosition().add(entity.getForward().multiply(range, 0, range)), ClipContext.Fluid.NONE).getLocation(), 3);
@@ -136,7 +151,7 @@ public class RaiseHellSpell extends AbstractSpell {
 
     @Override
     public AnimationHolder getCastStartAnimation() {
-        return SpellAnimations.OVERHEAD_MELEE_SWING_DELAYED_ANIMATION;
+        return SpellAnimations.OVERHEAD_MELEE_SWING_ANIMATION;
     }
 
     @Override
