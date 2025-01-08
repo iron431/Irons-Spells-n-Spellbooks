@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.util.DefaultBipedBoneIdents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.resources.ResourceLocation;
@@ -14,7 +13,6 @@ import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoModel<AbstractSpellCastingMob> {
 
@@ -37,32 +35,10 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
         return AbstractSpellCastingMob.animationInstantCast;
     }
 
-    boolean a, b;
-
     @Override
     public void handleAnimations(AbstractSpellCastingMob entity, long instanceId, AnimationState<AbstractSpellCastingMob> animationState, float partialTick) {
-        Stream<GeoBone> bones = getBonesForStackReset();
-        bones.forEach((bone) -> {
-            var snapshot = bone.getInitialSnapshot();
-            bone.updatePosition(snapshot.getOffsetX(), snapshot.getOffsetY(), snapshot.getOffsetZ());
-            bone.updateRotation(snapshot.getRotX(), snapshot.getRotY(), snapshot.getRotZ());
-            bone.resetStateChanges();
-        });
+        transformStack.resetDirty();
         super.handleAnimations(entity, instanceId, animationState, partialTick);
-    }
-
-    protected Stream<GeoBone> getBonesForStackReset() {
-        return Stream.of(
-                this.getAnimationProcessor().getBone(PartNames.HEAD),
-                this.getAnimationProcessor().getBone(PartNames.BODY),
-                this.getAnimationProcessor().getBone("torso"),
-                this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM),
-                this.getAnimationProcessor().getBone(PartNames.LEFT_ARM),
-                this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG),
-                this.getAnimationProcessor().getBone(PartNames.LEFT_LEG),
-                this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT),
-                this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.LEFT_HAND_BONE_IDENT)
-        );
     }
 
     @Override
@@ -149,11 +125,6 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
         }
     }
 
-    protected void resetSnapshot(GeoBone bone) {
-        bone.getInitialSnapshot().updateRotation(0, 0, 0);
-        bone.getInitialSnapshot().updateOffset(0, 0, 0);
-    }
-
     protected void bobBone(GeoBone bone, float offset, float multiplier) {
         float z = multiplier * (Mth.cos(offset * 0.09F) * 0.05F + 0.05F);
         float x = multiplier * Mth.sin(offset * 0.067F) * 0.05F;
@@ -180,6 +151,4 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
         }
         return new Vector2f(limbSwingAmount, limbSwingSpeed);
     }
-
-
 }

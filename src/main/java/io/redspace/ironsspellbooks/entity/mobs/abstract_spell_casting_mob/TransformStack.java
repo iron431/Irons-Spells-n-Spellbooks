@@ -4,14 +4,12 @@ package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 import org.joml.Vector3f;
 import software.bernie.geckolib.cache.object.GeoBone;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 public class TransformStack {
     private final Map<GeoBone, Stack<Vector3f>> positionStack = new HashMap<>();
     private final Map<GeoBone, Stack<Vector3f>> rotationStack = new HashMap<>();
-    private boolean needsReset;
+    private final Set<GeoBone> toReset = new HashSet<>();
 
     public void pushPosition(GeoBone bone, Vector3f appendVec) {
         var stack = positionStack.getOrDefault(bone, new Stack<>());
@@ -19,6 +17,15 @@ public class TransformStack {
         positionStack.put(bone, stack);
     }
 
+    public void resetDirty(){
+        toReset.forEach(bone->{
+            var snapshot = bone.getInitialSnapshot();
+            bone.updatePosition(snapshot.getOffsetX(), snapshot.getOffsetY(), snapshot.getOffsetZ());
+            bone.updateRotation(snapshot.getRotX(), snapshot.getRotY(), snapshot.getRotZ());
+            bone.resetStateChanges();
+        });
+        toReset.clear();
+    }
     public void pushPosition(GeoBone bone, float x, float y, float z) {
         pushPosition(bone, new Vector3f(x, y, z));
     }
@@ -35,11 +42,13 @@ public class TransformStack {
 
     public void popStack() {
         positionStack.forEach((bone, stack) -> {
+            toReset.add(bone);
             Vector3f position = bone.getPositionVector().get(new Vector3f());
             stack.forEach(position::add);
             setPosImpl(bone, position);
         });
         rotationStack.forEach((bone, stack) -> {
+            toReset.add(bone);
             Vector3f rotation = bone.getRotationVector().get(new Vector3f(0, 0, 0));
             stack.forEach(rotation::add);
             setRotImpl(bone, rotation);

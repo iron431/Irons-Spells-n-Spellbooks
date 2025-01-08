@@ -9,8 +9,11 @@ public class ArmorStandReturnToHomeGoal extends WaterAvoidingRandomStrollGoal {
 
     int stuckTimer;
     private static final int MAX_INTERVAL = 10;
-    private static final float CLOSE_DISTANCE = 0.75f;
+    private static final float CLOSE_DISTANCE = 1.42f; // square root of two rounded up. should prevent path rounding from ever clipping too short (since sqrt(2) is the max a path can clip)
     boolean closingFinalDistance;
+
+    Vec3 lastStuckPos = Vec3.ZERO;
+    int stuckCounter;
 
     public ArmorStandReturnToHomeGoal(CursedArmorStandEntity pMob, double pSpeedModifier) {
         super(pMob, pSpeedModifier);
@@ -62,7 +65,27 @@ public class ArmorStandReturnToHomeGoal extends WaterAvoidingRandomStrollGoal {
 
     @Override
     public void tick() {
+        if (mob.tickCount % 200 == 0) {
+            var currpos = mob.position();
+            var distance = lastStuckPos.distanceToSqr(currpos);
+            if (distance < 5 * 5) {
+                // we seem to be stuck
+                stuckCounter++;
+            } else {
+                // we are not stuck
+                lastStuckPos = currpos;
+                stuckCounter = 0;
+            }
+            if(stuckCounter > 3){
+                // if we are stuck for too many iterations, give up
+                mob.spawn = mob.position();
+                stop();
+                return;
+            }
+        }
         if (closingFinalDistance && mob.spawn != null) {
+            // the path can only get up to our spawn within a margin of 1 block
+            // once we cross the CLOSE_DISTANCE threshold, just nudge ourselves over until we are happy
             Vec3 delta = mob.spawn.subtract(mob.position());
             var currDistance = delta.lengthSqr();
             if (currDistance > CLOSE_DISTANCE * CLOSE_DISTANCE) {
@@ -74,16 +97,6 @@ public class ArmorStandReturnToHomeGoal extends WaterAvoidingRandomStrollGoal {
             }
         } else {
             super.tick();
-            // every 5 seconds, update the interval to more intensely try to find our home
-            // if we cannot get to our home in a great matter of time, sethome to our current position and freeze
-            if (stuckTimer++ > 20 * 5) {
-                interval--;
-                if (interval == 0) {
-                    mob.spawn = mob.position();
-                    stop();
-                }
-                stuckTimer = 0;
-            }
         }
     }
 
