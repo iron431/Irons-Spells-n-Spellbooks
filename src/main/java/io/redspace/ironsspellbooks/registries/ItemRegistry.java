@@ -94,7 +94,7 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> AUTOLOADER_CROSSBOW = ITEMS.register("autoloader_crossbow", () -> new AutoloaderCrossbow(ItemPropertiesHelper.hidden(1).durability(465)));
     public static final DeferredHolder<Item, Item> HITHER_THITHER_WAND = ITEMS.register("hither_thither_wand", () -> new HitherThitherWand(ItemPropertiesHelper.equipment(1).rarity(Rarity.EPIC)));
     public static final DeferredHolder<Item, Item> STAFF_OF_THE_NINES = ITEMS.register("staff_of_the_nines", () -> new StaffOfTheNines(ItemPropertiesHelper.hidden(1).rarity(Rarity.EPIC)));
-    public static final DeferredHolder<Item, Item> HELLRAZOR = ITEMS.register("hellrazor", () -> new ExtendedSwordItem(ExtendedWeaponTier.KEEPER_FLAMBERGE, ItemPropertiesHelper.equipment().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.KEEPER_FLAMBERGE))));
+    public static final DeferredHolder<Item, Item> HELLRAZOR = ITEMS.register("hellrazor", () -> new ExtendedSwordItem(ExtendedWeaponTier.KEEPER_FLAMBERGE, ItemPropertiesHelper.equipment().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.KEEPER_FLAMBERGE)).rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue())));
 
     /**
      * Ink
