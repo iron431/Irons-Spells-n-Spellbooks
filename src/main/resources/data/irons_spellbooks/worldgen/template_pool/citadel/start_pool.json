@@ -6,7 +6,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:citadel/citadel",
-        "processors": "irons_spellbooks:citadel_randomization",
+        "processors": "irons_spellbooks:citadel_library_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
