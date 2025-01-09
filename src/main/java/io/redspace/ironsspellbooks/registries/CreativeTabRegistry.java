@@ -165,6 +165,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.ARCANE_ESSENCE.get());
                 entries.accept(ItemRegistry.MAGIC_CLOTH.get());
                 entries.accept(ItemRegistry.RUINED_BOOK.get());
+                entries.accept(ItemRegistry.CHAINED_BOOK.get());
                 entries.accept(ItemRegistry.CINDER_ESSENCE.get());
                 entries.accept(ItemRegistry.MITHRIL_INGOT.get());
                 entries.accept(ItemRegistry.MITHRIL_SCRAP.get());

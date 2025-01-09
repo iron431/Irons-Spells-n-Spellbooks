@@ -170,6 +170,7 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> FROSTED_HELVE = ITEMS.register("frosted_helve", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.COMMON)));
     public static final DeferredHolder<Item, Item> ICE_CRYSTAL = ITEMS.register("permafrost_shard", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.RARE)));
     public static final DeferredHolder<Item, Item> ENERGIZED_CORE = ITEMS.register("energized_core", () -> new EnergizedCoreItem(ItemPropertiesHelper.material(1).rarity(Rarity.UNCOMMON)));
+    public static final DeferredHolder<Item, Item> CHAINED_BOOK = ITEMS.register("chained_book", () -> new Item(ItemPropertiesHelper.material()));
 
     public static final DeferredHolder<Item, Item> RAW_MITHRIL = ITEMS.register("raw_mithril", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.RARE)));
     public static final DeferredHolder<Item, Item> MITHRIL_SCRAP = ITEMS.register("mithril_scrap", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.RARE)));
