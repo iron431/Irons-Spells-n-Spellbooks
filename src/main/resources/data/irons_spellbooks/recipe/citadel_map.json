@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PFP",
+    "CPC",
+    "PFP"
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "C": {
+      "item": "irons_spellbooks:cinder_essence"
+    },
+    "F": {
+      "item": "irons_spellbooks:ancient_knowledge_fragment"
+    }
+  },
+  "result": {
+    "id": "irons_spellbooks:furled_map_ancient",
+    "components": {
+      "irons_spellbooks:furled_map_data": {
+        "destination": "irons_spellbooks:citadel",
+        "dimension": "minecraft:the_nether",
+        "descriptionOverride": "item.irons_spellbooks.citadel_map"
+      },
+      "minecraft:lore": [
+        "{\"translate\":\"item.irons_spellbooks.furled_map_descriptor_framing\",\"color\":\"gray\",\"with\":[{\"translate\":\"item.irons_spellbooks.citadel_map\"}]}"
+      ]
+    }
+  }
+}

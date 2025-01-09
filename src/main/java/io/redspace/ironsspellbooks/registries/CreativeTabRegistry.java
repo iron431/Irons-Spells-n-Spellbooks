@@ -3,9 +3,12 @@ package io.redspace.ironsspellbooks.registries;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
+import io.redspace.ironsspellbooks.item.FurledMapItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -176,6 +179,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.FROSTED_HELVE.get());
                 entries.accept(ItemRegistry.ENERGIZED_CORE.get());
                 entries.accept(ItemRegistry.FURLED_MAP.get());
+                entries.accept(FurledMapItem.of(IronsSpellbooks.id("citadel"), ResourceKey.create(Registries.DIMENSION, ResourceLocation.withDefaultNamespace("the_nether")), Component.translatable("item.irons_spellbooks.citadel_map"), true));
 
                 entries.accept(ItemRegistry.DECREPIT_KEY.get());
                 entries.accept(ItemRegistry.CINDEROUS_SOULCALLER.get());

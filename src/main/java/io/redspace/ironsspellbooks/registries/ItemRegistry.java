@@ -141,7 +141,8 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> FROZEN_BONE_SHARD = ITEMS.register("frozen_bone", () -> new Item(ItemPropertiesHelper.material()));
     public static final DeferredHolder<Item, Item> BLOOD_VIAL = ITEMS.register("blood_vial", () -> new Item(ItemPropertiesHelper.material()));
     public static final DeferredHolder<Item, Item> DIVINE_PEARL = ITEMS.register("divine_pearl", () -> new Item(ItemPropertiesHelper.material()));
-    public static final DeferredHolder<Item, Item> FURLED_MAP = ITEMS.register("furled_map", () -> new FurledMapItem());
+    public static final DeferredHolder<Item, Item> FURLED_MAP = ITEMS.register("furled_map", FurledMapItem::new);
+    public static final DeferredHolder<Item, Item> ANCIENT_FURLED_MAP = ITEMS.register("furled_map_ancient", FurledMapItem::new);
     public static final DeferredHolder<Item, Item> HOGSKIN = ITEMS.register("hogskin", () -> new Item(ItemPropertiesHelper.material()));
     public static final DeferredHolder<Item, Item> DRAGONSKIN = ITEMS.register("dragonskin", DragonskinItem::new);
     public static final DeferredHolder<Item, Item> ARCANE_ESSENCE = ITEMS.register("arcane_essence", () -> new Item(ItemPropertiesHelper.material()));
