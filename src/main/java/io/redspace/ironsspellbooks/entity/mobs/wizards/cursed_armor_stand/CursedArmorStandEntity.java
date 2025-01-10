@@ -49,8 +49,22 @@ import java.util.function.Consumer;
 
 public class CursedArmorStandEntity extends AbstractSpellCastingMob implements IAnimatedAttacker, NeutralMob {
     public enum Pose {
+        /**
+         * vanilla armor stand pose
+         */
         DEFAULT,
-        HEROIC
+        /**
+         * kneeling
+         */
+        KNEELING,
+        /**
+         * arm and head raised
+         */
+        HEROIC,
+        /**
+         * standing straight w/ sword in ground
+         */
+        STOIC
     }
 
     public static final int JIGGLE_TIME = 15;
@@ -112,14 +126,23 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
                     }
                 });
             } else {
-                AtomicReference<SoundEvent> sound = new AtomicReference<>(SoundEvents.ARMOR_STAND_PLACE);
+                AtomicReference<SoundEvent> sound = new AtomicReference<>(SoundEvents.ARMOR_STAND_HIT);
+
                 handleInteraction(pVector, slot -> {
-                    if (getItemBySlot(slot).getItem() instanceof ArmorItem armorItem) {
+                    if (hasItemInSlot(slot) && getItemBySlot(slot).getItem() instanceof ArmorItem armorItem) {
                         sound.set(armorItem.getMaterial().value().equipSound().value());
+                    }
+                    if (pPlayer.isCreative() && pPlayer.isCrouching()) {
+                        ItemStack equipped = getItemBySlot(slot);
+                        ItemStack playerHeld = pPlayer.getItemInHand(pHand);
+                        if ((equipped.isEmpty() || equipped.getItem() instanceof ArmorItem) && (playerHeld.isEmpty() || (playerHeld.getItem() instanceof ArmorItem armorItem && armorItem.getEquipmentSlot().equals(slot)))) {
+                            pPlayer.setItemInHand(pHand, equipped);
+                            this.setItemSlot(slot, playerHeld);
+                        }
                     }
                 });
                 playSound(sound.get());
-                if (canAttack(pPlayer) && interactionAnger++ >= 3) {
+                if (canAttack(pPlayer) && interactionAnger++ >= 2) {
                     this.setTarget(pPlayer);
                 }
             }
@@ -130,13 +153,13 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
 
     private void handleInteraction(Vec3 interactionVector, Consumer<EquipmentSlot> onInteract) {
         double d0 = interactionVector.y / (double) (this.getScale() * this.getAgeScale());
-        if (d0 >= 0.1 && d0 < 0.1 + 0.45 && this.hasItemInSlot(EquipmentSlot.FEET)) {
+        if (d0 >= 0.1 && d0 < 0.1 + 0.45) {
             onInteract.accept(EquipmentSlot.FEET);
-        } else if (d0 >= 0.9 + 0.0 && d0 < 0.9 + 0.7 && this.hasItemInSlot(EquipmentSlot.CHEST)) {
+        } else if (d0 >= 0.9 + 0.0 && d0 < 0.9 + 0.7) {
             onInteract.accept(EquipmentSlot.CHEST);
-        } else if (d0 >= 0.4 && d0 < 0.4 + 0.8 && this.hasItemInSlot(EquipmentSlot.LEGS)) {
+        } else if (d0 >= 0.4 && d0 < 0.4 + 0.8) {
             onInteract.accept(EquipmentSlot.LEGS);
-        } else if (d0 >= 1.6 && this.hasItemInSlot(EquipmentSlot.HEAD)) {
+        } else if (d0 >= 1.6) {
             onInteract.accept(EquipmentSlot.HEAD);
         }
     }
@@ -222,7 +245,7 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
         if (spawn != null) {
             pCompound.put("spawnPos", NBT.writeVec3Pos(spawn));
         }
-        pCompound.putString("armorStandPose", getPose().name());
+        pCompound.putString("armorStandPose", getArmorstandPose().name());
         this.addPersistentAngerSaveData(pCompound);
     }
 

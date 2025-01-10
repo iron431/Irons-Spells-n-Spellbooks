@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
 
+import net.minecraft.util.Mth;
 import org.joml.Vector3f;
 import software.bernie.geckolib.cache.object.GeoBone;
 
@@ -17,8 +18,8 @@ public class TransformStack {
         positionStack.put(bone, stack);
     }
 
-    public void resetDirty(){
-        toReset.forEach(bone->{
+    public void resetDirty() {
+        toReset.forEach(bone -> {
             var snapshot = bone.getInitialSnapshot();
             bone.updatePosition(snapshot.getOffsetX(), snapshot.getOffsetY(), snapshot.getOffsetZ());
             bone.updateRotation(snapshot.getRotX(), snapshot.getRotY(), snapshot.getRotZ());
@@ -26,6 +27,7 @@ public class TransformStack {
         });
         toReset.clear();
     }
+
     public void pushPosition(GeoBone bone, float x, float y, float z) {
         pushPosition(bone, new Vector3f(x, y, z));
     }
@@ -38,6 +40,10 @@ public class TransformStack {
 
     public void pushRotation(GeoBone bone, float x, float y, float z) {
         pushRotation(bone, new Vector3f(x, y, z));
+    }
+
+    public void pushRotationDegrees(GeoBone bone, float x, float y, float z) {
+        pushRotation(bone, new Vector3f(x * Mth.DEG_TO_RAD, y * Mth.DEG_TO_RAD, z * Mth.DEG_TO_RAD));
     }
 
     public void popStack() {

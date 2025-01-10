@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.cursed_armor_stand;
 
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -76,24 +77,30 @@ public class ArmorStandReturnToHomeGoal extends WaterAvoidingRandomStrollGoal {
                 lastStuckPos = currpos;
                 stuckCounter = 0;
             }
-            if(stuckCounter > 3){
+            if (stuckCounter > 3) {
                 // if we are stuck for too many iterations, give up
                 mob.spawn = mob.position();
                 stop();
                 return;
             }
         }
-        if (closingFinalDistance && mob.spawn != null) {
+        if (closingFinalDistance && mob.getNavigation().isDone() && mob.spawn != null) {
             // the path can only get up to our spawn within a margin of 1 block
             // once we cross the CLOSE_DISTANCE threshold, just nudge ourselves over until we are happy
             Vec3 delta = mob.spawn.subtract(mob.position());
             var currDistance = delta.lengthSqr();
+
+            double d0 = mob.spawn.x - mob.getX();
+            double d1 = mob.spawn.z - mob.getZ();
+            float f = (float) (Mth.atan2(d1, d0) * 180.0F / (float)Math.PI) - 90.0F;
+            mob.setYRot(f);
+            mob.setYBodyRot(f);
+
+            mob.getMoveControl().strafe((float) speedModifier, 0);
             if (currDistance > CLOSE_DISTANCE * CLOSE_DISTANCE) {
                 closingFinalDistance = false;
             } else if (currDistance < ATHRESHOLD_SQR) {
                 stop();
-            } else {
-                mob.setDeltaMovement(mob.getDeltaMovement().add(delta.normalize().scale(0.05)));
             }
         } else {
             super.tick();

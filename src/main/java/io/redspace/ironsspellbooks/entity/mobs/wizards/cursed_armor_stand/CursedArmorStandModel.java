@@ -22,6 +22,8 @@ public class CursedArmorStandModel extends AbstractSpellCastingMobModel {
         return ArmorStandRenderer.DEFAULT_SKIN_LOCATION;
     }
 
+    public static double[] rightArmPos = new double[]{110, -25, 180};
+
     @Override
     public void setCustomAnimations(AbstractSpellCastingMob entity, long instanceId, AnimationState<AbstractSpellCastingMob> animationState) {
         if (entity instanceof CursedArmorStandEntity cursedArmorStandEntity && cursedArmorStandEntity.isArmorStandFrozen()) {
@@ -30,6 +32,7 @@ public class CursedArmorStandModel extends AbstractSpellCastingMobModel {
             GeoBone body = this.getAnimationProcessor().getBone(PartNames.BODY);
             GeoBone torso = this.getAnimationProcessor().getBone("torso");
             GeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
+            GeoBone rightHand = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT);
             GeoBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
             GeoBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
             GeoBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
@@ -39,6 +42,30 @@ public class CursedArmorStandModel extends AbstractSpellCastingMobModel {
                     transformStack.pushRotation(rightArm, 15 * Mth.DEG_TO_RAD, 0, 10 * Mth.DEG_TO_RAD);
                     transformStack.pushRotation(leftLeg, -1 * Mth.DEG_TO_RAD, 0, -1 * Mth.DEG_TO_RAD);
                     transformStack.pushRotation(rightLeg, 1 * Mth.DEG_TO_RAD, 0, 1 * Mth.DEG_TO_RAD);
+                }
+                case KNEELING -> {
+                    transformStack.pushPosition(rightLeg, 0, 2, -3);
+                    transformStack.pushRotation(rightLeg, -52.5f * Mth.DEG_TO_RAD, 0, 0);
+                    transformStack.pushPosition(leftLeg, 1 * Mth.DEG_TO_RAD, 6, -4);
+                    transformStack.pushRotation(rightArm, 90 * Mth.DEG_TO_RAD, 45 * Mth.DEG_TO_RAD, 90 * Mth.DEG_TO_RAD);
+                    transformStack.pushRotation(leftArm, 45 * Mth.DEG_TO_RAD, 0, 0);
+                    transformStack.pushRotation(head, -45 * Mth.DEG_TO_RAD, 0, 0);
+                    transformStack.pushRotation(torso, -10 * Mth.DEG_TO_RAD, 0, 0);
+                    transformStack.pushPosition(body, 0, -6, 0);
+                }
+                case HEROIC -> {
+                    transformStack.pushRotation(rightArm, 132.5f * Mth.DEG_TO_RAD, 0, 0);
+                    transformStack.pushRotation(leftArm, -20f * Mth.DEG_TO_RAD, 0, 0);
+                    transformStack.pushRotation(leftLeg, -12f * Mth.DEG_TO_RAD, 0, 0);
+                    transformStack.pushPosition(rightLeg, 0, 0, -2);
+                    transformStack.pushRotation(head, 25 * Mth.DEG_TO_RAD, 0, 0);
+                }
+                case STOIC -> {
+                    transformStack.pushRotationDegrees(rightArm, 80, 35, 0);
+                    transformStack.pushRotationDegrees(leftArm, 80, -35, 0);
+                    transformStack.pushRotationDegrees(rightHand, 0, 90, 0);
+                    transformStack.pushRotationDegrees(rightLeg, 0, -1, 0);
+                    transformStack.pushRotationDegrees(leftLeg, 0, 1, 0);
                 }
             }
             GeoBone helmet = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.HEAD_ARMOR_BONE_IDENT);
