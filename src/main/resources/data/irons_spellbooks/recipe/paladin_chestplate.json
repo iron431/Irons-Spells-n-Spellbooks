@@ -1,13 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "G G",
+    "GDG",
     "WAW",
     "GWG"
   ],
   "key": {
     "A": {
       "item": "irons_spellbooks:priest_chestplate"
+    },
+    "D": {
+      "item": "irons_spellbooks:divine_soulshard"
     },
     "W": {
       "item": "irons_spellbooks:mithril_weave"

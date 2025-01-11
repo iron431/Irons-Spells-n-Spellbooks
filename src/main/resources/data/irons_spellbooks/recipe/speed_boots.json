@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "FWF",
-    " A "
+    " W ",
+    "FAF",
+    " D "
   ],
   "key": {
     "A": {
@@ -13,6 +14,9 @@
     },
     "F": {
       "item": "minecraft:feather"
+    },
+    "D": {
+      "item": "irons_spellbooks:divine_soulshard"
     }
   },
   "result": {
