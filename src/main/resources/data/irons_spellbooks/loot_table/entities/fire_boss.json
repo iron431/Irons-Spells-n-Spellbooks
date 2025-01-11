@@ -2,16 +2,58 @@
   "type": "minecraft:entity",
   "pools": [
     {
-      "bonus_rolls": 0.0,
+      "rolls": 1,
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "irons_spellbooks:hellrazor",
+          "name": "irons_spellbooks:divine_soulshard",
           "conditions": [
             {
               "condition": "minecraft:killed_by_player"
             }
           ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:decrepit_key",
+          "conditions": [
+            {
+              "condition": "minecraft:killed_by_player"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:hellrazor"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:betrayer_signet"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:killed_by_player"
+        },
+        {
+          "condition": "minecraft:random_chance_with_enchanted_bonus",
+          "enchantment": "minecraft:looting",
+          "unenchanted_chance": 0.50,
+          "enchanted_chance": {
+            "type": "minecraft:linear",
+            "base": 0.10,
+            "per_level_above_first": 0.05
+          }
         }
       ],
       "rolls": 1
@@ -21,10 +63,30 @@
       "entries": [
         {
           "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 45.0,
+                "min": 28.0
+              },
+              "function": "minecraft:set_count"
+            },
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 6.0,
+                "min": 2.0
+              },
+              "function": "minecraft:enchanted_count_increase",
+              "enchantment": "minecraft:looting"
+            }
+          ],
           "name": "irons_spellbooks:arcane_essence"
         }
       ],
-      "rolls": 1
+      "rolls": 2
     }
   ]
 }

@@ -7,7 +7,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.bus.api.Event;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -20,8 +19,6 @@ public abstract class PassiveAbilityCurio extends SimpleDescriptiveCurio {
     }
 
     protected abstract int getCooldownTicks();
-
-//    public abstract void handleAbility(T event);
 
     /**
      * If the curio is off cooldown, return true and trigger cooldown. Otherwise, return false

@@ -1,0 +1,6 @@
+{
+  "parent": "irons_spellbooks:item/ring",
+  "textures": {
+    "layer0": "irons_spellbooks:item/mageslayer_ring"
+  }
+}

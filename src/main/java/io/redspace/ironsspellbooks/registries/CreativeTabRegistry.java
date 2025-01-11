@@ -57,6 +57,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.KEEPER_FLAMBERGE.get());
                 entries.accept(ItemRegistry.SPELLBREAKER.get());
                 entries.accept(ItemRegistry.AMETHYST_RAPIER.get());
+                entries.accept(ItemRegistry.HELLRAZOR.get());
                 entries.accept(ItemRegistry.AUTOLOADER_CROSSBOW.get());
                 entries.accept(ItemRegistry.WAYWARD_COMPASS.get());
 
@@ -104,8 +105,8 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.NETHERITE_MAGE_CHESTPLATE.get());
                 entries.accept(ItemRegistry.NETHERITE_MAGE_LEGGINGS.get());
                 entries.accept(ItemRegistry.NETHERITE_MAGE_BOOTS.get());
-//                entries.accept(ItemRegistry.PALADIN_CHESTPLATE.get());
-//                entries.accept(ItemRegistry.BOOTS_OF_SPEED.get());
+                entries.accept(ItemRegistry.PALADIN_CHESTPLATE.get());
+                entries.accept(ItemRegistry.BOOTS_OF_SPEED.get());
                 entries.accept(ItemRegistry.TARNISHED_CROWN.get());
                 entries.accept(ItemRegistry.HITHER_THITHER_WAND.get());
 
@@ -125,6 +126,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.EXPULSION_RING.get());
                 entries.accept(ItemRegistry.VISIBILITY_RING.get());
                 entries.accept(ItemRegistry.TELEPORTATION_AMULET.get());
+                entries.accept(ItemRegistry.SIGNET_OF_THE_BETRAYER.get());
                 entries.accept(ItemRegistry.INVISIBILITY_RING.get());
 
             })
@@ -171,7 +173,8 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.MITHRIL_SCRAP.get());
                 entries.accept(ItemRegistry.RAW_MITHRIL.get());
                 entries.accept(ItemRegistry.WEAPON_PARTS.get());
-//                entries.accept(ItemRegistry.MITHRIL_WEAVE.get());
+                entries.accept(ItemRegistry.MITHRIL_WEAVE.get());
+                entries.accept(ItemRegistry.DIVINE_SOULSHARD.get());
                 entries.accept(ItemRegistry.ARCANE_INGOT.get());
                 entries.accept(ItemRegistry.SHRIVING_STONE.get());
                 entries.accept(ItemRegistry.ELDRITCH_PAGE.get());
