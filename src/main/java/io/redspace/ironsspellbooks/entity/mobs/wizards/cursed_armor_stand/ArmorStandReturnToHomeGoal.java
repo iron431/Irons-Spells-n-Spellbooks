@@ -10,7 +10,7 @@ public class ArmorStandReturnToHomeGoal extends WaterAvoidingRandomStrollGoal {
 
     int stuckTimer;
     private static final int MAX_INTERVAL = 10;
-    private static final float CLOSE_DISTANCE = 1.42f; // square root of two rounded up. should prevent path rounding from ever clipping too short (since sqrt(2) is the max a path can clip)
+    private static final float CLOSE_DISTANCE = 2;
     boolean closingFinalDistance;
 
     Vec3 lastStuckPos = Vec3.ZERO;
@@ -77,7 +77,7 @@ public class ArmorStandReturnToHomeGoal extends WaterAvoidingRandomStrollGoal {
                 lastStuckPos = currpos;
                 stuckCounter = 0;
             }
-            if (stuckCounter > 3) {
+            if (stuckCounter > 2) {
                 // if we are stuck for too many iterations, give up
                 mob.spawn = mob.position();
                 stop();
@@ -92,7 +92,7 @@ public class ArmorStandReturnToHomeGoal extends WaterAvoidingRandomStrollGoal {
 
             double d0 = mob.spawn.x - mob.getX();
             double d1 = mob.spawn.z - mob.getZ();
-            float f = (float) (Mth.atan2(d1, d0) * 180.0F / (float)Math.PI) - 90.0F;
+            float f = (float) (Mth.atan2(d1, d0) * 180.0F / (float) Math.PI) - 90.0F;
             mob.setYRot(f);
             mob.setYBodyRot(f);
 
@@ -110,6 +110,9 @@ public class ArmorStandReturnToHomeGoal extends WaterAvoidingRandomStrollGoal {
     @Override
     public void start() {
         super.start();
+        //force end strafe
+        mob.setXxa(0);
+        //reset stuck counting
         this.stuckTimer = 0;
         this.interval = MAX_INTERVAL;
     }

@@ -22,17 +22,20 @@ import java.util.List;
 public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimatedAttacker & IMagicEntity> extends WarlockAttackGoal {
     public GenericAnimatedWarlockAttackGoal(T abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval) {
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);
-        nextAttack = randomizeNextAttack(0);
         this.wantsToMelee = true;
         this.mob = abstractSpellCastingMob; //shadows super.mob
+        nextAttack = randomizeNextAttack(0);
     }
 
-    List<AttackAnimationData> moveList = new ArrayList<>();
+    protected List<AttackAnimationData> moveList = new ArrayList<>();
     protected final T mob;
     protected int meleeAnimTimer = -1;
     public @Nullable AttackAnimationData currentAttack;
     public @Nullable AttackAnimationData nextAttack;
     public @Nullable AttackAnimationData queueCombo;
+    /**
+     * chance that, on a successful hit, we skip our attack delay and immediately attack again. chance is doubled against blocking targets
+     */
     float comboChance = .3f;
 
     @Override
@@ -124,7 +127,7 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
         }
     }
 
-    private AttackAnimationData randomizeNextAttack(float distanceSquared) {
+    protected AttackAnimationData randomizeNextAttack(float distanceSquared) {
         //TODO: IAttackAnimationProvider?
         if (this.moveList.isEmpty()) {
             return null;

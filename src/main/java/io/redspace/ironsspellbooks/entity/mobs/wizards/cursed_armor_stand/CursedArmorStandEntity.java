@@ -1,13 +1,14 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.cursed_armor_stand;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
-import io.redspace.ironsspellbooks.entity.mobs.wizards.GenericAnimatedWarlockAttackGoal;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.NotIdioticNavigation;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.NBT;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -105,11 +106,14 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
     }
 
     public void setArmorStandFrozen(boolean frozen) {
+        boolean wasFrozen = isArmorStandFrozen();
         this.entityData.set(DATA_FROZEN, frozen);
         if (frozen) {
             this.setYHeadRot(originalYRot);
             this.setYBodyRot(originalYRot);
             this.setYRot(originalYRot);
+        } else if (wasFrozen && !level.isClientSide) {
+            MagicManager.spawnParticles(level, ParticleTypes.ANGRY_VILLAGER, getX(), getY() + 1.25, getZ(), 15, .3, .2, .3, 0, false);
         }
     }
 
@@ -211,16 +215,7 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
     @Override
     public void tick() {
         super.tick();
-        if (!level.isClientSide) {
-//            if (isArmorStandFrozen()) {
-//                MagicManager.spawnParticles(level, ParticleHelper.SNOW_DUST, getX(), getY() + 2, getZ(), 1, 0, 0, 0, 0, true);
-//            } else {
-//                MagicManager.spawnParticles(level, ParticleHelper.EMBERS, getX(), getY() + 2, getZ(), 1, 0, 0, 0, 0, true);
-//            }
-//            if (spawn != null) {
-//                MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, spawn.x, spawn.y + 0.5, spawn.z, 1, 0, 0, 0, 0, true);
-//            }
-        } else {
+        if (level.isClientSide) {
             if (helmetJiggle > 0) {
                 helmetJiggle--;
             }
@@ -236,6 +231,20 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
         }
     }
 
+    @Override
+    protected void playHurtSound(DamageSource pSource) {
+        var chestplate = this.getItemBySlot(EquipmentSlot.CHEST);
+        if (!chestplate.isEmpty() && chestplate.getItem() instanceof ArmorItem armorItem) {
+            this.playSound(armorItem.getMaterial().value().equipSound().value(), this.getSoundVolume(), this.getVoicePitch());
+        }
+        super.playHurtSound(pSource);
+    }
+
+    @org.jetbrains.annotations.Nullable
+    @Override
+    protected SoundEvent getHurtSound(DamageSource pDamageSource) {
+        return SoundEvents.ARMOR_STAND_HIT;
+    }
 
     @Override
     public void addAdditionalSaveData(CompoundTag pCompound) {
@@ -270,8 +279,7 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
     @Override
     protected void customServerAiStep() {
         super.customServerAiStep();
-        if (setSpawnOnFirstTick) {
-            setSpawnOnFirstTick = false;
+        if (this.spawn == null) {
             this.spawn = this.position();
         }
         if (this.level instanceof ServerLevel serverLevel) {
@@ -285,12 +293,12 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(3, new GenericAnimatedWarlockAttackGoal<>(this, 1.25f, 50, 75)
+        this.goalSelector.addGoal(3, new ArmorStandAttackGoal(this, 1f, 50, 75)
                 .setMoveset(List.of(
                         new AttackAnimationData(10, "simple_sword_horizontal_cross_swipe", 8),
                         new AttackAnimationData(20, "simple_sword_downstrike", 16)
                 ))
-                .setComboChance(.4f)
+                .setComboChance(.2f)
                 .setMeleeAttackInverval(10, 30)
                 .setMeleeMovespeedModifier(1.5f)
                 .setMeleeBias(1f, 1f)
@@ -304,7 +312,12 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
         );
         this.goalSelector.addGoal(5, new ArmorStandReturnToHomeGoal(this, 1));
 
-        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this) {
+            @Override
+            public boolean canContinueToUse() {
+                return super.canContinueToUse() && ((NeutralMob) mob).isAngry();
+            }
+        });
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
         this.targetSelector.addGoal(5, new ResetUniversalAngerTargetGoal<>(this, false));
     }
@@ -338,11 +351,11 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
         return super.hurt(pSource, pAmount);
     }
 
-    boolean setSpawnOnFirstTick;
-
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData) {
-        this.setSpawnOnFirstTick = true;
+        if (pReason.equals(MobSpawnType.STRUCTURE)) {
+            this.originalYRot = getYRot();
+        }
         return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData);
     }
 
