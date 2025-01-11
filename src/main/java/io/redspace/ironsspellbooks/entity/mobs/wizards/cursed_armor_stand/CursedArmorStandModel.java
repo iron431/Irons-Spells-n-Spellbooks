@@ -68,43 +68,32 @@ public class CursedArmorStandModel extends AbstractSpellCastingMobModel {
                     transformStack.pushRotationDegrees(leftLeg, 0, 1, 0);
                 }
             }
-            GeoBone helmet = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.HEAD_ARMOR_BONE_IDENT);
-            GeoBone chestplate = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.BODY_ARMOR_BONE_IDENT);
-            GeoBone rightArmor = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.RIGHT_ARM_ARMOR_BONE_IDENT);
-            GeoBone leftArmor = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.LEFT_ARM_ARMOR_BONE_IDENT);
-            GeoBone rightLegging = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.RIGHT_LEG_ARMOR_BONE_IDENT);
-            GeoBone leftLegging = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.LEFT_LEG_ARMOR_BONE_IDENT);
-            GeoBone rightBoot = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.RIGHT_FOOT_ARMOR_BONE_IDENT);
-            GeoBone leftBoot = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.LEFT_FOOT_ARMOR_BONE_IDENT);
-            GeoBone rightLegging2 = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.RIGHT_LEG_ARMOR_BONE_2_IDENT);
-            GeoBone leftLegging2 = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.LEFT_LEG_ARMOR_BONE_2_IDENT);
-            GeoBone rightBoot2 = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.RIGHT_FOOT_ARMOR_BONE_2_IDENT);
-            GeoBone leftBoot2 = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.LEFT_FOOT_ARMOR_BONE_2_IDENT);
+
+
             float partialTick = animationState.getPartialTick();
             if (cursedArmorStandEntity.helmetJiggle > 0) {
                 float f = elastic(1f - ((cursedArmorStandEntity.helmetJiggle - partialTick) / JIGGLE_TIME));
-                IronsSpellbooks.LOGGER.debug("cas helmet: {}", f);
-                transformStack.pushRotation(helmet, 0, f, 0);
+                transformStack.pushRotation(this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.HEAD_ARMOR_BONE_IDENT), 0, f, 0);
             }
             if (cursedArmorStandEntity.chestJiggle > 0) {
                 float f = elastic(1 - (cursedArmorStandEntity.chestJiggle - partialTick) / JIGGLE_TIME);
-                transformStack.pushRotation(chestplate, 0, f, 0);
-                transformStack.pushRotation(rightArmor, 0, f * .75f, 0);
-                transformStack.pushRotation(leftArmor, 0, -f * .75f, 0);
+                transformStack.pushRotation(this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.BODY_ARMOR_BONE_IDENT), 0, f, 0);
+                transformStack.pushRotation(this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.RIGHT_ARM_ARMOR_BONE_IDENT), 0, f * .75f, 0);
+                transformStack.pushRotation(this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.LEFT_ARM_ARMOR_BONE_IDENT), 0, -f * .75f, 0);
             }
             if (cursedArmorStandEntity.legJiggle > 0) {
                 float f = elastic(1 - (cursedArmorStandEntity.legJiggle - partialTick) / JIGGLE_TIME);
-                transformStack.pushRotation(rightLegging, 0, -f * .75f, 0);
-                transformStack.pushRotation(leftLegging, 0, f * .75f, 0);
-                transformStack.pushRotation(rightLegging2, 0, -f * .75f, 0);
-                transformStack.pushRotation(leftLegging2, 0, f * .75f, 0);
+                transformStack.pushRotation(this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.RIGHT_LEG_ARMOR_BONE_IDENT), 0, -f * .75f, 0);
+                transformStack.pushRotation(this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.LEFT_LEG_ARMOR_BONE_IDENT), 0, f * .75f, 0);
+                transformStack.pushRotation(this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.RIGHT_LEG_ARMOR_BONE_2_IDENT), 0, -f * .75f, 0);
+                transformStack.pushRotation(this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.LEFT_LEG_ARMOR_BONE_2_IDENT), 0, f * .75f, 0);
             }
             if (cursedArmorStandEntity.bootJiggle > 0) {
                 float f = elastic(1 - (cursedArmorStandEntity.bootJiggle - partialTick) / JIGGLE_TIME);
-                transformStack.pushRotation(rightBoot, 0, -f * .75f, 0);
-                transformStack.pushRotation(leftBoot, 0, f * .75f, 0);
-                transformStack.pushRotation(rightBoot2, 0, -f * .75f, 0);
-                transformStack.pushRotation(leftBoot2, 0, f * .75f, 0);
+                transformStack.pushRotation(this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.RIGHT_FOOT_ARMOR_BONE_IDENT), 0, -f * .75f, 0);
+                transformStack.pushRotation(this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.LEFT_FOOT_ARMOR_BONE_IDENT), 0, f * .75f, 0);
+                transformStack.pushRotation(this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.RIGHT_FOOT_ARMOR_BONE_2_IDENT), 0, -f * .75f, 0);
+                transformStack.pushRotation(this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.LEFT_FOOT_ARMOR_BONE_2_IDENT), 0, f * .75f, 0);
             }
             transformStack.popStack();
         } else {

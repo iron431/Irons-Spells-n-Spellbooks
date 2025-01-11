@@ -270,7 +270,7 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
         try {
             this.setArmorstandPose(Pose.valueOf(pose));
         } catch (Exception ignored) {
-            IronsSpellbooks.LOGGER.warn("Attempting to load invalid pose: {}", pose);
+            IronsSpellbooks.LOGGER.warn("Entity {} attempting to load invalid pose: {}", this, pose);
             this.setArmorstandPose(Pose.DEFAULT);
         }
         this.readPersistentAngerSaveData(this.level, pCompound);
