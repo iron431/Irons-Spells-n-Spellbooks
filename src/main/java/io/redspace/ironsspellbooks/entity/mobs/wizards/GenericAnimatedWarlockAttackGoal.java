@@ -7,7 +7,7 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.WarlockAttackGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.network.SyncAnimationPacket;
-import net.minecraft.sounds.SoundEvents;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -173,7 +173,7 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
     }
 
     public void playSwingSound() {
-        mob.playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 1, Mth.randomBetweenInclusive(mob.getRandom(), 12, 18) * .1f);
+        mob.playSound(SoundRegistry.GENERIC_BLADE_SWING.get(), 1, Mth.randomBetweenInclusive(mob.getRandom(), 12, 18) * .1f);
     }
 
     public GenericAnimatedWarlockAttackGoal<T> setMoveset(List<AttackAnimationData> moveset) {

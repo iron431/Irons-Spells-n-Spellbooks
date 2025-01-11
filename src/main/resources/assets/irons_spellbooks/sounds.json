@@ -720,5 +720,12 @@
     "sounds": [
       "irons_spellbooks:soulcaller_toll_failure"
     ]
+  },
+  "entity.generic.swing_blade": {
+    "sounds": [
+      "irons_spellbooks:tower_guard_swing_01",
+      "irons_spellbooks:tower_guard_swing_02",
+      "irons_spellbooks:tower_guard_swing_03"
+    ]
   }
 }

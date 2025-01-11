@@ -287,10 +287,8 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
         this.goalSelector.addGoal(1, new FloatGoal(this));
         this.goalSelector.addGoal(3, new GenericAnimatedWarlockAttackGoal<>(this, 1.25f, 50, 75)
                 .setMoveset(List.of(
-                        new AttackAnimationData(9, "simple_sword_upward_swipe", 5),
-                        new AttackAnimationData(8, "simple_sword_lunge_stab", 6),
-                        new AttackAnimationData(10, "simple_sword_stab_alternate", 8),
-                        new AttackAnimationData(10, "simple_sword_horizontal_cross_swipe", 8)
+                        new AttackAnimationData(10, "simple_sword_horizontal_cross_swipe", 8),
+                        new AttackAnimationData(20, "simple_sword_downstrike", 16)
                 ))
                 .setComboChance(.4f)
                 .setMeleeAttackInverval(10, 30)
