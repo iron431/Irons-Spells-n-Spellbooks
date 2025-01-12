@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.api.util;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.util.Mth;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -13,7 +14,7 @@ import java.util.UUID;
 @EventBusSubscriber
 public class FogManager {
     private static double interpolation;
-    private static final int INTERP_MAX = 20;
+    private static final int INTERP_MAX = 40;
     private static FogEvent lastEvent = null;
 
     public record FogEvent(Optional<Vector3f> color, boolean fullbright) {
@@ -68,6 +69,9 @@ public class FogManager {
                 event.setRed(Mth.lerp(f, fogRed, event.getRed()));
                 event.setGreen(Mth.lerp(f, fogGreen, event.getGreen()));
                 event.setBlue(Mth.lerp(f, fogBlue, event.getBlue()));
+                if (interpolation <= 0) {
+                    lastEvent = null;
+                }
             } else {
                 event.setRed(fogRed);
                 event.setGreen(fogGreen);
