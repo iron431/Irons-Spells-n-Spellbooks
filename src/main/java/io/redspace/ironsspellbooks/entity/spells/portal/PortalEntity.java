@@ -1,13 +1,17 @@
 package io.redspace.ironsspellbooks.entity.spells.portal;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.PortalManager;
+import io.redspace.ironsspellbooks.damage.PortalDamageSource;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
+import io.redspace.ironsspellbooks.particle.SparkParticleOptions;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import net.minecraft.core.particles.DustParticleOptions;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -40,6 +44,11 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
     private static final EntityDataAccessor<Optional<UUID>> DATA_ID_OWNER_UUID;
     private static final EntityDataAccessor<Boolean> DATA_PORTAL_CONNECTED;
 
+    //Loop tracking
+    private Object2ObjectMap<UUID, LoopTrackerData> loopTrackerLookup = new Object2ObjectOpenHashMap<>();
+    private final int loopMax = 5;
+    private final int loopTickWindow = 20;
+
     private long ticksToLive = 0;
     private boolean isPortalConnected = false;
 
@@ -62,16 +71,39 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
 
     @Override
     public void onRemovedFromLevel() {
-        if (level.isClientSide) return;
+        if (!level.isClientSide) {
+            var removalReason = getRemovalReason();
+            if (removalReason != null && removalReason.shouldDestroy()) {
+                PortalManager.INSTANCE.killPortal(uuid, getOwnerUUID());
+            }
 
-        var removalReason = getRemovalReason();
-        if (removalReason != null && removalReason.shouldDestroy()) {
-            PortalManager.INSTANCE.killPortal(uuid, getOwnerUUID());
+            MagicManager.spawnParticles(level, new SparkParticleOptions(new Vector3f(.5f, .05f, .6f)), getX(), getY() + 0.5, getZ(), 25, .2, .4, .2, .3, false);
         }
 
-        MagicManager.spawnParticles(level, new DustParticleOptions(new Vector3f(.5f, .05f, .6f), 1.5f), getX(), getY(), getZ(), 25, .4, .8, .4, .03, false);
-
         super.onRemovedFromLevel();
+    }
+
+    /**
+     * @param entity
+     * @implNote This should only be used on the server.  Currently, the only things calling it already handle this.
+     */
+    private void handleLoopTracking(Entity entity) {
+        var trackerData = loopTrackerLookup.get(entity.getUUID());
+        if (trackerData == null) {
+            trackerData = new LoopTrackerData(level.getGameTime(), 1);
+            loopTrackerLookup.put(entity.getUUID(), trackerData);
+        } else {
+            IronsSpellbooks.LOGGER.debug("looping");
+            if (++trackerData.loopCount > loopMax && level.getGameTime() - trackerData.gameTick <= loopTickWindow) {
+                if (getOwnerUUID().equals(entity.getUUID())) {
+                    entity.hurt(new PortalDamageSource(entity.level().damageSources().genericKill().typeHolder(), entity), Float.MAX_VALUE);
+                }
+                discard();
+            } else if (level.getGameTime() - trackerData.gameTick > loopTickWindow) {
+                //Cleanup old tracking information
+                loopTrackerLookup.remove(entity.getUUID());
+            }
+        }
     }
 
     public void checkForEntitiesToTeleport() {
@@ -97,6 +129,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
                         float hspeed = (float) Math.sqrt(delta.x * delta.x + delta.z * delta.z);
                         float f = portalPos.rotation() * Mth.DEG_TO_RAD;
                         entity.setDeltaMovement(-Mth.sin(f) * hspeed, delta.y, Mth.cos(f) * hspeed);
+                        handleLoopTracking(entity);
                     } else {
                         //IronsSpellbooks.LOGGER.debug("PortalEntity: teleport entity:{} to dimension: {}", entity, portalPos.dimension());
                         var server = level.getServer();
@@ -220,6 +253,15 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
         compoundTag.putLong("ticksToLive", ticksToLive);
         compoundTag.putUUID("ownerUUID", getOwnerUUID());
     }
-}
 
+    public class LoopTrackerData {
+        public LoopTrackerData(long gameTick, int loopCount) {
+            this.gameTick = gameTick;
+            this.loopCount = loopCount;
+        }
+
+        public long gameTick;
+        public int loopCount;
+    }
+}
 

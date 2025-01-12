@@ -788,6 +788,8 @@
   "death.attack.irons_spellbooks.fire_arrow.item": "%1$s was blasted by %2$s's fiery arrow while using %3$s",
   "death.attack.irons_spellbooks.raise_hell.item": "%1$s was sent to hell by %2$s while using %3$s",
 
+  "death.attack.unstable_portal_owner": "Overwhelmed by the arcane surge, %1$s's essence scattered like stardust across the realm.",
+
   "effect.irons_spellbooks.blood_slashed": "Blood Slashed",
   "effect.irons_spellbooks.angel_wings": "Angel Wings",
   "effect.irons_spellbooks.heartstop": "Heartstop",

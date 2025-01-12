@@ -315,7 +315,7 @@ public class ServerPlayerEvents {
     @SubscribeEvent
     public static void onLivingDeathEvent(LivingDeathEvent event) {
         var entity = event.getEntity();
-        if(!entity.level.isClientSide){
+        if (!entity.level.isClientSide) {
             if (entity instanceof ServerPlayer serverPlayer) {
                 Utils.serverSideCancelCast(serverPlayer);
                 MagicData.getPlayerMagicData(serverPlayer).getPlayerRecasts().removeAll(RecastResult.DEATH);
@@ -519,12 +519,14 @@ public class ServerPlayerEvents {
     public static void useOnEntityEvent(PlayerInteractEvent.EntityInteractSpecific event) {
         if (event.getTarget() instanceof Creeper creeper) {
             var player = event.getEntity();
-            var useItem = player.getItemInHand(event.getHand());
+            var hand = event.getHand();
+            var useItem = player.getItemInHand(hand);
             if (useItem.is(Items.GLASS_BOTTLE) && creeper.isPowered()) {
                 creeper.hurt(creeper.damageSources().generic(), 5);
                 player.level.playSound((Player) null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOTTLE_FILL_DRAGONBREATH, SoundSource.NEUTRAL, 1.0F, 1.0F);
-                player.swing(event.getHand());
-                event.setCancellationResult(InteractionResultHolder.consume(ItemUtils.createFilledResult(useItem, player, new ItemStack(ItemRegistry.LIGHTNING_BOTTLE.get()))).getResult());
+                player.swing(hand);
+                player.setItemInHand(hand, ItemUtils.createFilledResult(useItem, player, new ItemStack(ItemRegistry.LIGHTNING_BOTTLE.get())));
+                event.setCancellationResult(InteractionResultHolder.consume(player.getItemInHand(hand)).getResult());
                 event.setCanceled(true);
             }
         }
