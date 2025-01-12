@@ -1,0 +1,114 @@
+{
+  "name": "irons_spellbooks:citadel_armor_stands_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:citadel/armor_stands/default/light",
+        "processors": "irons_spellbooks:citadel_library_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:citadel/armor_stands/default/heavy",
+        "processors": "irons_spellbooks:citadel_library_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:citadel/armor_stands/default/flamberge",
+        "processors": "irons_spellbooks:citadel_library_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:citadel/armor_stands/kneeling/light",
+        "processors": "irons_spellbooks:citadel_library_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:citadel/armor_stands/kneeling/heavy",
+        "processors": "irons_spellbooks:citadel_library_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:citadel/armor_stands/kneeling/flamberge",
+        "processors": "irons_spellbooks:citadel_library_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:citadel/armor_stands/heroic/light",
+        "processors": "irons_spellbooks:citadel_library_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:citadel/armor_stands/heroic/heavy",
+        "processors": "irons_spellbooks:citadel_library_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:citadel/armor_stands/heroic/flamberge",
+        "processors": "irons_spellbooks:citadel_library_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:citadel/armor_stands/stoic/light",
+        "processors": "irons_spellbooks:citadel_library_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:citadel/armor_stands/stoic/heavy",
+        "processors": "irons_spellbooks:citadel_library_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:citadel/armor_stands/stoic/flamberge",
+        "processors": "irons_spellbooks:citadel_library_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

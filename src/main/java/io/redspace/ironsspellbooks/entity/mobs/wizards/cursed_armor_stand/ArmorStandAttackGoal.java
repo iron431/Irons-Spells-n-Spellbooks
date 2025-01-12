@@ -6,7 +6,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 
 public class ArmorStandAttackGoal extends GenericAnimatedWarlockAttackGoal<CursedArmorStandEntity> {
-    public static final float PROTECTION_RANGE = 22f;
+    public static final float PROTECTION_RANGE = 18;
     public static final float PROTECTION_RANGE_SQR = PROTECTION_RANGE * PROTECTION_RANGE;
 
     public ArmorStandAttackGoal(CursedArmorStandEntity abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval) {
@@ -54,5 +54,10 @@ public class ArmorStandAttackGoal extends GenericAnimatedWarlockAttackGoal<Curse
             }
         }
         super.doMovement(distanceSquared);
+    }
+
+    @Override
+    public boolean canUse() {
+        return super.canUse();
     }
 }

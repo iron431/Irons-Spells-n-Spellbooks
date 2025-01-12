@@ -109,9 +109,10 @@ public class ArmorStandReturnToHomeGoal extends WaterAvoidingRandomStrollGoal {
 
     @Override
     public void start() {
-        super.start();
         //force end strafe
         mob.setXxa(0);
+        //begin path
+        super.start();
         //reset stuck counting
         this.stuckTimer = 0;
         this.interval = MAX_INTERVAL;

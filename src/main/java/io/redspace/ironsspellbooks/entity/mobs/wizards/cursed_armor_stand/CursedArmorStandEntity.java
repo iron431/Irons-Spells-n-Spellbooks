@@ -315,7 +315,7 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this) {
             @Override
             public boolean canContinueToUse() {
-                return super.canContinueToUse() && ((NeutralMob) mob).isAngry();
+                return super.canContinueToUse()/* && ((NeutralMob) mob).isAngry()*/;
             }
         });
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
@@ -355,8 +355,11 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData) {
         if (pReason.equals(MobSpawnType.STRUCTURE)) {
             this.originalYRot = getYRot();
+            this.spawn = null;
         }
-        return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData);
+        super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData);
+        setLeftHanded(false);
+        return pSpawnData;
     }
 
     @Override
