@@ -21,6 +21,7 @@ import java.util.Optional;
 public abstract class AoeEntity extends Projectile implements NoKnockbackProjectile {
     private static final EntityDataAccessor<Float> DATA_RADIUS = SynchedEntityData.defineId(AoeEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Boolean> DATA_CIRCULAR = SynchedEntityData.defineId(AoeEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> DATA_DELAY = SynchedEntityData.defineId(AoeEntity.class, EntityDataSerializers.INT);
 
     protected float damage;
     protected int duration = 600;
@@ -93,18 +94,20 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
     @Override
     public void tick() {
         super.tick();
-        if (!level.isClientSide) {
-            if (tickCount > duration) {
-                discard();
-                return;
+        if (tickCount > getDelay()) {
+            if (!level.isClientSide) {
+                if (tickCount > duration + getDelay()) {
+                    discard();
+                    return;
+                }
+                if (tickCount % reapplicationDelay == 1) {
+                    checkHits();
+                }
+                if (tickCount % 5 == 0)
+                    this.setRadius(getRadius() + radiusPerTick);
+            } else {
+                ambientParticles();
             }
-            if (tickCount % reapplicationDelay == 1) {
-                checkHits();
-            }
-            if (tickCount % 5 == 0)
-                this.setRadius(getRadius() + radiusPerTick);
-        } else {
-            ambientParticles();
         }
         setPos(position().add(getDeltaMovement()));
     }
@@ -213,6 +216,7 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
     protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
         pBuilder.define(DATA_RADIUS, 2F);
         pBuilder.define(DATA_CIRCULAR, false);
+        pBuilder.define(DATA_DELAY, 0);
     }
 
     @Override
@@ -241,6 +245,16 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
 
     public int getDuration() {
         return this.duration;
+    }
+
+    public void setDelay(int delay) {
+        if (!this.level.isClientSide) {
+            this.entityData.set(DATA_DELAY, delay);
+        }
+    }
+
+    public int getDelay() {
+        return entityData.get(DATA_DELAY);
     }
 
     public void refreshDimensions() {
@@ -283,6 +297,7 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
         pCompound.putFloat("Damage", this.getDamage());
         pCompound.putBoolean("Circular", this.isCircular());
         pCompound.putInt("EffectDuration", this.effectDuration);
+        pCompound.putInt("Delay", this.getDelay());
         super.addAdditionalSaveData(pCompound);
 
     }
@@ -303,6 +318,8 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
             this.radiusPerTick = pCompound.getFloat("RadiusPerTick");
         if (pCompound.getInt("EffectDuration") > 0)
             this.effectDuration = pCompound.getInt("EffectDuration");
+        if (pCompound.getInt("Delay") > 0)
+            setDelay(pCompound.getInt("Delay"));
         this.setDamage(pCompound.getFloat("Damage"));
         if (pCompound.getBoolean("Circular"))
             setCircular();

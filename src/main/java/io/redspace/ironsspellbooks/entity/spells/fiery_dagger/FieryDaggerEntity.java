@@ -4,7 +4,9 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.FireBossEntity;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
+import io.redspace.ironsspellbooks.entity.spells.magma_ball.FireField;
 import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -19,6 +21,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
@@ -78,6 +81,18 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
         return explosionRadius > 0;
     }
 
+    private void createFireField() {
+        FireField fireField = new FireField(this.level);
+        fireField.setOwner(level.getNearestEntity(FireBossEntity.class, TargetingConditions.forNonCombat().ignoreLineOfSight().ignoreInvisibilityTesting(), null, getX(), getY(), getZ(), this.getBoundingBox().inflate(32)));
+        fireField.setPos(this.position());
+        fireField.setRadius(this.explosionRadius + 1);
+        fireField.setCircular();
+        fireField.setDamage(this.getDamage());
+        fireField.setDuration(20 * 15);
+        fireField.setDelay(this.delay + 15);
+        level.addFreshEntity(fireField);
+    }
+
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
@@ -121,6 +136,7 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
                 level.addFreshEntity(dagger);
             }
         }
+        createFireField();
     }
 
     @Override

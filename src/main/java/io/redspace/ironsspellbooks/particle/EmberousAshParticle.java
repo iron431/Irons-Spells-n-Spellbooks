@@ -74,9 +74,8 @@ public class EmberousAshParticle extends TextureSheetParticle {
 
     @Override
     public ParticleRenderType getRenderType() {
-        return ZapParticle.PARTICLE_EMISSIVE;
+        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
-
 
     @OnlyIn(Dist.CLIENT)
     public static class Provider implements ParticleProvider<SimpleParticleType> {

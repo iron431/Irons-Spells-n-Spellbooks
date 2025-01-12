@@ -55,9 +55,9 @@ public class FieryDaggerZoneAbilityGoal extends AnimatedActionGoal<FireBossEntit
             Vec3 start = mob.getEyePosition();
             Vec3 targetPos = target.position();
             Vec3 deltaAim = targetPos.subtract(start);
-            // throw 3 daggers at 30 degree angles, centered around our target's postion
+            // throw 3 daggers at 45 degree angles, centered around our target's postion
             for (int i = 0; i < 3; i++) {
-                Vec3 aim = start.add(deltaAim.yRot(Mth.PI / 6 * (i - 1)));
+                Vec3 aim = start.add(deltaAim.yRot(Mth.PI / 4 * (i - 1)));
                 int delay = Utils.random.nextIntBetweenInclusive(10, 40);
 
                 FieryDaggerEntity dagger = new FieryDaggerEntity(mob.level);
@@ -69,7 +69,7 @@ public class FieryDaggerZoneAbilityGoal extends AnimatedActionGoal<FireBossEntit
                 dagger.setNoGravity(false);
 
                 Vec3 horizontal = aim.subtract(start).multiply(1, 0, 1);
-                double horizontalSpeed = 1 * Mth.cos(Mth.PI * .25f);
+                double horizontalSpeed = 1 * Mth.cos(Mth.PI * .25f) + 0.5; // + 0.5 for extra oomph
                 double distance = horizontal.length();
                 double ticks = distance / horizontalSpeed;
 
