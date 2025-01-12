@@ -32,7 +32,7 @@ public class FieryDaggerSwarmAbilityGoal extends AnimatedActionGoal<FireBossEnti
 
     @Override
     protected int getCooldown() {
-        return 20 * 4 + Utils.random.nextInt(41);
+        return 20 * 3 + Utils.random.nextInt(41);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class FieryDaggerSwarmAbilityGoal extends AnimatedActionGoal<FireBossEnti
                 dagger.setTarget(mob.getTarget());
                 dagger.setPos(pos.add(offset.yRot(mob.getYRot())));
                 dagger.delay = delay + i * 2;
-                dagger.setDamage((float) (mob.getAttributeValue(Attributes.ATTACK_DAMAGE) * .25));
+                dagger.setDamage((float) (mob.getAttributeValue(Attributes.ATTACK_DAMAGE) * .75));
                 mob.level.addFreshEntity(dagger);
             }
         }

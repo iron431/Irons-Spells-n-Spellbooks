@@ -544,12 +544,12 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     public static AttributeSupplier.Builder prepareAttributes() {
         return LivingEntity.createLivingAttributes()
-                .add(Attributes.ATTACK_DAMAGE, 10.0)
+                .add(Attributes.ATTACK_DAMAGE, 8.0)
                 .add(AttributeRegistry.SPELL_POWER, 1.15)
                 .add(Attributes.ARMOR, 15)
                 .add(AttributeRegistry.SPELL_RESIST, 1)
                 .add(AttributeRegistry.FIRE_MAGIC_RESIST, 1.5)
-                .add(Attributes.MAX_HEALTH, 1000)
+                .add(Attributes.MAX_HEALTH, 800)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
                 .add(Attributes.ATTACK_KNOCKBACK, .6)
                 .add(Attributes.FOLLOW_RANGE, 48.0)
@@ -635,7 +635,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             pAmount *= 0.25f;
         }
         if (isSoulMode()) {
-            pAmount *= 0.5f;
+            pAmount *= 0.4f;
         }
         return super.hurt(pSource, pAmount);
     }

@@ -29,7 +29,7 @@ public class FieryDaggerZoneAbilityGoal extends AnimatedActionGoal<FireBossEntit
 
     @Override
     protected int getCooldown() {
-        return 20 * 4 + Utils.random.nextInt(41);
+        return 20 + Utils.random.nextInt(51);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class FieryDaggerZoneAbilityGoal extends AnimatedActionGoal<FireBossEntit
             // throw 3 daggers at 30 degree angles, centered around our target's postion
             for (int i = 0; i < 3; i++) {
                 Vec3 aim = start.add(deltaAim.yRot(Mth.PI / 6 * (i - 1)));
-                int delay = Utils.random.nextIntBetweenInclusive(20, 50);
+                int delay = Utils.random.nextIntBetweenInclusive(10, 40);
 
                 FieryDaggerEntity dagger = new FieryDaggerEntity(mob.level);
                 dagger.setOwner(mob);
