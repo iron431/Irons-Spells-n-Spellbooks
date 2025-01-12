@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
+import io.redspace.ironsspellbooks.api.util.FogManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -81,6 +82,7 @@ public class ClientPlayerEvents {
         DeadKingMusicManager.hardStop();
         GuidingBoltManager.handleClientLogout();
         ClientMagicData.spellSelectionManager = null;
+        FogManager.clear();
         if (event.getPlayer() != null) {
             ClientMagicData.resetClientCastState(event.getPlayer().getUUID());
         }

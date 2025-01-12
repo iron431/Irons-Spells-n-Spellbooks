@@ -13,7 +13,6 @@ import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
 import io.redspace.ironsspellbooks.effect.MagicMobEffect;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
@@ -69,8 +68,6 @@ public class CounterspellSpell extends AbstractSpell {
         Vec3 forward = entity.getForward().normalize();
         if (hitResult instanceof EntityHitResult entityHitResult) {
             var hitEntity = entityHitResult.getEntity();
-
-            //if (entityHitResult.getEntity() instanceof AntiMagicSusceptible antiMagicSusceptible && !(antiMagicSusceptible instanceof MagicSummon summon && summon.getSummoner() == entity)) {
             if (!(NeoForge.EVENT_BUS.post(new CounterSpellEvent(entity, hitEntity)).isCanceled())) {
                 if (hitEntity instanceof AntiMagicSusceptible antiMagicSusceptible) {
                     if (antiMagicSusceptible instanceof IMagicSummon summon) {
@@ -81,8 +78,6 @@ public class CounterspellSpell extends AbstractSpell {
                         } else {
                             antiMagicSusceptible.onAntiMagic(playerMagicData);
                         }
-
-
                     } else {
                         antiMagicSusceptible.onAntiMagic(playerMagicData);
                     }
