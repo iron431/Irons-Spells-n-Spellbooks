@@ -68,12 +68,4 @@ public class ApothecaristModel extends AbstractSpellCastingMobModel {
         }
         super.setCustomAnimations(entity, instanceId, animationState);
     }
-
-    @Override
-    protected Stream<GeoBone> getBonesForStackReset() {
-        return Streams.concat(Stream.of(
-                this.getAnimationProcessor().getBone("left_ear"),
-                this.getAnimationProcessor().getBone("right_ear")
-        ), super.getBonesForStackReset());
-    }
 }

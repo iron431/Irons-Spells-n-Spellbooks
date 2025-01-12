@@ -119,6 +119,7 @@ public class SoundRegistry {
     public static DeferredHolder<SoundEvent, SoundEvent> FIERY_DAGGER_THROW = registerSoundEvent("entity.fiery_dagger.throw");
     public static DeferredHolder<SoundEvent, SoundEvent> SOULCALLER_TOLL_SUCCESS = registerSoundEvent("item.cinderous_soulcaller.toll.success");
     public static DeferredHolder<SoundEvent, SoundEvent> SOULCALLER_TOLL_FAILURE = registerSoundEvent("item.cinderous_soulcaller.toll.failure");
+    public static DeferredHolder<SoundEvent, SoundEvent> GENERIC_BLADE_SWING = registerSoundEvent("entity.generic.swing_blade");
 
     public static DeferredHolder<SoundEvent, SoundEvent> HELLRAZOR_SWING = registerSoundEvent("item.hellrazor.swing");
     public static DeferredHolder<SoundEvent, SoundEvent> FIRE_ERUPTION_SLAM = registerSoundEvent("entity.fire_eruption.slam");

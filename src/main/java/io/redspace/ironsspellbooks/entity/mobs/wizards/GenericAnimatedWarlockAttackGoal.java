@@ -7,7 +7,7 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.WarlockAttackGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.network.SyncAnimationPacket;
-import net.minecraft.sounds.SoundEvents;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,17 +22,20 @@ import java.util.List;
 public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimatedAttacker & IMagicEntity> extends WarlockAttackGoal {
     public GenericAnimatedWarlockAttackGoal(T abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval) {
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);
-        nextAttack = randomizeNextAttack(0);
         this.wantsToMelee = true;
         this.mob = abstractSpellCastingMob; //shadows super.mob
+        nextAttack = randomizeNextAttack(0);
     }
 
-    List<AttackAnimationData> moveList = new ArrayList<>();
+    protected List<AttackAnimationData> moveList = new ArrayList<>();
     protected final T mob;
     protected int meleeAnimTimer = -1;
     public @Nullable AttackAnimationData currentAttack;
     public @Nullable AttackAnimationData nextAttack;
     public @Nullable AttackAnimationData queueCombo;
+    /**
+     * chance that, on a successful hit, we skip our attack delay and immediately attack again. chance is doubled against blocking targets
+     */
     float comboChance = .3f;
 
     @Override
@@ -124,7 +127,7 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
         }
     }
 
-    private AttackAnimationData randomizeNextAttack(float distanceSquared) {
+    protected AttackAnimationData randomizeNextAttack(float distanceSquared) {
         //TODO: IAttackAnimationProvider?
         if (this.moveList.isEmpty()) {
             return null;
@@ -173,7 +176,7 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
     }
 
     public void playSwingSound() {
-        mob.playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 1, Mth.randomBetweenInclusive(mob.getRandom(), 12, 18) * .1f);
+        mob.playSound(SoundRegistry.GENERIC_BLADE_SWING.get(), 1, Mth.randomBetweenInclusive(mob.getRandom(), 12, 18) * .1f);
     }
 
     public GenericAnimatedWarlockAttackGoal<T> setMoveset(List<AttackAnimationData> moveset) {

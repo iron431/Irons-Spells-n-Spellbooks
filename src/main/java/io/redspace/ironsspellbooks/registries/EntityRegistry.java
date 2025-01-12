@@ -13,6 +13,7 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.alchemist.ApothecaristEnt
 import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cultist.CultistEntity;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.cursed_armor_stand.CursedArmorStandEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.FireBossEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.priest.PriestEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
@@ -539,6 +540,13 @@ public class EntityRegistry {
                     .sized(.5f, .5f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "fiery_dagger").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<CursedArmorStandEntity>> CURSED_ARMOR_STAND =
+            ENTITIES.register("cursed_armor_stand", () -> EntityType.Builder.of(CursedArmorStandEntity::new, MobCategory.MONSTER)
+                    .sized(.6f, 1.8f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "cursed_armor_stand").toString()));
+
 
 }
 
