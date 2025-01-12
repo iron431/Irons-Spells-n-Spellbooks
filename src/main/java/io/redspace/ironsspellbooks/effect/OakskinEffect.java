@@ -7,7 +7,6 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
 
@@ -15,6 +14,7 @@ import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 public class OakskinEffect extends CustomDescriptionMobEffect {
     public static final float REDUCTION_PER_LEVEL = .05f;
     public static final float BASE_REDUCTION = .10f;
+    public static final float SLOWNESS_MAGNITUDE_PER_LEVEL = .04f;
 
     public OakskinEffect(MobEffectCategory pCategory, int pColor) {
         super(pCategory, pColor);
