@@ -69,11 +69,6 @@ public class CounterspellSpell extends AbstractSpell {
         Vec3 forward = entity.getForward().normalize();
         if (hitResult instanceof EntityHitResult entityHitResult) {
             var hitEntity = entityHitResult.getEntity();
-            double distance = entity.distanceTo(hitEntity);
-            for (float i = 1; i < distance; i += .5f) {
-                Vec3 pos = entity.getEyePosition().add(forward.scale(i));
-                MagicManager.spawnParticles(world, ParticleTypes.ENCHANT, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0, false);
-            }
 
             //if (entityHitResult.getEntity() instanceof AntiMagicSusceptible antiMagicSusceptible && !(antiMagicSusceptible instanceof MagicSummon summon && summon.getSummoner() == entity)) {
             if (!(NeoForge.EVENT_BUS.post(new CounterSpellEvent(entity, hitEntity)).isCanceled())) {
@@ -105,15 +100,12 @@ public class CounterspellSpell extends AbstractSpell {
                         }
                     }
                 }
-            } else {
-                for (float i = 1; i < 40; i += .5f) {
-                    Vec3 pos = entity.getEyePosition().add(forward.scale(i));
-                    MagicManager.spawnParticles(world, ParticleTypes.ENCHANT, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0, false);
-                    if (!world.getBlockState(BlockPos.containing(pos)).isAir()) {
-                        break;
-                    }
-                }
             }
+        }
+        double distance = entity.position().distanceTo(hitResult.getLocation());
+        for (float i = 1; i < distance; i += .5f) {
+            Vec3 pos = entity.getEyePosition().add(forward.scale(i));
+            MagicManager.spawnParticles(world, ParticleTypes.ENCHANT, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0, false);
         }
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);
     }
