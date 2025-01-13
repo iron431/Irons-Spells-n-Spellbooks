@@ -70,6 +70,7 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -88,7 +89,8 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     public void handleClientEvent(byte eventId) {
         switch (eventId) {
             case STOP_FOG -> FogManager.stopEvent(this.uuid);
-            case START_FOG -> FogManager.createEvent(this.uuid, new FogManager.FogEvent(Optional.empty(), true));
+            case START_FOG ->
+                    FogManager.createEvent(this.uuid, new FogManager.FogEvent(Optional.empty(), Optional.of(new Vec2(-1, 8)), true));
         }
     }
 
@@ -113,7 +115,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     private static final EntityDataAccessor<Boolean> DATA_SOUL_MODE = SynchedEntityData.defineId(FireBossEntity.class, EntityDataSerializers.BOOLEAN);
     private static final AttributeModifier SOUL_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.05, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-    private static final AttributeModifier SOUL_SCALE_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.20, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    private static final AttributeModifier SOUL_SCALE_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
     @Override
     public void kill() {
@@ -569,7 +571,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
                 .add(Attributes.ATTACK_KNOCKBACK, .6)
                 .add(Attributes.FOLLOW_RANGE, 48.0)
-                .add(Attributes.SCALE, 1.6)
+                .add(Attributes.SCALE, 1.75)
                 .add(Attributes.GRAVITY, 0.03)
                 .add(Attributes.ENTITY_INTERACTION_RANGE, 3)
                 .add(Attributes.STEP_HEIGHT, 1)
