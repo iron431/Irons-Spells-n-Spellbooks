@@ -141,14 +141,12 @@ public class GenerateSiteData {
                                 } else {
                                     appendToBuilder2(armorBuilder, name, itemResource, tooltip);
                                 }
-                            } else if (item instanceof UniqueSpellBook) {
-                                //should never have recipe
-                                appendToBuilder2(spellbookBuilder, name, itemResource, getSpells(new ItemStack(item)));
                             } else if (item instanceof SpellBook || item instanceof ExtendedSwordItem || item instanceof CastingItem || item instanceof ProjectileWeaponItem || item instanceof UniqueItem) {
+                                var group = item instanceof SpellBook ? "Spellbooks" : (item instanceof CastingItem ? "Staves" : "Weapons");
                                 if (recipe != null) {
-                                    appendToBuilder(spellbookBuilder, recipe, getRecipeData(recipe), item instanceof SpellBook ? "Spellbooks" : "Tools", tooltip);
+                                    appendToBuilder(spellbookBuilder, recipe, getRecipeData(recipe), group, tooltip);
                                 } else {
-                                    appendToBuilder2(spellbookBuilder, name, itemResource, tooltip);
+                                    appendToBuilder3(spellbookBuilder, name, itemResource, group, tooltip);
                                 }
                             } else if (item instanceof CurioBaseItem) {
                                 if (recipe != null) {

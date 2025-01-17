@@ -33,6 +33,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
@@ -132,7 +133,8 @@ public class SacrificeSpell extends AbstractSpell {
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
-    private float getDamage(int spellLevel, LivingEntity caster) {
-        return (10 + getSpellPower(spellLevel, caster)) * (float)caster.getAttributeValue(AttributeRegistry.SUMMON_DAMAGE);
+    private float getDamage(int spellLevel, @Nullable LivingEntity caster) {
+        return (10 + getSpellPower(spellLevel, caster)) *
+               (caster == null ? 1f : (float) caster.getAttributeValue(AttributeRegistry.SUMMON_DAMAGE));
     }
 }
