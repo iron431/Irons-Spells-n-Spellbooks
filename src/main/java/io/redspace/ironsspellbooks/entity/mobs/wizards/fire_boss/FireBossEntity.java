@@ -70,7 +70,6 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -90,7 +89,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         switch (eventId) {
             case STOP_FOG -> FogManager.stopEvent(this.uuid);
             case START_FOG ->
-                    FogManager.createEvent(this.uuid, new FogManager.FogEvent(Optional.empty(), Optional.of(new Vec2(-1, 8)), true));
+                    FogManager.createEvent(this.uuid, new FogManager.FogEvent(Optional.empty(), true));
         }
     }
 

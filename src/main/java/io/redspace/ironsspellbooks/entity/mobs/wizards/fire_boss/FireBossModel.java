@@ -21,8 +21,8 @@ import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
 
 public class FireBossModel extends AbstractSpellCastingMobModel {
-    public static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/tyros.png");
-    public static final ResourceLocation TEXTURE_SOUL_MODE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/tyros_soul_mode.png");
+    public static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/fire_boss/tyros.png");
+    public static final ResourceLocation TEXTURE_SOUL_MODE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/fire_boss/tyros_soul_mode.png");
     public static final ResourceLocation MODEL = new ResourceLocation(IronsSpellbooks.MODID, "geo/tyros.geo.json");
     private static final float tilt = 15 * Mth.DEG_TO_RAD;
     private static final Vector3f forward = new Vector3f(0, 0, Mth.sin(tilt) * -12);
@@ -102,7 +102,7 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
                 lastTick = entity.tickCount;
                 Vec3 entityMotion = entity.getDeltaMovement().add(0, entity.getGravity(), 0);
                 Vector3d headPos = particleEmitter.getWorldPosition().add(entityMotion.x * 3, entityMotion.y * 3, entityMotion.z * 3).add(0, 0.2 * entity.getScale(), 0);
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < 1; i++) {
                     Vec3 random = Utils.getRandomVec3(0.25);
                     entity.level.addParticle(ParticleHelper.FIRE, headPos.x + random.x, headPos.y + random.y, headPos.z + random.z, entityMotion.x * .5, entityMotion.y * .5, entityMotion.z * .5);
                 }

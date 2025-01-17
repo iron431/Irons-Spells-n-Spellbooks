@@ -50,7 +50,7 @@ public class EmberousAshParticle extends TextureSheetParticle {
 
     @Override
     public float getQuadSize(float pScaleFactor) {
-        return Mth.lerp((age + pScaleFactor) / (float) lifetime, super.getQuadSize(pScaleFactor), 0);
+        return Mth.lerp((age + pScaleFactor) / (float) lifetime, super.getQuadSize(pScaleFactor), 0) * Mth.clamp((age + pScaleFactor) / 5f, 0, 1);
     }
 
     @Override
