@@ -14,7 +14,6 @@ import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.Abstra
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
-import io.redspace.ironsspellbooks.entity.mobs.goals.melee.LungeKeyframe;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
 import io.redspace.ironsspellbooks.entity.spells.FireEruptionAoe;
 import io.redspace.ironsspellbooks.network.EntityEventPacket;
@@ -245,14 +244,8 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                                 .area(0.25f)
                                 .rangeMultiplier(3f)
                                 .attacks(
-                                        new FireBossAttackKeyframe(16, new Vec3(0, 0, 0.5), new Vec3(0, .1, 0.8), new FireBossAttackKeyframe.SwingData(false, true)),
-                                        new FireBossAttackKeyframe(36, new Vec3(0, 0, 1), new Vec3(0, .3, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
-                                )
-                                .lunges(
-                                        new LungeKeyframe(14, new Vec3(0, 0, 0.2)),
-                                        new LungeKeyframe(18, new Vec3(0, 0, 0.2)),
-                                        new LungeKeyframe(34, new Vec3(0, 0, 0.2)),
-                                        new LungeKeyframe(38, new Vec3(0, 0, 0.2))
+                                        new FireBossAttackKeyframe(16, new Vec3(0, 0.1, 0.75), new Vec3(0, .1, 0.8), new FireBossAttackKeyframe.SwingData(false, true)),
+                                        new FireBossAttackKeyframe(36, new Vec3(0, 0.1, 1.25), new Vec3(0, .3, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
                                 )
                                 .build()
 

@@ -6,7 +6,6 @@ import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WarlockAttackGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
-import io.redspace.ironsspellbooks.entity.mobs.goals.melee.LungeKeyframe;
 import io.redspace.ironsspellbooks.network.SyncAnimationPacket;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.util.Mth;
@@ -66,12 +65,6 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
             if (currentAttack.isHitFrame(meleeAnimTimer)) {
                 AttackKeyframe attackData = currentAttack.getHitFrame(meleeAnimTimer);
                 onHitFrame(attackData, meleeRange);
-            }
-            if (currentAttack.isLungeFrame(meleeAnimTimer)) {
-                LungeKeyframe lungeFrame = currentAttack.getLungeFrame(meleeAnimTimer);
-                float f = -Utils.getAngle(mob.getX(), mob.getZ(), target.getX(), target.getZ()) - Mth.HALF_PI;
-                Vec3 lunge = lungeFrame.lungeVector().yRot(f);
-                doLunge(lunge, meleeRange);
             }
             if (currentAttack.canCancel) {
                 Vec3 delta = mob.position().subtract(target.position());
