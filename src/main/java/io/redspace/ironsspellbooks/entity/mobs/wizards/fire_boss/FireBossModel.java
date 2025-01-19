@@ -73,6 +73,18 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
                     transformStack.pushRotation(rightArm, walkDampener, 0, 0);
                 }
             }
+/*            float torsoRot = -15f * Mth.DEG_TO_RAD;
+            float torsoLength = 12f;
+            Vector3f torsoPose = new Vector3f(torsoRot, 0, 0);
+            Vector3f limbPose = new Vector3f(0, torsoLength * (1 - Mth.cos(torsoRot)), torsoLength * Mth.sin(torsoRot));
+            float poseDampener = 0.5f + fireBossEntity.isAnimatingDampener * .5f;
+            torsoPose.mul(poseDampener);
+            limbPose.mul(poseDampener);
+            transformStack.pushPosition(this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM), limbPose);
+            transformStack.pushPosition(this.getAnimationProcessor().getBone(PartNames.LEFT_ARM), limbPose);
+            transformStack.pushPosition(this.getAnimationProcessor().getBone(PartNames.HEAD), limbPose);
+            transformStack.pushPosition(this.getAnimationProcessor().getBone("torso"), limbPose);
+            transformStack.pushRotation(this.getAnimationProcessor().getBone("torso"), torsoPose);*/
         }
 
 

@@ -60,16 +60,27 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
     int fireballcooldown;
 
     @Override
+    protected void doLunge(Vec3 vector, float meleeRange) {
+        // due to greatly varying melee ranges based on specific attacks, we want to scale the lunge vector based on our distance to the target to effectively reach them
+        // if the average "normal" distance is ~4 blocks, create ratio of current:normal and scale the vector by said amount
+        float avgMultiplier = mob.distanceTo(target) * .25f;
+        super.doLunge(vector.scale(avgMultiplier), meleeRange);
+    }
+
+    @Override
     protected void handleAttackLogic(double distanceSquared) {
         var meleeRange = meleeRange();
         if (fireballcooldown > 0) {
+            // poor man's way to clean up the fireball attribute
             if (fireballcooldown == 20 * 10 - 20) {
                 mob.getAttribute(AttributeRegistry.CAST_TIME_REDUCTION).removeModifier(MODIFIER_FIRE_BALLER);
             }
             fireballcooldown--;
         } else {
+            // if we are very ranged (and preferably high in the sky) launch down a fireball
             if (!mob.onGround() && distanceSquared > meleeRange * meleeRange * 2 * 2) {
                 if (!isActing()) {
+                    // insta-cast that fireball
                     mob.getAttribute(AttributeRegistry.CAST_TIME_REDUCTION).addOrUpdateTransientModifier(MODIFIER_FIRE_BALLER);
                     mob.initiateCastSpell(SpellRegistry.FIREBALL_SPELL.get(), 5);
                     fireballcooldown = 20 * 10;
@@ -78,6 +89,8 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
             }
         }
         if (meleeAnimTimer > 0 && currentAttack != null) {
+            // in order to make more seamless animation -> action transitions, we cut our ai pause short if we have encountered our last frame
+            // the animation still plays out, creating a smoother overall transition
             int shortcut = 5;
             if (meleeAnimTimer < shortcut) {
                 if (currentAttack.attacks.keySet().intStream().noneMatch(i -> i > currentAttack.lengthInTicks - shortcut)) {
