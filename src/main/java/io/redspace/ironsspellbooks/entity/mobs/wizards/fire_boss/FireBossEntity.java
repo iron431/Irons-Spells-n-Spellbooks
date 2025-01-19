@@ -13,9 +13,8 @@ import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
-import io.redspace.ironsspellbooks.entity.mobs.goals.SpellBarrageGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
-import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
+import io.redspace.ironsspellbooks.entity.mobs.goals.melee.LungeKeyframe;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
 import io.redspace.ironsspellbooks.entity.spells.FireEruptionAoe;
 import io.redspace.ironsspellbooks.network.EntityEventPacket;
@@ -88,8 +87,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     public void handleClientEvent(byte eventId) {
         switch (eventId) {
             case STOP_FOG -> FogManager.stopEvent(this.uuid);
-            case START_FOG ->
-                    FogManager.createEvent(this.uuid, new FogManager.FogEvent(Optional.empty(), true));
+            case START_FOG -> FogManager.createEvent(this.uuid, new FogManager.FogEvent(Optional.empty(), true));
         }
     }
 
@@ -205,55 +203,62 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.attackGoal = (FireBossAttackGoal) new FireBossAttackGoal(this, 1.4f, 50, 75)
+        this.attackGoal = (FireBossAttackGoal) new FireBossAttackGoal(this, 0.8f, 50, 75)
                 .setMoveset(List.of(
-                        AttackAnimationData.builder("scythe_backpedal")
-                                .length(40)
-                                .attacks(
-                                        new FireBossAttackKeyframe(20, new Vec3(0, .3, -2), new FireBossAttackKeyframe.SwingData(false, true))
-                                )
-                                .build(),
-                        AttackAnimationData.builder("scythe_low_rightward_sweep")
-                                .length(40)
-                                .area(0.25f)
-                                .attacks(
-                                        new FireBossAttackKeyframe(20, new Vec3(0, .1, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
-                                )
-                                .build(),
-                        AttackAnimationData.builder("scythe_sideslash_downslash")
-                                .length(54)
-                                .attacks(
-                                        new FireBossAttackKeyframe(18, new Vec3(0, 0, .45), new FireBossAttackKeyframe.SwingData(false, true)),
-                                        new FireBossAttackKeyframe(32, new Vec3(0, 0, .45), new FireBossAttackKeyframe.SwingData(true, true)))
-                                .build(),
-                        AttackAnimationData.builder("scythe_jump_combo")
-                                .length(45)
-                                .cancellable()
-                                .attacks(
-                                        new FireBossAttackKeyframe(20, new Vec3(0, 1, 0), new Vec3(0, 1.15, .1), new FireBossAttackKeyframe.SwingData(true, false)),
-                                        new FireBossAttackKeyframe(35, new Vec3(0, 0, -.2), new Vec3(0, 0, 0.5), new FireBossAttackKeyframe.SwingData(false, false))
-                                )
-                                .build(),
-                        AttackAnimationData.builder("scythe_downslash_pull")
-                                .length(60)
-                                .cancellable()
-                                .attacks(
-                                        new FireBossAttackKeyframe(22, new Vec3(0, 0, .5f), new Vec3(0, -.2, 0), new FireBossAttackKeyframe.SwingData(true, true)),
-                                        new AttackKeyframe(38, new Vec3(0, .2, -0.8), new Vec3(0, .3, -1.8))
-                                )
-                                .build(),
+//                        AttackAnimationData.builder("scythe_backpedal")
+//                                .length(40)
+//                                .attacks(
+//                                        new FireBossAttackKeyframe(20, new Vec3(0, .3, -2), new FireBossAttackKeyframe.SwingData(false, true))
+//                                )
+//                                .build(),
+//                        AttackAnimationData.builder("scythe_low_rightward_sweep")
+//                                .length(40)
+//                                .area(0.25f)
+//                                .attacks(
+//                                        new FireBossAttackKeyframe(20, new Vec3(0, .1, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
+//                                )
+//                                .build(),
+//                        AttackAnimationData.builder("scythe_sideslash_downslash")
+//                                .length(54)
+//                                .attacks(
+//                                        new FireBossAttackKeyframe(18, new Vec3(0, 0, .45), new FireBossAttackKeyframe.SwingData(false, true)),
+//                                        new FireBossAttackKeyframe(32, new Vec3(0, 0, .45), new FireBossAttackKeyframe.SwingData(true, true)))
+//                                .build(),
+//                        AttackAnimationData.builder("scythe_jump_combo")
+//                                .length(45)
+//                                .cancellable()
+//                                .attacks(
+//                                        new FireBossAttackKeyframe(20, new Vec3(0, 1, 0), new Vec3(0, 1.15, .1), new FireBossAttackKeyframe.SwingData(true, false)),
+//                                        new FireBossAttackKeyframe(35, new Vec3(0, 0, -.2), new Vec3(0, 0, 0.5), new FireBossAttackKeyframe.SwingData(false, false))
+//                                )
+//                                .build(),
+//                        AttackAnimationData.builder("scythe_downslash_pull")
+//                                .length(60)
+//                                .cancellable()
+//                                .attacks(
+//                                        new FireBossAttackKeyframe(22, new Vec3(0, 0, .5f), new Vec3(0, -.2, 0), new FireBossAttackKeyframe.SwingData(true, true)),
+//                                        new AttackKeyframe(38, new Vec3(0, .2, -0.8), new Vec3(0, .3, -1.8))
+//                                )
+//                                .build(),
                         AttackAnimationData.builder("scythe_horizontal_slash_spin")
                                 .length(53)
                                 .area(0.25f)
+                                .rangeMultiplier(3f)
                                 .attacks(
-                                        new FireBossAttackKeyframe(16, new Vec3(0, 0, -0.5), new Vec3(0, .1, -1), new FireBossAttackKeyframe.SwingData(false, true)),
-                                        new FireBossAttackKeyframe(36, new Vec3(0, 0, 1), new Vec3(0, .3, 1), new FireBossAttackKeyframe.SwingData(false, false))
+                                        new FireBossAttackKeyframe(16, new Vec3(0, 0, 0.5), new Vec3(0, .1, 0.8), new FireBossAttackKeyframe.SwingData(false, true)),
+                                        new FireBossAttackKeyframe(36, new Vec3(0, 0, 1), new Vec3(0, .3, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
+                                )
+                                .lunges(
+                                        new LungeKeyframe(14, new Vec3(0, 0, 0.2)),
+                                        new LungeKeyframe(18, new Vec3(0, 0, 0.2)),
+                                        new LungeKeyframe(34, new Vec3(0, 0, 0.2)),
+                                        new LungeKeyframe(38, new Vec3(0, 0, 0.2))
                                 )
                                 .build()
 
                 ))
                 .setComboChance(1f)
-                .setMeleeAttackInverval(0, 20)
+                .setMeleeAttackInverval(20, 20)
                 .setMeleeBias(1f, 1f)
                 .setSpells(
                         List.of(SpellRegistry.FIRE_ARROW_SPELL.get(), SpellRegistry.FIRE_ARROW_SPELL.get(), SpellRegistry.SCORCH_SPELL.get()),
@@ -261,15 +266,13 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                         List.of(),
                         List.of()
                 );
-        this.goalSelector.addGoal(2, new FieryDaggerSwarmAbilityGoal(this));
-        this.goalSelector.addGoal(2, new FieryDaggerZoneAbilityGoal(this));
-        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.RAISE_HELL_SPELL.get(), 5, 5, 80, 240, 1));
+        //this.goalSelector.addGoal(2, new FieryDaggerSwarmAbilityGoal(this));
+        //this.goalSelector.addGoal(2, new FieryDaggerZoneAbilityGoal(this));
+        //this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.RAISE_HELL_SPELL.get(), 5, 5, 80, 240, 1));
         this.goalSelector.addGoal(3, attackGoal);
 
         this.goalSelector.addGoal(4, new PatrolNearLocationGoal(this, 30, .75f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        //this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        //this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Pig.class, true));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, DeadKingBoss.class, true));

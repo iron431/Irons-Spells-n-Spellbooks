@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WarlockAttackGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
+import io.redspace.ironsspellbooks.entity.mobs.goals.melee.LungeKeyframe;
 import io.redspace.ironsspellbooks.network.SyncAnimationPacket;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.util.Mth;
@@ -50,7 +51,9 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
     @Override
     protected void handleAttackLogic(double distanceSquared) {
         var meleeRange = meleeRange();
-        if (meleeAnimTimer < 0 && (!wantsToMelee || distanceSquared > meleeRange * meleeRange || mob.isCasting())) {
+        float rangeMultiplier = currentAttack == null ? 1f : currentAttack.rangeMultiplier;
+        float procRangeSqr = meleeRange * meleeRange * rangeMultiplier * rangeMultiplier * 1.2f * 1.2f;
+        if (meleeAnimTimer < 0 && (!wantsToMelee || distanceSquared > procRangeSqr || mob.isCasting())) {
             super.handleAttackLogic(distanceSquared);
             return;
         }
@@ -63,6 +66,12 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
             if (currentAttack.isHitFrame(meleeAnimTimer)) {
                 AttackKeyframe attackData = currentAttack.getHitFrame(meleeAnimTimer);
                 onHitFrame(attackData, meleeRange);
+            }
+            if (currentAttack.isLungeFrame(meleeAnimTimer)) {
+                LungeKeyframe lungeFrame = currentAttack.getLungeFrame(meleeAnimTimer);
+                float f = -Utils.getAngle(mob.getX(), mob.getZ(), target.getX(), target.getZ()) - Mth.HALF_PI;
+                Vec3 lunge = lungeFrame.lungeVector().yRot(f);
+                doLunge(lunge, meleeRange);
             }
             if (currentAttack.canCancel) {
                 Vec3 delta = mob.position().subtract(target.position());
@@ -82,7 +91,7 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
             meleeAnimTimer = -1;
         } else {
             //Handling attack delay
-            if (distanceSquared < meleeRange * meleeRange * 1.2 * 1.2) {
+            if (distanceSquared < procRangeSqr) {
                 if (hasLineOfSight && --this.attackTime == 0) {
                     doMeleeAction();
                 } else if (this.attackTime < 0) {
@@ -96,7 +105,7 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
         playSwingSound();
         float f = -Utils.getAngle(mob.getX(), mob.getZ(), target.getX(), target.getZ()) - Mth.HALF_PI;
         Vec3 lunge = attackKeyframe.lungeVector().yRot(f);
-        mob.push(lunge.x, lunge.y, lunge.z);
+        doLunge(lunge, meleeRange);
 
         var forward = mob.getForward();
         // if this is an area attack, collect all nearby like-entities, and evaluate a dot product to determine if our area cone can hit them
@@ -110,6 +119,10 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
                 handleDamaging(target, attackKeyframe);
             }
         }
+    }
+
+    protected void doLunge(Vec3 vector, float meleeRange) {
+        mob.push(vector.x, vector.y, vector.z);
     }
 
     private void handleDamaging(LivingEntity target, AttackKeyframe attackData) {
