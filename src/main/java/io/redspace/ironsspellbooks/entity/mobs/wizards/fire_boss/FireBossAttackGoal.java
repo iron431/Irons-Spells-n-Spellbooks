@@ -26,9 +26,6 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
     }
 
     @Override
-    /**
-     * Expose to package as protected
-     */
     protected void doMovement(double distanceSquared) {
         super.doMovement(distanceSquared);
     }
@@ -59,13 +56,13 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
 
     int fireballcooldown;
 
-    @Override
-    protected void doLunge(Vec3 vector, float meleeRange) {
-        // due to greatly varying melee ranges based on specific attacks, we want to scale the lunge vector based on our distance to the target to effectively reach them
-        // if the average "normal" distance is ~4 blocks, create ratio of current:normal and scale the vector by said amount
-        float avgMultiplier = mob.distanceTo(target) * .25f;
-        super.doLunge(vector.scale(avgMultiplier), meleeRange);
-    }
+//    @Override
+//    protected void doLunge(Vec3 vector, float meleeRange) {
+//        // due to greatly varying melee ranges based on specific attacks, we want to scale the lunge vector based on our distance to the target to effectively reach them
+//        // if the average "normal" distance is ~4 blocks, create ratio of current:normal and scale the vector by said amount
+//        //float avgMultiplier = mob.distanceTo(target) * .25f;
+//        //super.doLunge(vector.scale(avgMultiplier), meleeRange);
+//    }
 
     @Override
     protected void handleAttackLogic(double distanceSquared) {
@@ -99,6 +96,14 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
             }
         }
         super.handleAttackLogic(distanceSquared);
+    }
+
+
+    @Override
+    protected void doMeleeAction() {
+        //https://www.desmos.com/calculator/blhkot5psr
+        mob.getMoveControl().triggerCustomMovement(24, f -> new Vec3(0, 0, currentAttack.rangeMultiplier));
+        super.doMeleeAction();
     }
 
     @Override
