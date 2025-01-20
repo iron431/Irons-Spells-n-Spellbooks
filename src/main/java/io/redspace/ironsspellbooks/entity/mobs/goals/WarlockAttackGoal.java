@@ -50,7 +50,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
 
     @Override
     protected void doMovement(double distanceSquared) {
-        if (this.attackTime > 0) {
+        if (!wantsToMelee) {
             super.doMovement(distanceSquared);
             return;
         }
