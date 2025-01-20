@@ -27,8 +27,9 @@ public class FireBossMoveControl extends MoveControl {
                 float f = Math.clamp(customMovementTimer / (float) customMovementDuration, 0, 1f);
                 Vec3 movement = currentCustomMovementControl.apply(f).scale(mob.getAttributeValue(Attributes.MOVEMENT_SPEED));
                 float angle = -Utils.getAngle(mob.getX(), mob.getZ(), target.getX(), target.getZ()) - Mth.HALF_PI;
-                mob.setDeltaMovement(mob.getDeltaMovement().add(movement.yRot(angle).scale((1 - f) * (1 - f))));
-                if (mob.distanceToSqr(target) < 2.5 * 2.5) {
+                mob.setDeltaMovement(mob.getDeltaMovement().add(movement.yRot(angle).scale(f * f)));
+                float slowdownRange = (float) mob.getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE) * mob.getScale() * .9f;
+                if (mob.distanceToSqr(target) < slowdownRange * slowdownRange) {
                     //rapid decention
                     customMovementTimer -= 2;
                 }

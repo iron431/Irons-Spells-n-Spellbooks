@@ -258,6 +258,7 @@ public class WizardAttackGoal extends Goal {
                 tryJump();
             }
         } else {
+            // no los or we are completely out of range, path towards target
             if (mob.tickCount % 5 == 0) {
                 //TODO: better pathing optimization
                 if (isFlying) {

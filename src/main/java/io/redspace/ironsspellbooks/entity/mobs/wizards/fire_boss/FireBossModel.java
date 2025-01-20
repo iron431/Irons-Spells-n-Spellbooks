@@ -53,9 +53,9 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
             float partialTick = animationState.getPartialTick();
             Vector2f limbSwing = getLimbSwing(entity, entity.walkAnimation, partialTick);
             if (entity.isAnimating()) {
-                fireBossEntity.isAnimatingDampener = Mth.lerp(.3f * partialTick, fireBossEntity.isAnimatingDampener, 0);
+                fireBossEntity.isAnimatingDampener = Mth.lerp(.15f * partialTick, fireBossEntity.isAnimatingDampener, 0);
             } else {
-                fireBossEntity.isAnimatingDampener = Mth.lerp(.1f * partialTick, fireBossEntity.isAnimatingDampener, 1);
+                fireBossEntity.isAnimatingDampener = Mth.lerp(.05f * partialTick, fireBossEntity.isAnimatingDampener, 1);
             }
             if (entity.getMainHandItem().is(ItemRegistry.HELLRAZOR)) {
                 GeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);

@@ -45,7 +45,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "weight": 1,
+          "weight": 3,
           "name": "irons_spellbooks:scroll",
           "functions": [
             {
@@ -59,7 +59,7 @@
         },
         {
           "type": "minecraft:item",
-          "weight": 1,
+          "weight": 3,
           "name": "irons_spellbooks:scroll",
           "functions": [
             {
@@ -76,7 +76,7 @@
         },
         {
           "type": "minecraft:item",
-          "weight": 1,
+          "weight": 2,
           "name": "irons_spellbooks:scroll",
           "functions": [
             {
@@ -95,7 +95,7 @@
         },
         {
           "type": "minecraft:item",
-          "weight": 1,
+          "weight": 4,
           "name": "irons_spellbooks:blank_rune"
         }
       ]

@@ -13,6 +13,7 @@ import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
+import io.redspace.ironsspellbooks.entity.mobs.goals.SpellBarrageGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
@@ -189,13 +190,13 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     public void startSeenByPlayer(ServerPlayer pPlayer) {
         super.startSeenByPlayer(pPlayer);
         this.bossEvent.addPlayer(pPlayer);
-        PacketDistributor.sendToPlayer(pPlayer, new EntityEventPacket<DeadKingBoss>(this, START_FOG));
+        PacketDistributor.sendToPlayer(pPlayer, new EntityEventPacket<FireBossEntity>(this, START_FOG));
     }
 
     public void stopSeenByPlayer(ServerPlayer pPlayer) {
         super.stopSeenByPlayer(pPlayer);
         this.bossEvent.removePlayer(pPlayer);
-        PacketDistributor.sendToPlayer(pPlayer, new EntityEventPacket<DeadKingBoss>(this, STOP_FOG));
+        PacketDistributor.sendToPlayer(pPlayer, new EntityEventPacket<FireBossEntity>(this, STOP_FOG));
     }
 
     FireBossAttackGoal attackGoal;
@@ -266,9 +267,9 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                         List.of(),
                         List.of()
                 );
-        //this.goalSelector.addGoal(2, new FieryDaggerSwarmAbilityGoal(this));
-        //this.goalSelector.addGoal(2, new FieryDaggerZoneAbilityGoal(this));
-        //this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.RAISE_HELL_SPELL.get(), 5, 5, 80, 240, 1));
+        this.goalSelector.addGoal(2, new FieryDaggerSwarmAbilityGoal(this));
+        this.goalSelector.addGoal(2, new FieryDaggerZoneAbilityGoal(this));
+        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.RAISE_HELL_SPELL.get(), 5, 5, 80, 240, 1));
         this.goalSelector.addGoal(3, attackGoal);
 
         this.goalSelector.addGoal(4, new PatrolNearLocationGoal(this, 30, .75f));
@@ -529,7 +530,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     @Override
     protected void updateWalkAnimation(float f) {
         //reduce walk animation swing if we are floating or meleeing
-        super.updateWalkAnimation(f * ((!this.onGround() || this.isAnimating()) ? .5f : (this.isSoulMode() ? .7f : .9f)));
+        super.updateWalkAnimation(f * (!this.onGround() ? .5f : (this.isSoulMode() ? .7f : .9f)));
     }
 
     @Override

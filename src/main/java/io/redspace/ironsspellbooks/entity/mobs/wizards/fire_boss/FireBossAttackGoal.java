@@ -27,7 +27,32 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
 
     @Override
     protected void doMovement(double distanceSquared) {
-        super.doMovement(distanceSquared);
+        double speed = (spellCastingMob.isCasting() ? .75f : 1f) * movementSpeed();
+        mob.lookAt(target, 30, 30);
+        var spellcastingRangeSqr = attackRadiusSqr;
+        var meleeRange = meleeRange();
+        float ss = getStrafeMultiplier();
+        if (distanceSquared < spellcastingRangeSqr && seeTime >= 5) {
+            this.mob.getNavigation().stop();
+            if (++strafeTime > 40) {
+                if (mob.getRandom().nextDouble() < .08) {
+                    strafingClockwise = !strafingClockwise;
+                    strafeTime = 0;
+                }
+            }
+            float strafeForward = .75f * meleeMoveSpeedModifier * (4 * distanceSquared > meleeRange * meleeRange ? 1.5f : -1);
+            int strafeDir = strafingClockwise ? 1 : -1;
+            mob.getMoveControl().strafe(strafeForward * ss, (float) speed * strafeDir * ss);
+            // boss? jumping? idk sounds awkward
+//            if (mob.horizontalCollision && mob.getRandom().nextFloat() < .1f) {
+//                tryJump();
+//            }
+        } else {
+            // no los or we are completely out of range, path towards target
+            if (mob.tickCount % 5 == 0) {
+                this.mob.getNavigation().moveTo(this.target, speedModifier);
+            }
+        }
     }
 
     public void setTarget(LivingEntity target) {
@@ -55,14 +80,6 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
     }
 
     int fireballcooldown;
-
-//    @Override
-//    protected void doLunge(Vec3 vector, float meleeRange) {
-//        // due to greatly varying melee ranges based on specific attacks, we want to scale the lunge vector based on our distance to the target to effectively reach them
-//        // if the average "normal" distance is ~4 blocks, create ratio of current:normal and scale the vector by said amount
-//        //float avgMultiplier = mob.distanceTo(target) * .25f;
-//        //super.doLunge(vector.scale(avgMultiplier), meleeRange);
-//    }
 
     @Override
     protected void handleAttackLogic(double distanceSquared) {
@@ -101,9 +118,11 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
 
     @Override
     protected void doMeleeAction() {
-        //https://www.desmos.com/calculator/blhkot5psr
-        mob.getMoveControl().triggerCustomMovement(24, f -> new Vec3(0, 0, currentAttack.rangeMultiplier));
         super.doMeleeAction();
+        if (currentAttack != null) {
+            int i = currentAttack.attacks.keySet().intStream().sorted().findFirst().orElse(0);
+            mob.getMoveControl().triggerCustomMovement(i + 5, f -> new Vec3(0, 0, 0.5 * (1 + currentAttack.rangeMultiplier)));
+        }
     }
 
     @Override
