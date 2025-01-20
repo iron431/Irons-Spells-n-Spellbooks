@@ -88,7 +88,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     public void handleClientEvent(byte eventId) {
         switch (eventId) {
             case STOP_FOG -> FogManager.stopEvent(this.uuid);
-            case START_FOG -> FogManager.createEvent(this.uuid, new FogManager.FogEvent(Optional.empty(), true));
+            case START_FOG -> FogManager.createEvent(this, new FogManager.FogEvent(Optional.empty(), true));
         }
     }
 
