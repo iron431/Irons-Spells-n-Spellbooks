@@ -52,11 +52,13 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
     @Override
     public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
         buffer.writeInt(this.riseAnimTick);
+        buffer.writeBoolean(this.summoned);
     }
 
     @Override
     public void readSpawnData(RegistryFriendlyByteBuf additionalData) {
         this.riseAnimTick = additionalData.readInt();
+        this.summoned = additionalData.readBoolean();
         if (riseAnimTick > 0) {
             animationToPlay = RawAnimation.begin().thenPlay("keeper_kneeling_rise");
         }
