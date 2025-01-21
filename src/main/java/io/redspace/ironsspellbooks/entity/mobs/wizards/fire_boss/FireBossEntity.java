@@ -209,7 +209,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.attackGoal = (FireBossAttackGoal) new FireBossAttackGoal(this, 1f, 50, 75)
+        this.attackGoal = (FireBossAttackGoal) new FireBossAttackGoal(this, 1.5f, 50, 75)
                 .setMoveset(List.of(
                         AttackAnimationData.builder("scythe_backpedal")
                                 .length(40)
@@ -244,7 +244,6 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                                 .build(),
                         AttackAnimationData.builder("scythe_downslash_pull")
                                 .length(60)
-                                .cancellable()
                                 .attacks(
                                         new FireBossAttackKeyframe(22, new Vec3(0, 0, .5f), new Vec3(0, -.2, 0), new FireBossAttackKeyframe.SwingData(true, true)),
                                         new AttackKeyframe(38, new Vec3(0, .2, -0.8), new Vec3(0, .3, -1.8))

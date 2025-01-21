@@ -71,10 +71,10 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
                 AttackKeyframe attackData = currentAttack.getHitFrame(meleeAnimTimer);
                 onHitFrame(attackData, meleeRange);
             }
-            if (currentAttack.canCancel) {
+            if (currentAttack.canCancel && (currentAttack.isSingleHit() || currentAttack.lengthInTicks - meleeAnimTimer > currentAttack.attacks.keySet().intStream().sorted().findFirst().orElse(0))) {
                 Vec3 delta = mob.position().subtract(target.position());
                 var modifiedDistanceSquared = delta.x * delta.x + delta.y * delta.y * .5 * .5 + delta.z * delta.z;
-                if (modifiedDistanceSquared > meleeRange * meleeRange * 1.8 * 1.8) {
+                if (modifiedDistanceSquared > meleeRange * meleeRange * 1.5 * 1.5) {
                     stopMeleeAction();
                 }
             }
@@ -109,7 +109,7 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
         // if this is an area attack, collect all nearby like-entities, and evaluate a dot product to determine if our area cone can hit them
         var targets = currentAttack.areaAttackThreshold.isEmpty() ?
                 List.of(target) :
-                mob.level.getEntitiesOfClass(target.getClass(), mob.getBoundingBox().inflate(attackRadius),
+                mob.level.getEntitiesOfClass(target.getClass(), mob.getBoundingBox().inflate(spellcastingRange),
                         (entity -> forward.dot(entity.position().subtract(mob.position()).normalize()) >= currentAttack.areaAttackThreshold.get())
                 );
         for (LivingEntity target : targets) {

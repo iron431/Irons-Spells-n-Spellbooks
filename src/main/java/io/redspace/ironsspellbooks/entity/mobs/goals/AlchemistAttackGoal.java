@@ -30,8 +30,8 @@ public class AlchemistAttackGoal extends WizardAttackGoal {
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);
         this.throwRange = throwRange;
         this.throwRangeSqr = throwRange * throwRange;
-        this.attackRadius = throwRange - 2;
-        this.attackRadiusSqr = attackRadius * attackRadius;
+        this.spellcastingRange = throwRange - 2;
+        this.spellcastingRangeSqr = spellcastingRange * spellcastingRange;
         this.potionBias = potionBias;
     }
 

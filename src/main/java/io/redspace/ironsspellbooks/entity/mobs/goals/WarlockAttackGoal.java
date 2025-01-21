@@ -154,7 +154,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
     }
 
     protected void resetMeleeAttackInterval(double distanceSquared) {
-        float f = (float) Math.sqrt(distanceSquared) / this.attackRadius;
+        float f = (float) Math.sqrt(distanceSquared) / this.spellcastingRange;
         this.meleeAttackDelay = Math.max(1, Mth.floor(f * (float) (this.meleeAttackIntervalMax - this.meleeAttackIntervalMin) + (float) this.meleeAttackIntervalMin));
     }
 }

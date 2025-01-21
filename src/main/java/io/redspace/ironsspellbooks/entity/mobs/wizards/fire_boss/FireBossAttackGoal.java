@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.GenericAnimatedWarlockAttackGoal;
 import io.redspace.ironsspellbooks.particle.FlameStrikeParticleOptions;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -15,11 +16,6 @@ import net.minecraft.world.phys.Vec3;
 
 public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBossEntity> {
     private static final AttributeModifier MODIFIER_FIRE_BALLER = new AttributeModifier(IronsSpellbooks.id("fireballer"), 0.50, AttributeModifier.Operation.ADD_VALUE);
-
-    @Override
-    public float getStrafeMultiplier() {
-        return 1.5f;
-    }
 
     public FireBossAttackGoal(FireBossEntity abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval) {
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);
@@ -29,10 +25,10 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
     protected void doMovement(double distanceSquared) {
         double speed = (spellCastingMob.isCasting() ? .75f : 1f) * movementSpeed();
         mob.lookAt(target, 30, 30);
-        var spellcastingRangeSqr = attackRadiusSqr;
         var meleeRange = meleeRange();
-        float ss = getStrafeMultiplier();
+        float strafeMultiplier = getStrafeMultiplier();
         if (distanceSquared < spellcastingRangeSqr && seeTime >= 5) {
+            // we are within normal ranges and have los. do local movements
             this.mob.getNavigation().stop();
             if (++strafeTime > 40) {
                 if (mob.getRandom().nextDouble() < .08) {
@@ -40,16 +36,23 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
                     strafeTime = 0;
                 }
             }
-            float strafeForward = meleeMoveSpeedModifier * (distanceSquared > meleeRange * meleeRange ? 1.3f : -1.15f);
+            float strafeForward = meleeMoveSpeedModifier;
+            if (distanceSquared > meleeRange * meleeRange * 3 * 3) {
+                // we are really far: close distance
+                strafeForward *= 2f;
+            } else if (distanceSquared > meleeRange * meleeRange * .75 * .75) {
+                // we are not too far, and not super close: advance forward
+                strafeForward *= 1.3f;
+            } else {
+                // we are super close: back up
+                strafeForward *= -1.15f;
+            }
             int strafeDir = strafingClockwise ? 1 : -1;
-            mob.getMoveControl().strafe(strafeForward * ss, (float) speed * strafeDir * ss);
-            // boss? jumping? idk sounds awkward
-//            if (mob.horizontalCollision && mob.getRandom().nextFloat() < .1f) {
-//                tryJump();
-//            }
+            mob.getMoveControl().strafe(strafeForward * strafeMultiplier, (float) speed * strafeDir * strafeMultiplier);
         } else {
             // no los or we are completely out of range, path towards target
             if (mob.tickCount % 5 == 0) {
+                this.mob.setXxa(0); //manually cancel strafe
                 this.mob.getNavigation().moveTo(this.target, speedModifier);
             }
         }
@@ -120,6 +123,8 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
     protected void doMeleeAction() {
         super.doMeleeAction();
         if (currentAttack != null) {
+            //todo: remove debug particles
+            MagicManager.spawnParticles(mob.level, ParticleHelper.ELECTRICITY, mob.getX(), mob.getY() + 2, mob.getZ(), 100, 0, 0, 0, 0.5, true);
             float r = meleeRange();
             if (mob.distanceToSqr(target) > .75 * .75 * r * r) {
                 //only proc charge if we are farther than 75% of melee range
