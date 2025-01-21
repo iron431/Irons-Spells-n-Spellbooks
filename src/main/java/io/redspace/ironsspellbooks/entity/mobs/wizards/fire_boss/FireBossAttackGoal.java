@@ -40,7 +40,7 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
                     strafeTime = 0;
                 }
             }
-            float strafeForward = .75f * meleeMoveSpeedModifier * (4 * distanceSquared > meleeRange * meleeRange ? 1.5f : -1);
+            float strafeForward = meleeMoveSpeedModifier * (distanceSquared > meleeRange * meleeRange ? 1.15f : -1.15f);
             int strafeDir = strafingClockwise ? 1 : -1;
             mob.getMoveControl().strafe(strafeForward * ss, (float) speed * strafeDir * ss);
             // boss? jumping? idk sounds awkward
@@ -120,8 +120,12 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
     protected void doMeleeAction() {
         super.doMeleeAction();
         if (currentAttack != null) {
-            int i = currentAttack.attacks.keySet().intStream().sorted().findFirst().orElse(0);
-            mob.getMoveControl().triggerCustomMovement(i + 5, f -> new Vec3(0, 0, 0.5 * (1 + currentAttack.rangeMultiplier)));
+            float r = meleeRange();
+            if (mob.distanceToSqr(target) > .75 * .75 * r * r) {
+                //only proc charge if we are farther than 75% of melee range
+                int i = currentAttack.attacks.keySet().intStream().sorted().findFirst().orElse(0);
+                mob.getMoveControl().triggerCustomMovement(i + 5, f -> new Vec3(0, 0, 0.5 * (1 + currentAttack.rangeMultiplier)));
+            }
         }
     }
 

@@ -213,6 +213,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 .setMoveset(List.of(
                         AttackAnimationData.builder("scythe_backpedal")
                                 .length(40)
+                                .rangeMultiplier(2f)
                                 .attacks(
                                         new FireBossAttackKeyframe(20, new Vec3(0, .3, -2), new FireBossAttackKeyframe.SwingData(false, true))
                                 )
@@ -220,12 +221,14 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                         AttackAnimationData.builder("scythe_low_rightward_sweep")
                                 .length(40)
                                 .area(0.25f)
+                                .rangeMultiplier(2f)
                                 .attacks(
                                         new FireBossAttackKeyframe(20, new Vec3(0, .1, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
                                 )
                                 .build(),
                         AttackAnimationData.builder("scythe_sideslash_downslash")
                                 .length(54)
+                                .rangeMultiplier(2f)
                                 .attacks(
                                         new FireBossAttackKeyframe(18, new Vec3(0, 0, .45), new FireBossAttackKeyframe.SwingData(false, true)),
                                         new FireBossAttackKeyframe(32, new Vec3(0, 0, .45), new FireBossAttackKeyframe.SwingData(true, true)))
@@ -233,7 +236,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                         AttackAnimationData.builder("scythe_jump_combo")
                                 .length(45)
                                 .cancellable()
-                                .rangeMultiplier(2f)
+                                .rangeMultiplier(3f)
                                 .attacks(
                                         new FireBossAttackKeyframe(20, new Vec3(0, 1, 0), new Vec3(0, 1.15, .1), new FireBossAttackKeyframe.SwingData(true, false)),
                                         new FireBossAttackKeyframe(35, new Vec3(0, 0, -.2), new Vec3(0, 0, 0.5), new FireBossAttackKeyframe.SwingData(false, false))
