@@ -93,15 +93,15 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
         } else if (meleeAnimTimer == 0) {
             //Reset animations/attack
             nextAttack = randomizeNextAttack((float) distanceSquared);
-            resetAttackTimer(distanceSquared);
+            resetMeleeAttackInterval(distanceSquared);
             meleeAnimTimer = -1;
         } else {
             //Handling attack delay
             if (distanceSquared < meleeRange * meleeRange * 1.2 * 1.2) {
-                if (hasLineOfSight && --this.attackTime == 0) {
+                if (hasLineOfSight && --this.meleeAttackDelay == 0) {
                     doMeleeAction();
-                } else if (this.attackTime < 0) {
-                    resetAttackTimer(distanceSquared);
+                } else if (this.meleeAttackDelay < 0) {
+                    resetMeleeAttackInterval(distanceSquared);
                 }
             }
         }

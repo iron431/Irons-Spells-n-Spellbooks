@@ -18,6 +18,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
     protected float meleeMoveSpeedModifier;
     protected int meleeAttackIntervalMin;
     protected int meleeAttackIntervalMax;
+    protected int meleeAttackDelay = -1;
 
     public WarlockAttackGoal(IMagicEntity abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval) {
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);
@@ -86,11 +87,17 @@ public class WarlockAttackGoal extends WizardAttackGoal {
     }
 
     @Override
+    public void stop() {
+        super.stop();
+        meleeAttackDelay = -1;
+    }
+
+    @Override
     protected void handleAttackLogic(double distanceSquared) {
         var meleeRange = meleeRange();
         if (!wantsToMelee || distanceSquared > meleeRange * meleeRange || spellCastingMob.isCasting()) {
             super.handleAttackLogic(distanceSquared);
-        } else if (--this.attackTime <= 0) {
+        } else if (--this.meleeAttackDelay <= 0) {
             this.mob.swing(InteractionHand.MAIN_HAND);
             doMeleeAction();
         }
@@ -100,7 +107,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
     protected void doMeleeAction() {
         double distanceSquared = this.mob.distanceToSqr(this.target.getX(), this.target.getY(), this.target.getZ());
         this.mob.doHurtTarget(target);
-        resetAttackTimer(distanceSquared);
+        resetMeleeAttackInterval(distanceSquared);
     }
 
     public WarlockAttackGoal setMeleeBias(float meleeBiasMin, float meleeBiasMax) {
@@ -146,14 +153,8 @@ public class WarlockAttackGoal extends WizardAttackGoal {
         return wantsToMelee ? meleeMoveSpeedModifier * mob.getAttributeValue(Attributes.MOVEMENT_SPEED) * 2 : super.movementSpeed();
     }
 
-    @Override
-    protected void resetAttackTimer(double distanceSquared) {
-        var meleeRange = meleeRange();
-        if (!wantsToMelee || distanceSquared > meleeRange * meleeRange * 2 * 2 || spellCastingMob.isCasting()) {
-            super.resetAttackTimer(distanceSquared);
-        } else {
-            float f = (float) Math.sqrt(distanceSquared) / this.attackRadius;
-            this.attackTime = Math.max(1, Mth.floor(f * (float) (this.meleeAttackIntervalMax - this.meleeAttackIntervalMin) + (float) this.meleeAttackIntervalMin));
-        }
+    protected void resetMeleeAttackInterval(double distanceSquared) {
+        float f = (float) Math.sqrt(distanceSquared) / this.attackRadius;
+        this.meleeAttackDelay = Math.max(1, Mth.floor(f * (float) (this.meleeAttackIntervalMax - this.meleeAttackIntervalMin) + (float) this.meleeAttackIntervalMin));
     }
 }

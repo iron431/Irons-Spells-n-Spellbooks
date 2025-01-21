@@ -93,19 +93,19 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
         } else if (meleeAnimTimer == 0) {
             //Reset animations/attack
             nextAttack = randomizeNextAttack(distance);
-            resetAttackTimer(distanceSquared);
+            resetMeleeAttackInterval(distanceSquared);
             meleeAnimTimer = -1;
         } else {
             //Handling attack delay
             if (distance < meleeRange * (nextAttack == KeeperEntity.AttackType.Lunge ? 3 : 1)) {
-                if (hasLineOfSight && --this.attackTime == 0) {
+                if (hasLineOfSight && --this.meleeAttackDelay == 0) {
                     doMeleeAction();
-                } else if (this.attackTime < 0) {
-                    resetAttackTimer(distanceSquared);
+                } else if (this.meleeAttackDelay < 0) {
+                    resetMeleeAttackInterval(distanceSquared);
                 }
-            } else if (--this.attackTime < 0) {
+            } else if (--this.meleeAttackDelay < 0) {
                 //Always keep the clock running, eventually he'll lunge to close distance. Otherwise he can be kited incredibly easily
-                resetAttackTimer(distanceSquared);
+                resetMeleeAttackInterval(distanceSquared);
                 nextAttack = randomizeNextAttack(distance);
             }
         }
