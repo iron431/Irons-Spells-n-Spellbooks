@@ -14,7 +14,7 @@ public class ArmorStandAttackGoal extends GenericAnimatedWarlockAttackGoal<Curse
     }
 
     @Override
-    protected AttackAnimationData randomizeNextAttack(float distanceSquared) {
+    protected AttackAnimationData getNextAttack(float distanceSquared) {
         if (moveList.isEmpty()) {
             return null;
         }
@@ -22,7 +22,7 @@ public class ArmorStandAttackGoal extends GenericAnimatedWarlockAttackGoal<Curse
         if (mob.getMainHandItem().isEmpty()) {
             return moveList.get(1); // the second animation is the one that looks good with no item in hand
         }
-        return super.randomizeNextAttack(distanceSquared);
+        return super.getNextAttack(distanceSquared);
     }
 
     @Override

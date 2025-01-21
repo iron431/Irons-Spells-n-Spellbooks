@@ -40,7 +40,7 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
                     strafeTime = 0;
                 }
             }
-            float strafeForward = meleeMoveSpeedModifier * (distanceSquared > meleeRange * meleeRange ? 1.15f : -1.15f);
+            float strafeForward = meleeMoveSpeedModifier * (distanceSquared > meleeRange * meleeRange ? 1.3f : -1.15f);
             int strafeDir = strafingClockwise ? 1 : -1;
             mob.getMoveControl().strafe(strafeForward * ss, (float) speed * strafeDir * ss);
             // boss? jumping? idk sounds awkward

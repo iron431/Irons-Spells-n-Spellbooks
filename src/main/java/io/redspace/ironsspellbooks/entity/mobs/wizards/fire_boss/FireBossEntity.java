@@ -209,7 +209,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.attackGoal = (FireBossAttackGoal) new FireBossAttackGoal(this, 0.8f, 50, 75)
+        this.attackGoal = (FireBossAttackGoal) new FireBossAttackGoal(this, 1f, 50, 75)
                 .setMoveset(List.of(
                         AttackAnimationData.builder("scythe_backpedal")
                                 .length(40)
@@ -262,7 +262,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
                 ))
                 .setComboChance(1f)
-                .setMeleeAttackInverval(20, 20)
+                .setMeleeAttackInverval(10, 30)
                 .setMeleeBias(1f, 1f)
                 .setSpells(
                         List.of(SpellRegistry.FIRE_ARROW_SPELL.get(), SpellRegistry.FIRE_ARROW_SPELL.get(), SpellRegistry.SCORCH_SPELL.get()),

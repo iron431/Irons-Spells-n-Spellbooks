@@ -24,7 +24,6 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);
         this.wantsToMelee = true;
         this.mob = abstractSpellCastingMob; //shadows super.mob
-        nextAttack = randomizeNextAttack(0);
     }
 
     protected List<AttackAnimationData> moveList = new ArrayList<>();
@@ -48,9 +47,15 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
     }
 
     @Override
+    public void start() {
+        super.start();
+        nextAttack = this.getNextAttack(0);
+    }
+
+    @Override
     protected void handleAttackLogic(double distanceSquared) {
         var meleeRange = meleeRange();
-        float rangeMultiplier = currentAttack == null ? 1f : currentAttack.rangeMultiplier;
+        float rangeMultiplier = nextAttack == null ? 1f : nextAttack.rangeMultiplier;
         float procRangeSqr = meleeRange * meleeRange * rangeMultiplier * rangeMultiplier * 1.2f * 1.2f;
         if (meleeAnimTimer < 0 && (!wantsToMelee || distanceSquared > procRangeSqr || mob.isCasting())) {
             super.handleAttackLogic(distanceSquared);
@@ -79,7 +84,7 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
             doMeleeAction();
         } else if (meleeAnimTimer == 0) {
             //Reset animations/attack
-            nextAttack = randomizeNextAttack((float) distanceSquared);
+            nextAttack = getNextAttack((float) distanceSquared);
             resetMeleeAttackInterval(distanceSquared);
             meleeAnimTimer = -1;
         } else {
@@ -128,12 +133,12 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
             }
             if (currentAttack.isSingleHit() && ((mob.getRandom().nextFloat() < (comboChance * (target.isBlocking() ? 2 : 1))))) {
                 //Attack again! combos!
-                queueCombo = randomizeNextAttack(0);
+                queueCombo = getNextAttack(0);
             }
         }
     }
 
-    protected AttackAnimationData randomizeNextAttack(float distanceSquared) {
+    protected AttackAnimationData getNextAttack(float distanceSquared) {
         //TODO: IAttackAnimationProvider?
         if (this.moveList.isEmpty()) {
             return null;
@@ -187,7 +192,7 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
 
     public GenericAnimatedWarlockAttackGoal<T> setMoveset(List<AttackAnimationData> moveset) {
         this.moveList = moveset;
-        nextAttack = randomizeNextAttack(0);
+        nextAttack = getNextAttack(0);
         return this;
     }
 
