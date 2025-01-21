@@ -433,7 +433,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             knight.triggerRise();
             knight.setYRot(this.getYRot());
             knight.finalizeSpawn(serverLevel, level.getCurrentDifficultyAt(this.blockPosition()), MobSpawnType.MOB_SUMMONED, null);
-            knight.summoned = true;
+            knight.setIsSummoned();
             level.addFreshEntity(knight);
             level.playSound(null, spawn.x, spawn.y, spawn.z, SoundRegistry.FIRE_BOSS_DEATH_FINAL.get(), this.getSoundSource(), 2, .9f);
         }
@@ -495,7 +495,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             this.playSound(SoundRegistry.FIRE_BOSS_DEATH.get(), 5, 1);
             Vec3 vec3 = this.getBoundingBox().getCenter();
             MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), vec3.x, vec3.y, vec3.z, 25, 0.2, 0.2, 0.2, 0.12, false);
-            level.getEntitiesOfClass(KeeperEntity.class, this.getBoundingBox().inflate(32, 16, 32)).stream().filter(keeper -> keeper.summoned).forEach(LivingEntity::kill);
+            level.getEntitiesOfClass(KeeperEntity.class, this.getBoundingBox().inflate(32, 16, 32)).stream().filter(KeeperEntity::isSummoned).forEach(LivingEntity::kill);
         }
     }
 

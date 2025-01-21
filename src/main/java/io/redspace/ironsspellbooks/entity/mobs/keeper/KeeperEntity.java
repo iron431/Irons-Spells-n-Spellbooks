@@ -15,6 +15,9 @@ import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
@@ -49,16 +52,16 @@ import software.bernie.geckolib.animation.*;
 import javax.annotation.Nullable;
 
 public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker, IEntityWithComplexSpawn {
+    private static final EntityDataAccessor<Boolean> DATA_IS_SUMMONED = SynchedEntityData.defineId(KeeperEntity.class, EntityDataSerializers.BOOLEAN);
+
     @Override
     public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
         buffer.writeInt(this.riseAnimTick);
-        buffer.writeBoolean(this.summoned);
     }
 
     @Override
     public void readSpawnData(RegistryFriendlyByteBuf additionalData) {
         this.riseAnimTick = additionalData.readInt();
-        this.summoned = additionalData.readBoolean();
         if (riseAnimTick > 0) {
             animationToPlay = RawAnimation.begin().thenPlay("keeper_kneeling_rise");
         }
@@ -70,7 +73,11 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
         this.yRotO = y;
     }
 
-    //private static final EntityDataAccessor<Integer> DATA_ATTACK_TYPE = SynchedEntityData.defineId(KeeperEntity.class, EntityDataSerializers.INT);
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
+        super.defineSynchedData(pBuilder);
+        pBuilder.define(DATA_IS_SUMMONED, false);
+    }
 
     public enum AttackType {
         //data measured from blockbench
@@ -93,7 +100,6 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
 
     public static final int RISE_ANIM_TIME = 25;
     public int riseAnimTick;
-    public boolean summoned;
 
     public void triggerRise() {
         this.riseAnimTick = RISE_ANIM_TIME;
@@ -107,14 +113,22 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
 
     }
 
+    public boolean isSummoned() {
+        return entityData.get(DATA_IS_SUMMONED);
+    }
+
+    public void setIsSummoned() {
+        entityData.set(DATA_IS_SUMMONED, true);
+    }
+
     @Override
     protected boolean shouldDropLoot() {
-        return super.shouldDropLoot() && !summoned;
+        return super.shouldDropLoot() && !isSummoned();
     }
 
     @Override
     public boolean shouldDropExperience() {
-        return super.shouldDropExperience() && !summoned;
+        return super.shouldDropExperience() && !isSummoned();
     }
 
     @Override
@@ -299,7 +313,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
     @Override
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
-        if (summoned) {
+        if (isSummoned()) {
             pCompound.putBoolean("summoned", true);
         }
     }
@@ -307,7 +321,9 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
     @Override
     public void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
-        this.summoned = pCompound.getBoolean("summoned");
+        if (pCompound.getBoolean("summoned")) {
+            setIsSummoned();
+        }
     }
 
     @Override
