@@ -40,7 +40,7 @@ public class OakskinSpell extends AbstractSpell {
             .setMinRarity(SpellRarity.COMMON)
             .setSchoolResource(SchoolRegistry.NATURE_RESOURCE)
             .setMaxLevel(8)
-            .setCooldownSeconds(55)
+            .setCooldownSeconds(90)
             .build();
 
     public OakskinSpell() {
