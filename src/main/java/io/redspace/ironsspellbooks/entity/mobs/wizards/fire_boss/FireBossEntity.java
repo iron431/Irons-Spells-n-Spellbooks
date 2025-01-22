@@ -47,6 +47,7 @@ import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -114,6 +115,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     private static final EntityDataAccessor<Boolean> DATA_SOUL_MODE = SynchedEntityData.defineId(FireBossEntity.class, EntityDataSerializers.BOOLEAN);
     private static final AttributeModifier SOUL_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.05, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     private static final AttributeModifier SOUL_SCALE_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    private int destroyBlockDelay;
 
     @Override
     public void kill() {
@@ -570,7 +572,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 .add(Attributes.ATTACK_DAMAGE, 8.0)
                 .add(AttributeRegistry.SPELL_POWER, 1.15)
                 .add(Attributes.ARMOR, 15)
-                .add(AttributeRegistry.SPELL_RESIST, 1)
+                .add(AttributeRegistry.SPELL_RESIST, 1.20)
                 .add(AttributeRegistry.FIRE_MAGIC_RESIST, 1.5)
                 .add(Attributes.MAX_HEALTH, 800)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
@@ -660,8 +662,17 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         if (isSoulMode()) {
             pAmount *= 0.4f;
         }
+        if (pSource.is(DamageTypes.IN_WALL)) {
+            if (--this.destroyBlockDelay <= 0) {
+                Utils.doMobBreakSuffocatingBlocks(this);
+            }
+            destroyBlockDelay = 40;
+        }
+
+
         return super.hurt(pSource, pAmount);
     }
+
 
     public boolean isSoulMode() {
         return entityData.get(DATA_SOUL_MODE);

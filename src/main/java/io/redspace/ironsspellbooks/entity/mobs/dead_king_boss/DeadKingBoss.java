@@ -35,6 +35,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -107,6 +108,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     private int transitionAnimationTime = 139; // Animation Length in ticks
     private boolean isCloseToGround;
     public boolean isMeleeing;
+    private int destroyBlockDelay;
 
     public DeadKingBoss(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -304,6 +306,12 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     public boolean hurt(DamageSource pSource, float pAmount) {
         if (pSource == level.damageSources().lava()) {
             return false;
+        }
+        if (pSource.is(DamageTypes.IN_WALL)) {
+            if (--this.destroyBlockDelay <= 0) {
+                Utils.doMobBreakSuffocatingBlocks(this);
+            }
+            destroyBlockDelay = 40;
         }
         return super.hurt(pSource, pAmount);
     }

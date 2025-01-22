@@ -123,8 +123,6 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
     protected void doMeleeAction() {
         super.doMeleeAction();
         if (currentAttack != null) {
-            //todo: remove debug particles
-            MagicManager.spawnParticles(mob.level, ParticleHelper.ELECTRICITY, mob.getX(), mob.getY() + 2, mob.getZ(), 100, 0, 0, 0, 0.5, true);
             float r = meleeRange();
             if (mob.distanceToSqr(target) > .75 * .75 * r * r) {
                 //only proc charge if we are farther than 75% of melee range

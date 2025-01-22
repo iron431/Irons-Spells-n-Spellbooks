@@ -30,14 +30,13 @@ public class FireBossMoveControl extends MoveControl {
                 mob.setDeltaMovement(mob.getDeltaMovement().add(movement.yRot(angle).scale(f * f)));
                 float slowdownRange = (float) mob.getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE) * mob.getScale() * .9f;
                 if (mob.distanceToSqr(target) < slowdownRange * slowdownRange) {
-                    //rapid decention
+                    //rapid deceleration
                     customMovementTimer -= 2;
                 }
             } else {
                 // stop
                 customMovementTimer = 0;
             }
-
         } else {
             super.tick();
         }

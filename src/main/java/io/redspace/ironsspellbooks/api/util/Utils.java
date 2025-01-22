@@ -66,6 +66,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.entity.PartEntity;
+import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -638,6 +639,23 @@ public class Utils {
             serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.cast_error_target").withStyle(ChatFormatting.RED)));
         }
         return false;
+    }
+
+    public static void doMobBreakSuffocatingBlocks(LivingEntity entity) {
+        if (EventHooks.canEntityGrief(entity.level, entity)) {
+            int l = Mth.floor(entity.getBbWidth() / 2.0F + 1.0F);
+            int i1 = Mth.ceil(entity.getBbHeight());
+            for (BlockPos blockpos : BlockPos.betweenClosed(
+                    entity.getBlockX() - l, entity.getBlockY(), entity.getBlockZ() - l, entity.getBlockX() + l, entity.getBlockY() + i1, entity.getBlockZ() + l
+            )) {
+                BlockState blockstate = entity.level.getBlockState(blockpos);
+                if (blockstate.canEntityDestroy(entity.level(), blockpos, entity) && EventHooks.onEntityDestroyBlock(entity, blockpos, blockstate)) {
+                    if (entity.level.destroyBlock(blockpos, true, entity)) {
+                        entity.level.levelEvent(null, 1022, entity.blockPosition(), 0);
+                    }
+                }
+            }
+        }
     }
 
     public static Vector3f deconstructRGB(int color) {

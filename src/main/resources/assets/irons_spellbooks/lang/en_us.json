@@ -370,6 +370,7 @@
   "ui.irons_spellbooks.projectile_count": "%d Projectiles",
   "ui.irons_spellbooks.frostbite_success_chance": "Auto-Success Threshold: %d% Chance",
   "ui.irons_spellbooks.blast_count": "%d Blasts",
+  "ui.irons_spellbooks.recast_count": "%d Casts",
   "ui.irons_spellbooks.charge_ready": "Charged",
   "ui.irons_spellbooks.cast_ready": "Cast!",
   "ui.irons_spellbooks.hits_dodged": "%d Hits Dodged",
