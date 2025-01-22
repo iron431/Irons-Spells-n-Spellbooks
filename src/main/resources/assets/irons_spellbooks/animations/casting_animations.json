@@ -14207,7 +14207,16 @@
 				},
 				"bipedHandRight": {
 					"rotation": {
-						"vector": [0, 0, 0]
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.0833": {
+							"vector": [0, 0, 0]
+						},
+						"2.625": {
+							"vector": [0, 0, -40],
+							"easing": "easeInOutQuad"
+						}
 					}
 				},
 				"left_arm": {
