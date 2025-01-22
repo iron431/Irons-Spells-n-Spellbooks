@@ -101,9 +101,6 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     @Override
     public void readSpawnData(RegistryFriendlyByteBuf additionalData) {
         this.spawnTimer = additionalData.readInt();
-        if (spawnTimer > 0) {
-            playAnimation("fire_boss_spawn");
-        }
         float y = this.getYRot();
         this.yBodyRot = y;
         this.yBodyRotO = y;
@@ -291,10 +288,11 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     static final int ERUPTION_BEGIN_ANIM_TIME = (int) (6.5 * 20);
     static final int STANCE_BREAK_COUNT = 2;
     int spawnTimer;
-    static final int SPAWN_ANIM_TIME = (int) (8.75 * 20);
+    private static final int SPAWN_ANIM_TIME = (int) (8.75 * 20);
+    private static final int SPAWN_DELAY = 40;
 
     public void triggerSpawnAnim() {
-        this.spawnTimer = SPAWN_ANIM_TIME;
+        this.spawnTimer = SPAWN_ANIM_TIME + SPAWN_DELAY;
     }
 
     public void triggerStanceBreak() {
@@ -338,28 +336,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.bossEvent.setProgress(currentHealth / maxHealth);
         if (isSpawning()) {
             spawnTimer--;
-            float z = Mth.lerp((float) spawnTimer / SPAWN_ANIM_TIME, 0, -60 / 16f);
-            Vec3 position = this.position().add(new Vec3(0, 0, z).yRot(-this.getYRot() * Mth.DEG_TO_RAD));
-            if (!level.isClientSide && spawnTimer == SPAWN_ANIM_TIME - 1) {
-                MagicManager.spawnParticles(level, ParticleTypes.CAMPFIRE_COSY_SMOKE, position.x, position.y + 1.2, position.z, 165, 0.5, 1.2, 0.5, 0.01, true);
-                MagicManager.spawnParticles(level, ParticleHelper.FOG_CAMPFIRE_SMOKE, position.x, position.y + 0.1, position.z, 6, 0.6, .1, 0.6, 0.05, true);
-            }
-
-            //step sounds
-            if (spawnTimer == SPAWN_ANIM_TIME - 40 || spawnTimer == SPAWN_ANIM_TIME - 60 || spawnTimer == SPAWN_ANIM_TIME - 80 || spawnTimer == SPAWN_ANIM_TIME - 100 || spawnTimer == SPAWN_ANIM_TIME - 114 || spawnTimer == SPAWN_ANIM_TIME - 128) {
-                level.playSound(null, position.x, position.y, position.z, SoundRegistry.KEEPER_STEP, this.getSoundSource(), 0.5f, 1f);
-            }
-            // responding bell toll
-            if (spawnTimer == SPAWN_ANIM_TIME - 30) {
-                level.playSound(null, position.x, position.y, position.z, SoundRegistry.SOULCALLER_TOLL_SUCCESS, SoundSource.PLAYERS, 5f, .75f);
-                if (!level.isClientSide) {
-                    MagicManager.spawnParticles(level, new BlastwaveParticleOptions(1, .6f, 0.3f, 8), position.x, position.y, position.z, 0, 0, 0, 0, 0, true);
-                }
-            }
-            // summon scythe sound
-            if (spawnTimer == SPAWN_ANIM_TIME - 132 + 17) {
-                level.playSound(null, position.x, position.y, position.z, SoundRegistry.FIRE_BOSS_SUMMON_SCYTHE, this.getSoundSource(), 3f, 1f);
-            }
+            handleSpawnSequence();
             if (spawnTimer == 0 && !level.isClientSide) {
                 spawnKnight(true);
                 spawnKnight(false);
@@ -368,42 +345,79 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         if (!level.isClientSide) {
             if (isStanceBroken()) {
                 stanceBreakTimer--;
-                int tick = STANCE_BREAK_ANIM_TIME - stanceBreakTimer;
-                if (stanceBreakCounter == 2) {
-                    // we will enter soul mode
-                    if (tick == 80) {
-                        this.setSoulMode(true);
-                        Vec3 vec3 = this.getBoundingBox().getCenter();
-                        MagicManager.spawnParticles(level, ParticleHelper.FIRE, vec3.x, vec3.y, vec3.z, 120, 0.3, 0.3, 0.3, 0.3, true);
-                        var speed = this.getAttribute(Attributes.MOVEMENT_SPEED);
-                        speed.removeModifier(SOUL_SPEED_MODIFIER);
-                        speed.addPermanentModifier(SOUL_SPEED_MODIFIER);
-                        var scale = this.getAttribute(Attributes.SCALE);
-                        scale.removeModifier(SOUL_SCALE_MODIFIER);
-                        scale.addPermanentModifier(SOUL_SCALE_MODIFIER);
-                        this.playSound(SoundRegistry.FIRE_BOSS_TRANSITION_SOUL.get(), 3, 1);
-                    } else if (tick < 80) {
-                        var f = Mth.lerp(tick / 80f, 0.2, 0.4);
-                        Vec3 vec3 = this.getBoundingBox().getCenter();
-                        MagicManager.spawnParticles(level, ParticleHelper.FIRE, vec3.x, vec3.y, vec3.z, 12 + (int) (f * 10), f, f, f, 0.02, true);
-                    }
-                }
-                if (tick >= ERUPTION_BEGIN_ANIM_TIME) {
-                    if (tick == ERUPTION_BEGIN_ANIM_TIME) {
-                        createEruptionEntity(8, (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE));
-                        playSound(SoundRegistry.FIRE_ERUPTION_SLAM.get(), 2, 1.2f);
-                    } else if (tick == ERUPTION_BEGIN_ANIM_TIME + 25) {
-                        createEruptionEntity(11, (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 2);
-                        playSound(SoundRegistry.FIRE_ERUPTION_SLAM.get(), 3, 1f);
-                    } else if (tick == ERUPTION_BEGIN_ANIM_TIME + 50) {
-                        createEruptionEntity(15, (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 3);
-                        playSound(SoundRegistry.FIRE_ERUPTION_SLAM.get(), 4, 0.9f);
-                    }
-                }
+                handleStanceBreakSequence();
             }
             if (isSoulMode() && !dead) {
                 soulParticles();
             }
+        }
+    }
+
+    private void handleStanceBreakSequence() {
+        int tick = STANCE_BREAK_ANIM_TIME - stanceBreakTimer;
+        if (stanceBreakCounter == 2) {
+            // we will enter soul mode
+            if (tick == 80) {
+                this.setSoulMode(true);
+                Vec3 vec3 = this.getBoundingBox().getCenter();
+                MagicManager.spawnParticles(level, ParticleHelper.FIRE, vec3.x, vec3.y, vec3.z, 120, 0.3, 0.3, 0.3, 0.3, true);
+                var speed = this.getAttribute(Attributes.MOVEMENT_SPEED);
+                speed.removeModifier(SOUL_SPEED_MODIFIER);
+                speed.addPermanentModifier(SOUL_SPEED_MODIFIER);
+                var scale = this.getAttribute(Attributes.SCALE);
+                scale.removeModifier(SOUL_SCALE_MODIFIER);
+                scale.addPermanentModifier(SOUL_SCALE_MODIFIER);
+                this.playSound(SoundRegistry.FIRE_BOSS_TRANSITION_SOUL.get(), 3, 1);
+            } else if (tick < 80) {
+                var f = Mth.lerp(tick / 80f, 0.2, 0.4);
+                Vec3 vec3 = this.getBoundingBox().getCenter();
+                MagicManager.spawnParticles(level, ParticleHelper.FIRE, vec3.x, vec3.y, vec3.z, 12 + (int) (f * 10), f, f, f, 0.02, true);
+            }
+        }
+        if (tick >= ERUPTION_BEGIN_ANIM_TIME) {
+            if (tick == ERUPTION_BEGIN_ANIM_TIME) {
+                createEruptionEntity(8, (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE));
+                playSound(SoundRegistry.FIRE_ERUPTION_SLAM.get(), 2, 1.2f);
+            } else if (tick == ERUPTION_BEGIN_ANIM_TIME + 25) {
+                createEruptionEntity(11, (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 2);
+                playSound(SoundRegistry.FIRE_ERUPTION_SLAM.get(), 3, 1f);
+            } else if (tick == ERUPTION_BEGIN_ANIM_TIME + 50) {
+                createEruptionEntity(15, (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 3);
+                playSound(SoundRegistry.FIRE_ERUPTION_SLAM.get(), 4, 0.9f);
+            }
+        }
+    }
+
+    /**
+     * @return 0-1f, percent progress of the spawn animation from starting to walk to finishing animation
+     */
+    protected float getSpawnWalkPercent(float partialTick) {
+        return Math.clamp((SPAWN_ANIM_TIME - spawnTimer + partialTick) / (float) SPAWN_ANIM_TIME, 0, 1);
+    }
+
+    private void handleSpawnSequence() {
+        int animProgress = SPAWN_ANIM_TIME + SPAWN_DELAY - spawnTimer; // counts up to max (whereas timer counts down from max)
+        float walkProgress = getSpawnWalkPercent(0); // 0-1f, percent progress of the spawn animation from starting to walk to finishing animation
+        float worldZOffset = Mth.lerp(walkProgress, -60 / 16f, 0);
+        Vec3 position = this.position().add(new Vec3(0, 0, worldZOffset).yRot(-this.getYRot() * Mth.DEG_TO_RAD));
+        if (animProgress == SPAWN_DELAY) {
+            if (!level.isClientSide) {
+                //smoke to step out of
+                MagicManager.spawnParticles(level, ParticleTypes.CAMPFIRE_COSY_SMOKE, position.x, position.y + 1.2, position.z, 165, 0.5, 1.2, 0.5, 0.01, true);
+                MagicManager.spawnParticles(level, ParticleHelper.FOG_CAMPFIRE_SMOKE, position.x, position.y + 0.1, position.z, 6, 0.6, .1, 0.6, 0.05, true);
+                // responding bell toll echo
+                MagicManager.spawnParticles(level, new BlastwaveParticleOptions(1, .6f, 0.3f, 8), position.x, position.y, position.z, 0, 0, 0, 0, 0, true);
+                serverTriggerAnimation("fire_boss_spawn");
+            }
+            level.playSound(null, position.x, position.y, position.z, SoundRegistry.SOULCALLER_TOLL_SUCCESS, SoundSource.PLAYERS, 5f, .75f);
+        }
+        //step sounds
+        if (animProgress == SPAWN_DELAY + 40 || animProgress == SPAWN_DELAY + 60 || animProgress == SPAWN_DELAY + 80 || animProgress == SPAWN_DELAY + 100 || animProgress == SPAWN_DELAY + 114 || animProgress == SPAWN_DELAY + 128) {
+            level.playSound(null, position.x, position.y, position.z, SoundRegistry.KEEPER_STEP, this.getSoundSource(), 0.5f, 1f);
+        }
+        // summon scythe sound (happens at tick 132, with 17 tick windup)
+        if (animProgress == SPAWN_DELAY + 132 - 17) {
+            level.playSound(null, position.x, position.y, position.z, SoundRegistry.FIRE_BOSS_SUMMON_SCYTHE, this.getSoundSource(), 3f, 1f);
         }
     }
 

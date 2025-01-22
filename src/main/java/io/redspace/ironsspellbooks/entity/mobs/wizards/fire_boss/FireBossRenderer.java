@@ -27,9 +27,13 @@ public class FireBossRenderer extends AbstractSpellCastingMobRenderer {
     @Override
     public void render(AbstractSpellCastingMob entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         if (entity instanceof FireBossEntity fireBossEntity && fireBossEntity.isSpawning()) {
-            float f = (fireBossEntity.spawnTimer + partialTick) / FireBossEntity.SPAWN_ANIM_TIME;
-            shadowRadius = Mth.lerp(f, .65f, 2);
-            shadowStrength = Mth.lerp(f, 1, 0);
+            float f = fireBossEntity.getSpawnWalkPercent(partialTick);
+            if(f == 0){
+                // not visible, dont render
+                return;
+            }
+            shadowRadius = Mth.lerp(f, 2, .65f);
+            shadowStrength = Mth.lerp(f, 0, 1);
         } else {
             shadowStrength = 1;
             shadowRadius = .65f;
@@ -52,7 +56,7 @@ public class FireBossRenderer extends AbstractSpellCastingMobRenderer {
         if (animatable.deathTime > 160 - deathFadeTime) {
             f = Mth.clamp((160 - animatable.deathTime) / (float) deathFadeTime, 0, 1f);
         } else if (animatable instanceof FireBossEntity fireBoss && fireBoss.isSpawning()) {
-            f = Mth.clamp((FireBossEntity.SPAWN_ANIM_TIME - fireBoss.spawnTimer - 20) / (float) FireBossEntity.SPAWN_ANIM_TIME, 0, 1f);
+            f = fireBoss.getSpawnWalkPercent(partialTick);
         }
         if (!animatable.isInvisible() && f != 1) {
             color = new Color(RenderHelper.colorf(1f, 1f, 1f, f));

@@ -73,7 +73,7 @@ public class ShieldSpell extends AbstractSpell {
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         ShieldEntity shield = new ShieldEntity(level, getShieldHP(spellLevel, entity));
-        Vec3 spawn = Utils.raycastForEntity(level, entity, 5, true).getLocation();
+        Vec3 spawn = Utils.raycastForEntity(level, entity, 3, true).getLocation();
         shield.setPos(spawn);
         shield.setRotation(entity.getXRot(), entity.getYRot());
         level.addFreshEntity(shield);

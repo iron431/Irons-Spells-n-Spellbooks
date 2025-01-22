@@ -181,7 +181,7 @@ public class RaiseHellSpell extends AbstractSpell {
 
     @Override
     public boolean shouldAIStopCasting(int spellLevel, Mob mob, LivingEntity target) {
-        float range = getRadius(spellLevel, mob) * 1.2f;
+        float range = getRadius(spellLevel, mob) * 1.1f;
         // stop casting if we are more than 0.5 blocks off the ground, or target is outside spell radius
         return Utils.raycastForBlock(mob.level, mob.position(), mob.position().subtract(0, 0.5, 0), ClipContext.Fluid.NONE).getType() == HitResult.Type.MISS || target.distanceToSqr(mob) > range * range;
     }

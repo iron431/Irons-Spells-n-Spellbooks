@@ -97,7 +97,7 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
         if (entity.isSpawning()) {
             body.setTrackingMatrices(true);
             if (lastTick != entity.tickCount) {
-                int particles = (int) (10 * Mth.clamp((entity.spawnTimer - 20f) / FireBossEntity.SPAWN_ANIM_TIME, 0, 1));
+                int particles = (int) (10 * entity.getSpawnWalkPercent(0));
                 lastTick = entity.tickCount;
                 Vector3d pos = body.getWorldPosition();
                 for (int i = 0; i < particles; i++) {
