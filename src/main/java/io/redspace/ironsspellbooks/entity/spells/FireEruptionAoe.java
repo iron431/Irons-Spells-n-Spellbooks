@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityDimensions;
@@ -70,7 +71,7 @@ public class FireEruptionAoe extends AoeEntity {
                     float volume = (waveAnim + 8) / 16f;
                     this.playSound(SoundRegistry.EARTHQUAKE_IMPACT.get(), volume, Utils.random.nextIntBetweenInclusive(90, 110) * .01f);
                 }
-                var circumferenceMin = waveAnim * 2 * 3.14f;
+                var circumferenceMin = (waveAnim - 1) * 2 * 3.14f;
                 var circumferenceMax = (waveAnim + 1) * 2 * 3.14f;
                 int minBlocks = Mth.clamp((int) circumferenceMin, 0, 60);
                 int maxBlocks = Mth.clamp((int) circumferenceMax, 0, 60);
@@ -83,7 +84,7 @@ public class FireEruptionAoe extends AoeEntity {
                             0,
                             waveAnim * Mth.sin(anglePerBlockMin * i)
                     );
-                    BlockPos blockPos = BlockPos.containing(Utils.moveToRelativeGroundLevel(level, position().add(vec3), 8)).below();
+                    BlockPos blockPos = BlockPos.containing(Utils.moveToRelativeGroundLevel(level, position().add(vec3), 4)).below();
                     Utils.createTremorBlock(level, blockPos, .1f + random.nextFloat() * .2f);
                 }
                 //fire trail
@@ -93,8 +94,10 @@ public class FireEruptionAoe extends AoeEntity {
                             0,
                             (waveAnim + 1) * Mth.sin(anglePerBlockMax * i)
                     );
-                    BlockPos blockPos = BlockPos.containing(Utils.moveToRelativeGroundLevel(level, position().add(vec3), 8).add(0, 0.1, 0));
-                    Utils.createTremorBlockWithState(level, Blocks.FIRE.defaultBlockState(), blockPos, .1f + random.nextFloat() * .2f);
+                    BlockPos blockPos = BlockPos.containing(Utils.moveToRelativeGroundLevel(level, position().add(vec3), 4).add(0, 0.1, 0));
+                    if (level.getBlockState(blockPos.below()).isFaceSturdy(level, blockPos.below(), Direction.UP)) {
+                        Utils.createTremorBlockWithState(level, Blocks.FIRE.defaultBlockState(), blockPos, .1f + random.nextFloat() * .2f);
+                    }
                 }
                 List<LivingEntity> targets = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(this.getInflation().x, this.getInflation().y, this.getInflation().z));
                 var r1Sqr = waveAnim * waveAnim;

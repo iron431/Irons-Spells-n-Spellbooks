@@ -39,12 +39,8 @@ public class FireBossRenderer extends AbstractSpellCastingMobRenderer {
 
     @Override
     public int getPackedOverlay(AbstractSpellCastingMob animatable, float u, float partialTick) {
-        //disable red flashing during soul mode
-        if (!(animatable instanceof FireBossEntity fbe) || !fbe.isSoulMode()) {
-            return super.getPackedOverlay(animatable, u, partialTick);
-        } else {
-            return OverlayTexture.NO_OVERLAY;
-        }
+        //disable hurt/death red flashing
+        return OverlayTexture.NO_OVERLAY;
     }
 
     static final int deathFadeTime = 80;
