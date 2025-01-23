@@ -451,17 +451,26 @@ public class GenerateSiteData {
         var uniqueInfoMin = spell.getUniqueInfo(spell.getMinLevel(), null);
         var uniqueInfoMax = spell.getUniqueInfo(spell.getMaxLevel(), null);
         for (int i = 0; i < uniqueInfoMax.size(); i++) {
-            var splitMin = uniqueInfoMin.get(i).getString().split(" ");
-            var splitMax = uniqueInfoMax.get(i).getString().split(" ");
+            var lineMinLevel = uniqueInfoMin.get(i).getString().split(" ");
+            var lineMaxLevel = uniqueInfoMax.get(i).getString().split(" ");
             int k = -1;
-            for (int j = 0; j < splitMin.length; j++) {
-                if (splitMin[j].matches("\\d\\.?\\d*(s|m|%)*")) {
+            for (int j = 0; j < lineMinLevel.length; j++) {
+                if (lineMinLevel[j].matches("([+\\-])?\\d\\.?\\d*(s|m|%)*")) {
                     k = j;
                     break;
                 }
             }
-            if (k >= 0 && !splitMin[k].equals(splitMax[k])) {
-                text.add(String.format(uniqueInfoMin.get(i).getString().replaceFirst(splitMin[k], "%s"), String.format("%s-%s", splitMin[k], splitMax[k])));
+            if (k >= 0 && !lineMinLevel[k].equals(lineMaxLevel[k])) {
+                StringBuilder builder = new StringBuilder();
+                for (int j = 0; j < lineMinLevel.length; j++) {
+                    if (j == k) {
+                        builder.append(String.format("%s-%s", lineMinLevel[k], lineMaxLevel[k])).append(" ");
+                    } else {
+                        builder.append(lineMinLevel[j]).append(" ");
+                    }
+                }
+                text.add(builder.toString().strip());
+//                text.add(String.format(uniqueInfoMin.get(i).getString().replaceFirst(lineMinLevel[k], "%s"), String.format("%s-%s", lineMinLevel[k], lineMaxLevel[k])));
             } else {
                 text.add(uniqueInfoMin.get(i).getString());
             }
