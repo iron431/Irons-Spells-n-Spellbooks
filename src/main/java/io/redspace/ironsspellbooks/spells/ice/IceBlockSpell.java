@@ -119,7 +119,7 @@ public class IceBlockSpell extends AbstractSpell {
 
     @Override
     public SpellDamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
-        return super.getDamageSource(projectile, attacker).setFreezeTicks(100);
+        return super.getDamageSource(projectile, attacker).setFreezeTicks(100).setIFrames(0);
     }
 
     private float getDamage(int spellLevel, LivingEntity entity) {

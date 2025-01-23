@@ -80,7 +80,7 @@ public class BloodNeedlesSpell extends AbstractSpell {
 
     @Override
     public SpellDamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
-        return super.getDamageSource(projectile, attacker).setLifestealPercent(.25f);
+        return super.getDamageSource(projectile, attacker).setLifestealPercent(.25f).setIFrames(0);
     }
 
     private int getCount(int spellLevel) {

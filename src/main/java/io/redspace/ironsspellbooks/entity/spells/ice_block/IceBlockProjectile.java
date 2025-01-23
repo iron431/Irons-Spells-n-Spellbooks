@@ -119,7 +119,6 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
         boolean flag = DamageSources.applyDamage(target, getDamage() / 2, SpellRegistry.ICE_BLOCK_SPELL.get().getDamageSource(this, getOwner()));
         if (flag) {
             victims.add(target);
-            target.invulnerableTime = 0;
         }
         //Ironsspellbooks.logger.debug("IceBlockProjectile.doFallingDamage: {}", target.getName().getString());
 

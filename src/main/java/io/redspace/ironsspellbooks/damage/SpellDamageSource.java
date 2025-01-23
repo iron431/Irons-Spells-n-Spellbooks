@@ -18,6 +18,7 @@ public class SpellDamageSource extends DamageSource {
     float lifesteal;
     int freezeTicks;
     int fireTime;
+    int iFrames = -1;
 
     protected SpellDamageSource(@NotNull Entity directEntity, @NotNull Entity causingEntity, @Nullable Vec3 damageSourcePosition, AbstractSpell spell) {
         super(getHolderFromResource(directEntity, spell.getSchoolType().getDamageType()), directEntity, causingEntity, damageSourcePosition);
@@ -64,6 +65,11 @@ public class SpellDamageSource extends DamageSource {
         return this;
     }
 
+    public SpellDamageSource setIFrames(int iFrames) {
+        this.iFrames = iFrames;
+        return this;
+    }
+
     public DamageSource get() {
         return this;
     }
@@ -82,6 +88,10 @@ public class SpellDamageSource extends DamageSource {
 
     public int getFreezeTicks() {
         return this.freezeTicks;
+    }
+
+    public int getIFrames() {
+        return this.iFrames;
     }
 
     public boolean hasPostHitEffects() {

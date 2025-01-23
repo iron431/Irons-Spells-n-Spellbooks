@@ -18,16 +18,11 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingKnockBackEvent;
 
 import java.util.HashMap;
 import java.util.UUID;
-
-//https://github.com/cleannrooster/Spellblade-1.19.2/search?q=MobEffect
-//https://github.com/LittleEzra/Augment-1.19.2/blob/334dc95462a3e6b25e6f73d3d909d012d63be109/src/main/java/com/littleezra/augment/item/enchantment/RecoilCurseEnchantment.java
-//DamageSource
-//StatusEffect
-//MobEffect: https://forge.gemwire.uk/wiki/Mob_Effects/1.18
 
 @EventBusSubscriber
 public class DamageSources {
@@ -117,6 +112,15 @@ public class DamageSources {
             }
             if (spellDamageSource.getFireTime() > 0 && target instanceof LivingEntity) {
                 target.igniteForTicks(spellDamageSource.getFireTime());
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void preHitEffects(LivingIncomingDamageEvent event) {
+        if (event.getSource() instanceof SpellDamageSource spellDamageSource) {
+            if (spellDamageSource.getIFrames() >= 0) {
+                event.getContainer().setPostAttackInvulnerabilityTicks(spellDamageSource.getIFrames());
             }
         }
     }

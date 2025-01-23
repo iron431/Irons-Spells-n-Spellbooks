@@ -6,12 +6,14 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.damage.SpellDamageSource;
 import io.redspace.ironsspellbooks.entity.spells.creeper_head.CreeperHeadProjectile;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -83,5 +85,10 @@ public class LobCreeperSpell extends AbstractSpell {
 
     private float getDamage(int spellLevel, LivingEntity entity) {
         return this.getSpellPower(spellLevel, entity) * .5f;
+    }
+
+    @Override
+    public SpellDamageSource getDamageSource(Entity projectile, Entity attacker) {
+        return super.getDamageSource(projectile, attacker).setIFrames(0);
     }
 }

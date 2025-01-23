@@ -86,7 +86,6 @@ public class BloodNeedle extends AbstractMagicProjectile {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
         DamageSources.applyDamage(entityHitResult.getEntity(), getDamage(), SpellRegistry.BLOOD_NEEDLES_SPELL.get().getDamageSource(this, getOwner()));
-        entityHitResult.getEntity().invulnerableTime = 0;
     }
 
     @Override

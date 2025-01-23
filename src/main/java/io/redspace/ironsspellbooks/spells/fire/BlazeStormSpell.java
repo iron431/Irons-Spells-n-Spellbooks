@@ -105,6 +105,6 @@ public class BlazeStormSpell extends AbstractSpell {
 
     @Override
     public SpellDamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
-        return super.getDamageSource(projectile, attacker).setFireTicks(40);
+        return super.getDamageSource(projectile, attacker).setFireTicks(40).setIFrames(0);
     }
 }
