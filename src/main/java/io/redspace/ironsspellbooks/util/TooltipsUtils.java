@@ -110,7 +110,7 @@ public class TooltipsUtils {
             }
             List<Component> lines = new ArrayList<>();
             lines.add(Component.literal(" ").append(title));
-            uniqueInfo.forEach((line) -> lines.add(Component.literal(" ").append(line.withStyle(getStyleFor(player, spell)))));
+            uniqueInfo.forEach((line) -> lines.add(Component.literal(" ").append(line.withStyle(line.getStyle().applyTo(getStyleFor(player, spell))))));
             if (castType != null) {
                 lines.add(castType);
             }
