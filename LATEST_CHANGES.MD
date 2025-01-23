@@ -1,11 +1,13 @@
 ### Additions
-- Builtin Compat with Repurposed Structures, courtesy of TelepathicGrunt
+- 
 ### Changes
-- Updated Chinese and Ukrainian localizations, courtesy of FezeRyn, Hanekmio, and Oleksandr
+- Retexture all Runestones
+- Nerf Oakskin (Requires config reset)
+  - Now imposes -4% movement speed per level
+  - Cooldown increased from 35s -> 90s
 ### Fixes
-- Resolved the looping between portals issue when two portals are cast on top of each other.
-- Fixed Electrocute Spell visuals clipping into player torso
-- Fixed Zap particle chain beams having the incorrect offset
+- Fixed Counterspell particles only appearing when hitting entities
+- Fixed Charged Creepers not giving a Bottle o' Lightning when consume an empty bottle stack of size 1 
 
 ### API
 
