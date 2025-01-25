@@ -57,7 +57,7 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
             } else {
                 fireBossEntity.isAnimatingDampener = Mth.lerp(.05f * partialTick, fireBossEntity.isAnimatingDampener, 1);
             }
-            if (entity.getMainHandItem().is(ItemRegistry.HELLRAZOR)) {
+            if (entity.getMainHandItem().is(ItemRegistry.HELLRAZOR) || entity.getMainHandItem().is(ItemRegistry.DECREPIT_SCYTHE)) {
                 GeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
                 GeoBone rightHand = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT);
                 Vector3f armPose = new Vector3f(-30, -30, 10);
