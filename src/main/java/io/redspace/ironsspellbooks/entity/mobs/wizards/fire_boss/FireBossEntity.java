@@ -369,6 +369,9 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 scale.removeModifier(SOUL_SCALE_MODIFIER);
                 scale.addPermanentModifier(SOUL_SCALE_MODIFIER);
                 this.playSound(SoundRegistry.FIRE_BOSS_TRANSITION_SOUL.get(), 3, 1);
+                if (this.getItemBySlot(EquipmentSlot.MAINHAND).is(ItemRegistry.DECREPIT_SCYTHE)) {
+                    this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ItemRegistry.HELLRAZOR, 1, this.getItemBySlot(EquipmentSlot.MAINHAND).getComponentsPatch()));
+                }
             } else if (tick < 80) {
                 var f = Mth.lerp(tick / 80f, 0.2, 0.4);
                 Vec3 vec3 = this.getBoundingBox().getCenter();
@@ -404,7 +407,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         if (animProgress == SPAWN_DELAY) {
             if (!level.isClientSide) {
                 //smoke to step out of
-                MagicManager.spawnParticles(level, ParticleTypes.CAMPFIRE_COSY_SMOKE, position.x, position.y + 1.2, position.z, (int)(165* getScale()), 0.4* getScale(), 1.0* getScale(), 0.4* getScale(), 0.01, true);
+                MagicManager.spawnParticles(level, ParticleTypes.CAMPFIRE_COSY_SMOKE, position.x, position.y + 1.2, position.z, (int) (165 * getScale()), 0.4 * getScale(), 1.0 * getScale(), 0.4 * getScale(), 0.01, true);
                 MagicManager.spawnParticles(level, ParticleHelper.FOG_CAMPFIRE_SMOKE, position.x, position.y + 0.1, position.z, 6, 0.6, .1, 0.6, 0.05, true);
                 // responding bell toll echo
                 MagicManager.spawnParticles(level, new BlastwaveParticleOptions(1, .6f, 0.3f, 8), position.x, position.y, position.z, 0, 0, 0, 0, 0, true);
@@ -451,8 +454,11 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             knight.moveTo(spawn.add(0, 0.1, 0));
             knight.triggerRise();
             knight.setYRot(this.getYRot());
-            knight.finalizeSpawn(serverLevel, level.getCurrentDifficultyAt(this.blockPosition()), MobSpawnType.MOB_SUMMONED, null);
             knight.setIsSummoned();
+            if (isSoulMode()) {
+                knight.setIsRestored();
+            }
+            knight.finalizeSpawn(serverLevel, level.getCurrentDifficultyAt(this.blockPosition()), MobSpawnType.MOB_SUMMONED, null);
             level.addFreshEntity(knight);
             level.playSound(null, spawn.x, spawn.y, spawn.z, SoundRegistry.FIRE_BOSS_DEATH_FINAL.get(), this.getSoundSource(), 2, .9f);
         }
@@ -574,7 +580,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource pRandom, DifficultyInstance pDifficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ItemRegistry.HELLRAZOR.get()));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(isSoulMode() ? ItemRegistry.HELLRAZOR : ItemRegistry.DECREPIT_SCYTHE));
         this.setDropChance(EquipmentSlot.MAINHAND, 0);
     }
 

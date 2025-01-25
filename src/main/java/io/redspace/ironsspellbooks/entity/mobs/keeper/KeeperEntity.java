@@ -54,6 +54,7 @@ import javax.annotation.Nullable;
 
 public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker, IEntityWithComplexSpawn {
     private static final EntityDataAccessor<Boolean> DATA_IS_SUMMONED = SynchedEntityData.defineId(KeeperEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> DATA_IS_RESTORED = SynchedEntityData.defineId(KeeperEntity.class, EntityDataSerializers.BOOLEAN);
 
     @Override
     public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
@@ -78,6 +79,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
     protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
         super.defineSynchedData(pBuilder);
         pBuilder.define(DATA_IS_SUMMONED, false);
+        pBuilder.define(DATA_IS_RESTORED, false);
     }
 
     public enum AttackType {
@@ -121,6 +123,14 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
 
     public void setIsSummoned() {
         entityData.set(DATA_IS_SUMMONED, true);
+    }
+
+    public boolean isRestored() {
+        return entityData.get(DATA_IS_RESTORED);
+    }
+
+    public void setIsRestored() {
+        entityData.set(DATA_IS_RESTORED, true);
     }
 
     @Override
@@ -228,7 +238,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
 
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource pRandom, DifficultyInstance pDifficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ItemRegistry.KEEPER_FLAMBERGE.get()));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(isRestored() ? ItemRegistry.LEGIONNAIRE_FLAMBERGE : ItemRegistry.KEEPER_FLAMBERGE));
     }
 
     public static AttributeSupplier.Builder prepareAttributes() {
@@ -324,6 +334,9 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
         if (isSummoned()) {
             pCompound.putBoolean("summoned", true);
         }
+        if (isRestored()) {
+            pCompound.putBoolean("restored", true);
+        }
     }
 
     @Override
@@ -331,6 +344,9 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
         super.readAdditionalSaveData(pCompound);
         if (pCompound.getBoolean("summoned")) {
             setIsSummoned();
+        }
+        if (pCompound.getBoolean("restored")) {
+            setIsRestored();
         }
     }
 
