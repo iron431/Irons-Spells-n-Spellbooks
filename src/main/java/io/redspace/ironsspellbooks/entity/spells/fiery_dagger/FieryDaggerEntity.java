@@ -90,6 +90,7 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
         fireField.setDamage(this.getDamage());
         fireField.setDuration(20 * 15);
         fireField.setDelay(this.delay + 15);
+        fireField.setRadiusPerTick(-fireField.getRadius() / fireField.getDuration());
         level.addFreshEntity(fireField);
     }
 

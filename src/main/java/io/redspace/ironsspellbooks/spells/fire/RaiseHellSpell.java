@@ -14,7 +14,6 @@ import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.entity.spells.FireEruptionAoe;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -22,8 +21,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
@@ -41,7 +38,7 @@ public class RaiseHellSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.damage", getDamageText(spellLevel, caster)),
-                Component.translatable("ui.irons_spellbooks.radius", getRadius(spellLevel, caster)),
+                Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRadius(spellLevel, caster), 1)),
                 Component.translatable("ui.irons_spellbooks.recast_count", getRecastCount(spellLevel, caster))
         );
     }
@@ -127,29 +124,16 @@ public class RaiseHellSpell extends AbstractSpell {
     }
 
     private float getDamage(int spellLevel, LivingEntity entity) {
-        return getSpellPower(spellLevel, entity) + getAdditionalDamage(entity);
+        return getSpellPower(spellLevel, entity) +Utils.getWeaponDamage(entity);
     }
 
     private float getRadius(int spellLevel, LivingEntity entity) {
         return 12;
     }
 
-    private float getAdditionalDamage(LivingEntity entity) {
-        if (entity == null) {
-            return 0;
-        }
-        float weaponDamage = Utils.getWeaponDamage(entity);
-        var weaponItem = entity.getWeaponItem();
-        if (!weaponItem.isEmpty() && weaponItem.has(DataComponents.ENCHANTMENTS)) {
-            weaponDamage += Utils.processEnchantment(entity.level, Enchantments.SMITE, EnchantmentEffectComponents.DAMAGE, weaponItem.get(DataComponents.ENCHANTMENTS));
-        }
-        return weaponDamage;
-    }
-
-
     private String getDamageText(int spellLevel, LivingEntity entity) {
         if (entity != null) {
-            float weaponDamage = getAdditionalDamage(entity);
+            float weaponDamage = Utils.getWeaponDamage(entity);
             String plus = "";
             if (weaponDamage > 0) {
                 plus = String.format(" (+%s)", Utils.stringTruncation(weaponDamage, 1));

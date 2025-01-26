@@ -2,9 +2,7 @@
   "replace": false,
   "values": [
     "irons_spellbooks:portal",
-    "irons_spellbooks:dead_king",
     "irons_spellbooks:dead_king_corpse",
-    "minecraft:wither",
-    "minecraft:ender_dragon"
+    "#c:bosses"
   ]
 }

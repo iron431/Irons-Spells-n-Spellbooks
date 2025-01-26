@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "irons_spellbooks:dead_king"
+    "irons_spellbooks:dead_king",
+    "irons_spellbooks:fire_boss"
   ]
 }

@@ -15,7 +15,6 @@ import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.SpellBarrageGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
-import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
 import io.redspace.ironsspellbooks.entity.spells.FireEruptionAoe;
 import io.redspace.ironsspellbooks.network.EntityEventPacket;
@@ -218,14 +217,14 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                                         new FireBossAttackKeyframe(20, new Vec3(0, .3, -2), new FireBossAttackKeyframe.SwingData(false, true))
                                 )
                                 .build(),
-                        AttackAnimationData.builder("scythe_low_rightward_sweep")
-                                .length(40)
-                                .area(0.25f)
-                                .rangeMultiplier(2f)
-                                .attacks(
-                                        new FireBossAttackKeyframe(20, new Vec3(0, .1, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
-                                )
-                                .build(),
+//                        AttackAnimationData.builder("scythe_low_rightward_sweep")
+//                                .length(40)
+//                                .area(0.25f)
+//                                .rangeMultiplier(2f)
+//                                .attacks(
+//                                        new FireBossAttackKeyframe(20, new Vec3(0, .1, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
+//                                )
+//                                .build(),
                         AttackAnimationData.builder("scythe_sideslash_downslash")
                                 .length(54)
                                 .rangeMultiplier(2f)
@@ -242,11 +241,11 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                                         new FireBossAttackKeyframe(35, new Vec3(0, 0, -.2), new Vec3(0, 0, 0.5), new FireBossAttackKeyframe.SwingData(false, false))
                                 )
                                 .build(),
-                        AttackAnimationData.builder("scythe_downslash_pull")
+                        AttackAnimationData.builder("scythe_downslash_sideslash")
                                 .length(60)
                                 .attacks(
                                         new FireBossAttackKeyframe(22, new Vec3(0, 0, .5f), new Vec3(0, -.2, 0), new FireBossAttackKeyframe.SwingData(true, true)),
-                                        new AttackKeyframe(38, new Vec3(0, .2, -0.8), new Vec3(0, .3, -1.8))
+                                        new FireBossAttackKeyframe(40, new Vec3(0, .1, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
                                 )
                                 .build(),
                         AttackAnimationData.builder("scythe_horizontal_slash_spin")
@@ -327,6 +326,11 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     @Override
     public boolean isInvulnerableTo(DamageSource pSource) {
         return isSpawning() || super.isInvulnerableTo(pSource);
+    }
+
+    @Override
+    public boolean requiresCustomPersistence() {
+        return true;
     }
 
     @Override
