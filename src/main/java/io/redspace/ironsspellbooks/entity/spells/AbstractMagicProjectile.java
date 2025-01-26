@@ -71,7 +71,8 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
 
     @Override
     protected boolean canHitEntity(Entity pTarget) {
-        return super.canHitEntity(pTarget) && pTarget != getOwner();
+        var owner = getOwner();
+        return super.canHitEntity(pTarget) && pTarget != owner && (owner == null || !owner.isAlliedTo(pTarget));
     }
 
     @Override

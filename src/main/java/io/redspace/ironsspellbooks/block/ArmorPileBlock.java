@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.block;
 
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
 import net.minecraft.core.BlockPos;
@@ -75,10 +76,9 @@ public class ArmorPileBlock extends Block implements SimpleWaterloggedBlock {
         keeper.moveTo(Vec3.atCenterOf(pos));
         keeper.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), MobSpawnType.TRIGGERED, null);
         level.addFreshEntity(keeper);
-
+        Utils.doMobBreakSuffocatingBlocks(keeper);
         MagicManager.spawnParticles(level, ParticleTypes.SOUL, pos.getX(), pos.getY(), pos.getZ(), 20, .1, .1, .1, .05, false);
         level.playSound(null, pos, SoundEvents.SOUL_ESCAPE.value(), SoundSource.BLOCKS, 1f, 1f);
-
     }
 
     @Override

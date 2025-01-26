@@ -24,7 +24,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -263,12 +262,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
         if (pSource.getDirectEntity() instanceof Projectile projectile) {
             pAmount *= .75f;
         }
-        if (pSource.is(DamageTypes.IN_WALL)) {
-            if (--this.destroyBlockDelay <= 0) {
-                Utils.doMobBreakSuffocatingBlocks(this);
-            }
-            destroyBlockDelay = 40;
-        }
+
         return super.hurt(pSource, pAmount);
     }
 
