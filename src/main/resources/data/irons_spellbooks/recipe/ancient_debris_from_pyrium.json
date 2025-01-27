@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:blasting",
+  "cookingtime": 200,
+  "experience": 0.0,
+  "ingredient": {
+    "item": "irons_spellbooks:pyrium_ingot"
+  },
+  "result": {
+    "id": "minecraft:ancient_debris",
+    "count": 8
+  }
+}

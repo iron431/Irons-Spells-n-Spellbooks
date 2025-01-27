@@ -171,12 +171,14 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.RUINED_BOOK.get());
                 entries.accept(ItemRegistry.CHAINED_BOOK.get());
                 entries.accept(ItemRegistry.CINDER_ESSENCE.get());
+                entries.accept(ItemRegistry.TIMELESS_SLURRY.get());
                 entries.accept(ItemRegistry.MITHRIL_INGOT.get());
                 entries.accept(ItemRegistry.MITHRIL_SCRAP.get());
                 entries.accept(ItemRegistry.RAW_MITHRIL.get());
                 entries.accept(ItemRegistry.WEAPON_PARTS.get());
                 entries.accept(ItemRegistry.MITHRIL_WEAVE.get());
                 entries.accept(ItemRegistry.DIVINE_SOULSHARD.get());
+                entries.accept(ItemRegistry.PYRIUM_INGOT.get());
                 entries.accept(ItemRegistry.ARCANE_INGOT.get());
                 entries.accept(ItemRegistry.SHRIVING_STONE.get());
                 entries.accept(ItemRegistry.ELDRITCH_PAGE.get());

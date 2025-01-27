@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.PotionRegistry;
-import net.minecraft.ResourceLocationException;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -12,9 +11,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potions;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class AlchemistCauldronRecipeRegistry {
@@ -39,6 +36,7 @@ public class AlchemistCauldronRecipeRegistry {
         addRecipe(new AlchemistCauldronRecipe(ItemRegistry.INK_UNCOMMON.get(), Items.IRON_INGOT, ItemRegistry.INK_RARE.get()).setBaseRequirement(4).setResultLimit(1));
         addRecipe(new AlchemistCauldronRecipe(ItemRegistry.INK_RARE.get(), Items.GOLD_INGOT, ItemRegistry.INK_EPIC.get()).setBaseRequirement(4).setResultLimit(1));
         addRecipe(new AlchemistCauldronRecipe(ItemRegistry.INK_EPIC.get(), Items.AMETHYST_SHARD, ItemRegistry.INK_LEGENDARY.get()).setBaseRequirement(4).setResultLimit(1));
+        addRecipe(new AlchemistCauldronRecipe(Potions.MUNDANE, Items.ECHO_SHARD, ItemRegistry.TIMELESS_SLURRY.get()).setBaseRequirement(1).setResultLimit(1));
 
     }
 
