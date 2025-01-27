@@ -128,7 +128,7 @@ public class WizardAttackGoal extends Goal {
         if (livingentity != null && livingentity.isAlive()) {
             this.target = livingentity;
             //irons_spellbooks.LOGGER.debug("WizardAttackGoal.canuse: target:{}", target.getName().getString());
-            return true;
+            return mob.canAttack(target);
         } else {
             return false;
         }
@@ -138,7 +138,7 @@ public class WizardAttackGoal extends Goal {
      * Returns whether an in-progress EntityAIBase should continue executing
      */
     public boolean canContinueToUse() {
-        return this.canUse() || (target != null && target.isAlive()) && !this.mob.getNavigation().isDone();
+        return this.canUse();
     }
 
     /**
